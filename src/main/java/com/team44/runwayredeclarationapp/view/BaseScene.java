@@ -2,7 +2,7 @@ package com.team44.runwayredeclarationapp.view;
 
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +12,7 @@ public abstract class BaseScene {
 
     protected final MainWindow mainWindow;
     protected Scene scene;
-    protected StackPane root;
+    protected Pane root;
 
     /**
      * Create scene within the main window

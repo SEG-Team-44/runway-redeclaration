@@ -16,8 +16,13 @@ public class MainWindow {
     private final Stage stage;
     private BaseScene currentScene;
 
+    private final double width;
+    private final double height;
+
     public MainWindow(Stage stage, double width, double height) {
         this.stage = stage;
+        this.width = width;
+        this.height = height;
 
         stage.setTitle("Runway Redeclaration");
         stage.setWidth(width);
@@ -46,4 +51,22 @@ public class MainWindow {
         Platform.runLater(() -> currentScene.initialise());
     }
 
+
+    /**
+     * Get the window width
+     *
+     * @return the window width
+     */
+    public double getWidth() {
+        return width;
+    }
+
+    /**
+     * Get the window height
+     *
+     * @return the window height
+     */
+    public double getHeight() {
+        return height;
+    }
 }
