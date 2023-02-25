@@ -11,7 +11,9 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -62,6 +64,8 @@ public class MainScene extends BaseScene {
         var visualTabPane = new TabPane();
         mainPane.setLeft(infoPane);
         mainPane.setRight(visualTabPane);
+        infoPane.getStyleClass().add("info-pane");
+        visualTabPane.getStyleClass().add("visual-tab-pane");
 
         // Set the visualisation tab size
         visualTabPane.setMinWidth(mainWindow.getWidth() / 2);
@@ -75,8 +79,8 @@ public class MainScene extends BaseScene {
         visualTabPane.setTabDragPolicy(TabDragPolicy.REORDER);
 
         // Create tabs for the runway visualisations
-        Tab tab1 = new Tab("Top-down");
-        Tab tab2 = new Tab("Side-on");
+        Tab tab1 = new Tab("Top-down view");
+        Tab tab2 = new Tab("Side-on view");
         visualTabPane.getTabs().addAll(tab1, tab2);
 
         // Add the visualisations to the tabs
@@ -87,6 +91,11 @@ public class MainScene extends BaseScene {
 
         // For testing:
         var testText = new Text("Test");
-        infoPane.getChildren().add(testText);
+        var titledPane = new TitledPane();
+        titledPane.setText("Input Obstacle");
+        var testBox = new VBox();
+        titledPane.setContent(testBox);
+        VBox.setVgrow(titledPane, Priority.ALWAYS);
+        infoPane.getChildren().addAll(testText, titledPane);
     }
 }

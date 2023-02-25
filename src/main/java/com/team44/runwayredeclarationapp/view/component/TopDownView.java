@@ -13,6 +13,11 @@ public class TopDownView extends Canvas {
 
     private static final Logger logger = LogManager.getLogger(TopDownView.class);
 
+    private int toraDistance = 0;
+    private int todaDistance = 0;
+    private int asdaDistance = 0;
+    private int ldaDistance = 0;
+
     /**
      * Create a new top-down view canvas of the runway
      *
@@ -207,5 +212,23 @@ public class TopDownView extends Canvas {
         gc.fillPolygon(
             arrowHeadEndXCoords,
             arrowHeadEndYCoords, 3);
+    }
+
+    /**
+     * Update the runway parameters
+     *
+     * @param toraDistance the Take-Off Run Available
+     * @param todaDistance the Take-Off Distance Available
+     * @param asdaDistance the Accelerate-Stop Distance Available
+     * @param ldaDistance  the Landing Distance Available
+     */
+    public void updateParameters(int toraDistance, int todaDistance, int asdaDistance,
+        int ldaDistance) {
+        this.toraDistance = toraDistance;
+        this.todaDistance = todaDistance;
+        this.asdaDistance = asdaDistance;
+        this.ldaDistance = ldaDistance;
+
+        paint();
     }
 }

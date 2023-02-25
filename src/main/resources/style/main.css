@@ -1,0 +1,9 @@
+.info-pane {
+  /*-fx-font-size: 15;*/
+  -fx-padding: 12px;
+}
+
+.visual-tab-pane {
+  -fx-tab-min-width: 100;
+  -fx-font-size: 12;
+}

@@ -39,8 +39,12 @@ public abstract class BaseScene {
      * @return the scene
      */
     public Scene setScene() {
-        Scene scene = new Scene(root);
-        this.scene = scene;
+        this.scene = new Scene(root);
+        loadStyleSheet("main.css");
         return scene;
+    }
+
+    protected void loadStyleSheet(String fileName) {
+        scene.getStylesheets().add(getClass().getResource("/style/" + fileName).toExternalForm());
     }
 }
