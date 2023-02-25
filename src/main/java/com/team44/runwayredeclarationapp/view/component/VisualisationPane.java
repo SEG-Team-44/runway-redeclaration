@@ -18,6 +18,10 @@ public class VisualisationPane extends Pane {
         canvas.widthProperty().bind(this.widthProperty());
         canvas.heightProperty().bind(this.heightProperty());
 
+        // to rotate:
+        // canvas.setRotate(45);
+
+        this.setStyle("-fx-background-color: black");
         this.getChildren().add(canvas);
     }
 }
