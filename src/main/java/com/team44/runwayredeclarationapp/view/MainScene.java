@@ -6,6 +6,7 @@ import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
@@ -94,7 +95,9 @@ public class MainScene extends BaseScene {
         VBox.setVgrow(titledPane, Priority.ALWAYS);
         infoPane.getChildren().addAll(testText, titledPane);
 
-        Button addRunwayBtn = new Button("Add Runway");
+        //Add runway button
+        Button addRunwayBtn = new Button("Log in New Runway");
+        //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
             RunwayInitialisation initPage = new RunwayInitialisation(airport);
         });

@@ -2,23 +2,24 @@ package com.team44.runwayredeclarationapp.model;
 
 public class Runway {
 
-    private int degree;
-    private int logicDegree;
-    private int runwayL;
-    private int runwayW;
-    private int stripL;
-    private int stripW;
-    private int stopwayL;
-    private int stopwayW;
-    private int clearwayL;
-    private int clearwayW;
-    private int tora;
-    private int toda;
-    private int asda;
-    private int lda;
-    private int disThresh;
+    protected String id;
+    protected int degree;
+    protected int logicDegree;
+    private double runwayL;
+    private double runwayW;
+    private double stripL;
+    private double stripW;
+    private double stopwayL;
+    private double stopwayW;
+    private double clearwayL;
+    private double clearwayW;
+    private double tora;
+    private double toda;
+    private double asda;
+    private double lda;
+    private double disThresh;
 
-    public Runway(int d, int rl, int rw, int stripL, int stripW, int stopwayL, int stopwayW, int clearwayL, int clearwayW, int tora, int toda, int asda, int lda, int disThresh) {
+    public Runway(int d, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh) {
         this.degree = d;
         setLogicalDecree();
         this.runwayL = rl;
@@ -34,10 +35,9 @@ public class Runway {
         this.asda = asda;
         this.lda = lda;
         this.disThresh = disThresh;
-
     }
 
-    public Runway(int d, char pos, int rl, int rw, int stripL, int stripW, int stopwayL, int stopwayW, int clearwayL, int clearwayW, int tora, int toda, int asda, int lda, int disThresh) {
+    public Runway(int d, char pos, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh) {
         this.degree = d;
         setLogicalDecree();
         this.runwayL = rl;
@@ -53,6 +53,19 @@ public class Runway {
         this.asda = asda;
         this.lda = lda;
         this.disThresh = disThresh;
+    }
+
+    protected void setId() {
+        if (degree < 10) {
+            id = "0" + degree;
+        }
+        else id = String.valueOf(degree);
+
+        if (logicDegree < 10) {
+            id += "/0" + logicDegree;
+        }
+
+        else id += String.valueOf(logicDegree);
     }
 
     private void setLogicalDecree() {
@@ -65,18 +78,18 @@ public class Runway {
 
     public int getDegree() {return degree;}
     public int getLogicDegree() {return logicDegree;}
-    public int getRunwayL() {return runwayL;}
-    public int getRunwayW() {return runwayW;}
-    public int getStripL() {return stripL;}
-    public int getStripW() {return stripW;}
-    public int getStopwayL() {return stopwayL;}
-    public int getStopwayW() {return stopwayW;}
-    public int getClearwayL() {return clearwayL;}
-    public int getClearwayW() {return clearwayW;}
-    public int getTORA() {return tora;}
-    public int getTODA() {return toda;}
-    public int getASDA() {return asda;}
-    public int getLDA() {return lda;}
-    public int getDisThresh() {return disThresh;}
+    public double getRunwayL() {return runwayL;}
+    public double getRunwayW() {return runwayW;}
+    public double getStripL() {return stripL;}
+    public double getStripW() {return stripW;}
+    public double getStopwayL() {return stopwayL;}
+    public double getStopwayW() {return stopwayW;}
+    public double getClearwayL() {return clearwayL;}
+    public double getClearwayW() {return clearwayW;}
+    public double getTORA() {return tora;}
+    public double getTODA() {return toda;}
+    public double getASDA() {return asda;}
+    public double getLDA() {return lda;}
+    public double getDisThresh() {return disThresh;}
 
 }

@@ -2,7 +2,10 @@ package com.team44.runwayredeclarationapp.model;
 
 public class SRunway extends Runway {
 
-    public SRunway(int d, int rl, int rw, int stripL, int stripW, int stopwayL, int stopwayW, int clearwayL, int clearwayW, int tora, int toda, int asda, int lda, int disThresh) {
+    public SRunway(int d, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh) {
         super(d, rl, rw, stripL, stripW, stopwayL, stopwayW, clearwayL, clearwayW, tora, toda, asda, lda, disThresh);
+        setId();
     }
+
+
 }

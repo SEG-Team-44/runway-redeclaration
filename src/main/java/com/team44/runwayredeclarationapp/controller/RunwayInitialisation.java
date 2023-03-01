@@ -100,20 +100,20 @@ public class RunwayInitialisation {
        GridPane.setHalignment(addBtn, HPos.RIGHT);
 
        addBtn.setOnAction(ActionEvent -> {
-           List<TextField> textFields = new ArrayList<>(Arrays.asList(degreeTf, runwayLTf, runwayWTf, stripLTf, stripWTf, stopLTf, stopWTf, clearLTf, clearWTf,toraTf, todaTf, asdaTf, ldaTf, disThreshTf));
+           List<TextField> textFields = new ArrayList<>(Arrays.asList(runwayLTf, runwayWTf, stripLTf, stripWTf, stopLTf, stopWTf, clearLTf, clearWTf,toraTf, todaTf, asdaTf, ldaTf, disThreshTf));
            Boolean isParallel = posCb.isSelected();
 
            if (isParallel) {
                char[] posChar = posTf.getText().toCharArray();
-               if (validInput(textFields) && posChar.length == 1 && (Character.toUpperCase(posChar[0]) == 'L' || Character.toUpperCase(posChar[0]) == 'C' || Character.toUpperCase(posChar[0]) == 'R')) {
-               addPRunway(convertTextToInt(textFields), posChar[0], airport);
+               if (validInput(textFields, degreeTf.getText()) && posChar.length == 1 && (Character.toUpperCase(posChar[0]) == 'L' || Character.toUpperCase(posChar[0]) == 'C' || Character.toUpperCase(posChar[0]) == 'R')) {
+               addPRunway(convertTextTodouble(textFields), Integer.valueOf(degreeTf.getText()), posChar[0], airport);
                printAlert(true);
                stage.close();
                }
            }
 
-           else if (validInput(textFields)) {
-               addSRunway(convertTextToInt(textFields), airport);
+           else if (validInput(textFields, degreeTf.getText())) {
+               addSRunway(convertTextTodouble(textFields), Integer.valueOf(degreeTf.getText()), airport);
                printAlert(true);
                stage.close();
            }
@@ -127,11 +127,17 @@ public class RunwayInitialisation {
        stage.show();
    }
 
-   private Boolean validInput(List<TextField> textFields) {
+   private Boolean validInput(List<TextField> textFields, String degree) {
+       try {
+           Integer.parseInt(degree);
+       } catch (Exception e) {
+           return false;
+       }
+
        for (TextField textField: textFields) {
            if (!textField.getText().isEmpty()) {
                try {
-                   Integer.parseInt(textField.getText());
+                   Double.parseDouble(textField.getText());
                } catch (Exception e) {
                    return false;
                }
@@ -143,28 +149,24 @@ public class RunwayInitialisation {
        return true;
    }
 
-   private int[] convertTextToInt (List<TextField> textFields) {
-       int[] data = new int[textFields.size()];
+   private double[] convertTextTodouble (List<TextField> textFields) {
+       double[] data = new double[textFields.size()];
        int p = 0;
        for (TextField textField : textFields) {
-           try {
-               data[p] = Integer.parseInt(textField.getText());
-               p++;
-           } catch (Exception e) {
-
-           }
+           data[p] = Double.valueOf(textField.getText());
+           p++;
        }
 
        return data;
    }
 
-   private void addPRunway(int[] data, char pos, Airport airport) {
-       Runway newRunway = new PRunway(data[0], pos, data[1], data[2], data[3],data[4],data[4],data[6],data[7],data[8],data[9],data[10],data[11],data[12],data[13]);
+   private void addPRunway(double[] data, int degree, char pos, Airport airport) {
+       Runway newRunway = new PRunway(degree, pos, data[0], data[1], data[2],data[3],data[4],data[5],data[6],data[7],data[8],data[9],data[10],data[11],data[12]);
        airport.addRunway(newRunway);
    }
 
-   private void addSRunway(int[] data, Airport airport) {
-       Runway newRunway = new SRunway(data[0], data[1], data[2], data[3],data[4],data[4],data[6],data[7],data[8],data[9],data[10],data[11],data[12],data[13]);
+   private void addSRunway(double[] data, int degree, Airport airport) {
+       Runway newRunway = new SRunway(degree, data[0], data[1], data[2],data[3],data[4],data[5],data[6],data[7],data[8],data[9],data[10],data[11],data[12]);
        airport.addRunway(newRunway);
    }
 
