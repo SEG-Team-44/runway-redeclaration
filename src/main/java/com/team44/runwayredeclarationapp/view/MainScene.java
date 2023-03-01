@@ -1,27 +1,24 @@
 package com.team44.runwayredeclarationapp.view;
 
+import com.team44.runwayredeclarationapp.controller.RunwayInitialisation;
+import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 /**
  * The main scene that will be shown when the user opens the program
  */
 public class MainScene extends BaseScene {
+
+    private Airport airport = new Airport();
 
     /**
      * Create scene within the main window
@@ -97,5 +94,13 @@ public class MainScene extends BaseScene {
         titledPane.setContent(testBox);
         VBox.setVgrow(titledPane, Priority.ALWAYS);
         infoPane.getChildren().addAll(testText, titledPane);
+
+        //Add runway button
+        Button addRunwayBtn = new Button("Log in New Runway");
+        //Generate init window when button clicked
+        addRunwayBtn.setOnAction(ActionEvent -> {
+            RunwayInitialisation initPage = new RunwayInitialisation(airport);
+        });
+        infoPane.getChildren().add(addRunwayBtn);
     }
 }
