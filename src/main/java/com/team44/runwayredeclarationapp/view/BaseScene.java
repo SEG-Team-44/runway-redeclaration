@@ -44,6 +44,11 @@ public abstract class BaseScene {
         return scene;
     }
 
+    /**
+     * Add a stylesheet to the scene
+     *
+     * @param fileName the filename of the stylesheet in the /resources/style folder
+     */
     protected void loadStyleSheet(String fileName) {
         scene.getStylesheets().add(getClass().getResource("/style/" + fileName).toExternalForm());
     }
