@@ -5,11 +5,10 @@ import java.util.List;
 
 public class Airport {
 
-    private String name;
+
     private List<Runway> runways;
 
-    public Airport(String name) {
-        this.name = name;
+    public Airport() {
         runways = new ArrayList<>();
     }
 

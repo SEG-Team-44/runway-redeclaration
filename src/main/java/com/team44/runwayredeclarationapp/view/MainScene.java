@@ -1,6 +1,7 @@
 package com.team44.runwayredeclarationapp.view;
 
 import com.team44.runwayredeclarationapp.controller.RunwayInitialisation;
+import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
@@ -15,6 +16,8 @@ import javafx.scene.text.Text;
  * The main scene that will be shown when the user opens the program
  */
 public class MainScene extends BaseScene {
+
+    private Airport airport = new Airport();
 
     /**
      * Create scene within the main window
@@ -93,7 +96,7 @@ public class MainScene extends BaseScene {
 
         Button addRunwayBtn = new Button("Add Runway");
         addRunwayBtn.setOnAction(ActionEvent -> {
-            RunwayInitialisation initPage = new RunwayInitialisation();
+            RunwayInitialisation initPage = new RunwayInitialisation(airport);
         });
         infoPane.getChildren().add(addRunwayBtn);
     }

@@ -1,6 +1,9 @@
 package com.team44.runwayredeclarationapp.controller;
 
-
+import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.model.PRunway;
+import com.team44.runwayredeclarationapp.model.Runway;
+import com.team44.runwayredeclarationapp.model.SRunway;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -10,12 +13,14 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class RunwayInitialisation {
 
-
-
-   public RunwayInitialisation() {
+   public RunwayInitialisation(Airport airport) {
        Stage stage = new Stage();
 
        Label degree = new Label("Degree");
@@ -94,18 +99,87 @@ public class RunwayInitialisation {
        getDataPage.addColumn(3, posTf, stripWTf, stripLTf, clearLTf, clearWTf, todaTf, ldaTf, addBtn);
        GridPane.setHalignment(addBtn, HPos.RIGHT);
 
-       //TextField[] textFields = {degreeTf, posTf, runwayLTf, runwayWTf, stripLTf, stripWTf, stopLTf, stopWTf, clearLTf, clearWTf,toraTf, todaTf, asdaTf, ldaTf, disThreshTf};
+       addBtn.setOnAction(ActionEvent -> {
+           List<TextField> textFields = new ArrayList<>(Arrays.asList(degreeTf, runwayLTf, runwayWTf, stripLTf, stripWTf, stopLTf, stopWTf, clearLTf, clearWTf,toraTf, todaTf, asdaTf, ldaTf, disThreshTf));
+           Boolean isParallel = posCb.isSelected();
 
+           if (isParallel) {
+               char[] posChar = posTf.getText().toCharArray();
+               if (validInput(textFields) && posChar.length == 1 && (Character.toUpperCase(posChar[0]) == 'L' || Character.toUpperCase(posChar[0]) == 'C' || Character.toUpperCase(posChar[0]) == 'R')) {
+               addPRunway(convertTextToInt(textFields), posChar[0], airport);
+               printAlert(true);
+               stage.close();
+               }
+           }
+
+           else if (validInput(textFields)) {
+               addSRunway(convertTextToInt(textFields), airport);
+               printAlert(true);
+               stage.close();
+           }
+
+           else printAlert(false);
+       });
 
        Scene scene = new Scene(getDataPage);
-       stage.setTitle("Log in runway");
+       stage.setTitle("Log in new runway");
        stage.setScene(scene);
        stage.show();
    }
 
-/*   private Boolean validInput(TextField[] textFields, CheckBox posCb) {
+   private Boolean validInput(List<TextField> textFields) {
+       for (TextField textField: textFields) {
+           if (!textField.getText().isEmpty()) {
+               try {
+                   Integer.parseInt(textField.getText());
+               } catch (Exception e) {
+                   return false;
+               }
+           }
 
+           else return false;
+       }
 
-       return false;
-   }*/
+       return true;
+   }
+
+   private int[] convertTextToInt (List<TextField> textFields) {
+       int[] data = new int[textFields.size()];
+       int p = 0;
+       for (TextField textField : textFields) {
+           try {
+               data[p] = Integer.parseInt(textField.getText());
+               p++;
+           } catch (Exception e) {
+
+           }
+       }
+
+       return data;
+   }
+
+   private void addPRunway(int[] data, char pos, Airport airport) {
+       Runway newRunway = new PRunway(data[0], pos, data[1], data[2], data[3],data[4],data[4],data[6],data[7],data[8],data[9],data[10],data[11],data[12],data[13]);
+       airport.addRunway(newRunway);
+   }
+
+   private void addSRunway(int[] data, Airport airport) {
+       Runway newRunway = new SRunway(data[0], data[1], data[2], data[3],data[4],data[4],data[6],data[7],data[8],data[9],data[10],data[11],data[12],data[13]);
+       airport.addRunway(newRunway);
+   }
+
+   private void printAlert(Boolean success) {
+       Alert a;
+
+       if (success) {
+           a = new Alert(Alert.AlertType.INFORMATION);
+           a.setContentText("Runway has been logged");
+       }
+       else {
+           a = new Alert(Alert.AlertType.ERROR);
+           a.setContentText("Invalid Input");
+       }
+
+       a.show();
+   }
 }
