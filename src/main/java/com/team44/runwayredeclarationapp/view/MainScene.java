@@ -1,21 +1,14 @@
 package com.team44.runwayredeclarationapp.view;
 
+import com.team44.runwayredeclarationapp.controller.RunwayInitialisation;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 
 /**
@@ -97,5 +90,11 @@ public class MainScene extends BaseScene {
         titledPane.setContent(testBox);
         VBox.setVgrow(titledPane, Priority.ALWAYS);
         infoPane.getChildren().addAll(testText, titledPane);
+
+        Button addRunwayBtn = new Button("Add Runway");
+        addRunwayBtn.setOnAction(ActionEvent -> {
+            RunwayInitialisation initPage = new RunwayInitialisation();
+        });
+        infoPane.getChildren().add(addRunwayBtn);
     }
 }
