@@ -1,9 +1,12 @@
 package com.team44.runwayredeclarationapp.view;
 
+import com.team44.runwayredeclarationapp.controller.RunwayInitialisation;
+import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -22,6 +25,8 @@ import javafx.scene.text.Text;
  * The main scene that will be shown when the user opens the program
  */
 public class MainScene extends BaseScene {
+
+    private Airport airport = new Airport();
 
     /**
      * Create scene within the main window
@@ -84,7 +89,8 @@ public class MainScene extends BaseScene {
         visualTabPane.getTabs().addAll(tab1, tab2);
 
         // Add the visualisations to the tabs
-        var topDownPane = new VisualisationPane(new TopDownView(0, 0));
+        var topDownView = new TopDownView(0, 0);
+        var topDownPane = new VisualisationPane(topDownView);
         var sideOnPane = new VisualisationPane(new SideOnView(0, 0));
         tab1.setContent(topDownPane);
         tab2.setContent(sideOnPane);
@@ -97,5 +103,26 @@ public class MainScene extends BaseScene {
         titledPane.setContent(testBox);
         VBox.setVgrow(titledPane, Priority.ALWAYS);
         infoPane.getChildren().addAll(testText, titledPane);
+
+        //Add runway button
+        Button addRunwayBtn = new Button("Log in New Runway");
+        //Generate init window when button clicked
+        addRunwayBtn.setOnAction(ActionEvent -> {
+            RunwayInitialisation initPage = new RunwayInitialisation(airport);
+        });
+        infoPane.getChildren().add(addRunwayBtn);
+
+        // Testing -
+        var recalculateBtn = new Button("Recalculate (testing)");
+        infoPane.getChildren().add(recalculateBtn);
+
+        recalculateBtn.setOnAction((e) -> {
+            logger.info("Recalculate button pressed (testing)");
+
+            topDownView.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
+                12 * 50, 60, 240, 300, 306 - 50, true);
+//            topDownView.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
+//                20 * 50, 60, 240, 300, 3546 + 306, false);
+        });
     }
 }

@@ -100,4 +100,13 @@ public class MainWindow {
     public double getHeight() {
         return height;
     }
+
+    /**
+     * Get the window stage
+     *
+     * @return the stage
+     */
+    public Stage getStage() {
+        return stage;
+    }
 }

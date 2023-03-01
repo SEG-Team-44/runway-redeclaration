@@ -1,6 +1,5 @@
 package com.team44.runwayredeclarationapp.view.component;
 
-import javafx.scene.canvas.Canvas;
 import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,12 +7,14 @@ import org.apache.logging.log4j.Logger;
 /**
  * The side-on view visualisation canvas for the runway
  */
-public class SideOnView extends Canvas {
+public class SideOnView extends VisualisationBase {
 
     private static final Logger logger = LogManager.getLogger(SideOnView.class);
 
-    /** Create a new side-on view canvas of the runway
-     * @param width the initial width of the canvas
+    /**
+     * Create a new side-on view canvas of the runway
+     *
+     * @param width  the initial width of the canvas
      * @param height the initial height of the canvas
      */
     public SideOnView(double width, double height) {
@@ -30,7 +31,7 @@ public class SideOnView extends Canvas {
     /**
      * Paint the canvas to visualise the runway
      */
-    private void paint() {
+    protected void paint() {
         double width = getWidth();
         double height = getHeight();
         var gc = getGraphicsContext2D();
