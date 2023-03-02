@@ -18,15 +18,8 @@ public class TopDownView extends VisualisationBase {
      * @param height the initial height of the canvas
      */
     public TopDownView(double width, double height) {
-        setWidth(width);
-        setHeight(height);
-
-        setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884, 306, 0, 0, 0, 78,
-            0);
-
-        // Redraw the canvas whenever the window is resized
-        widthProperty().addListener(evt -> paint());
-        heightProperty().addListener(evt -> paint());
+        super(width, height);
+        runwayHeight = 55;
 
         logger.info("Initialised the Top Down View");
     }
@@ -35,6 +28,17 @@ public class TopDownView extends VisualisationBase {
      * Paint the canvas to visualise the runway
      */
     protected void paint() {
+        // Reset previous coordinates
+        guideLineCoordsUp.clear();
+        guideLineCoordsDown.clear();
+
+        // Load loading screen if necessary
+        if (isLoadingScreen) {
+            paintLoadingScreen();
+            return;
+        }
+
+        // Set new size
         double width = getWidth();
         double height = getHeight();
         var gc = getGraphicsContext2D();
@@ -47,7 +51,6 @@ public class TopDownView extends VisualisationBase {
         gc.fillRect(0, 0, width, height);
 
         // Runway cords and info:
-        this.runwayHeight = 55;
         this.runwayX1 = width * 0.15;
         this.runwayY1 = (height / 2) - (runwayHeight / 2);
         this.runwayWidth = width - (runwayX1 * 2);
@@ -138,69 +141,29 @@ public class TopDownView extends VisualisationBase {
             runwayHeight + 30);
         gc.strokeRect(runwayX2, runwayY1 - 15, rightClearwayLength, runwayHeight + 30);
 
-        // todo:: make these class variables
+        // Threshold designators
         addText("09L", 18, centreLineX1 - 20, runwayY1 + 15, 90);
         addText("27R", 18, centreLineX2 + 20, runwayY2 - 15, -90);
 
-        // Draw initial arrows and guidelines
-        if (isObstacleOnLeftSide == null) {
+        // Draw initial arrows and the obstacle if necessary
+        if (!isObstacleScreen) {
             drawAllArrowsInitial();
-            drawAllGuidelinesInitial();
         } else if (isObstacleOnLeftSide) {
             drawAllArrowsRecalculatedLeft();
-            drawAllGuidelinesRecalculatedLeft();
             drawObstacle();
         } else {
             drawAllArrowsRecalculatedRight();
-            drawAllGuidelinesRecalculatedRight();
             drawObstacle();
         }
 
+        // Draw the guidelines
+        drawGuidelines();
+
+        // Draw the take-off/landing direction and text
+        drawTakeOffLandingDirection();
+
     }
 
-
-    /**
-     * Draw the initial guidelines (when there is no obstacle)
-     */
-    private void drawAllGuidelinesInitial() {
-        // Top guidelines (logical runway 1)
-        addGuideline(runwayX1, runwayY1, runwayY1 - arrowsFromRunwayOffset - 60);
-        addGuideline(runwayX2, runwayY1, runwayY1 - arrowsFromRunwayOffset - 60);
-        if (displacedThresholdL > 0) {
-            addGuideline(runwayX1 + displacedThresholdL, runwayY1,
-                runwayY1 - arrowsFromRunwayOffset - 15);
-        }
-
-        // Bottom guidelines (logical runway 2)
-        addGuideline(runwayX1, runwayY2, runwayY2 + arrowsFromRunwayOffset + 60);
-        addGuideline(runwayX2, runwayY2, runwayY2 + arrowsFromRunwayOffset + 60);
-        if (displacedThresholdR > 0) {
-            addGuideline(runwayX2 - displacedThresholdR, runwayY2,
-                runwayY2 + arrowsFromRunwayOffset + 15);
-        }
-    }
-
-    /**
-     * Draw guidelines for when the parameters have been re-calculated and the obstacle is on the
-     * left
-     */
-    private void drawAllGuidelinesRecalculatedLeft() {
-        // todo :: add these to base class with parameters for x1
-        var obstacleCoord = runwayX1 + obstacleDistanceFromStart;
-        addGuideline(obstacleCoord, 0, getHeight());
-        addGuideline(runwayX1 + obstacleDistanceFromStart + slope,
-            runwayY1 - arrowsFromRunwayOffset - 15, runwayY1);
-        addGuideline(runwayX1 + obstacleDistanceFromStart + slope + stripEnd,
-            runwayY1 - arrowsFromRunwayOffset - 15, runwayY1);
-    }
-
-    /**
-     * Draw guidelines for when the parameters have been re-calculated and the obstacle is on the
-     * right
-     */
-    private void drawAllGuidelinesRecalculatedRight() {
-        // todo
-    }
 
     /**
      * Draw a circle representing the obstacle on the runway

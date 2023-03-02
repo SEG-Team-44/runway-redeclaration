@@ -18,14 +18,7 @@ public class SideOnView extends VisualisationBase {
      * @param height the initial height of the canvas
      */
     public SideOnView(double width, double height) {
-        setWidth(width);
-        setHeight(height);
-
-        paint();
-
-        // Redraw the canvas whenever the window is resized
-        widthProperty().addListener(evt -> paint());
-        heightProperty().addListener(evt -> paint());
+        super(width, height);
     }
 
     /**

@@ -114,8 +114,19 @@ public class MainScene extends BaseScene {
         infoPane.getChildren().add(addRunwayBtn);
 
         // Testing -
+        var loadRunwayBtn = new Button("Load Runway (testing)");
         var recalculateBtn = new Button("Recalculate (testing)");
-        infoPane.getChildren().add(recalculateBtn);
+        recalculateBtn.setDisable(true);
+        infoPane.getChildren().addAll(loadRunwayBtn, recalculateBtn);
+
+        loadRunwayBtn.setOnAction((e) -> {
+            logger.info("Load runway button pressed (testing)");
+            recalculateBtn.setDisable(false);
+
+            topDownView.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
+                306, 0, 0, 0, 78,
+                0);
+        });
 
         recalculateBtn.setOnAction((e) -> {
             logger.info("Recalculate button pressed (testing)");
