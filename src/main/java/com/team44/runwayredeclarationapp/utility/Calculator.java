@@ -17,7 +17,7 @@ public class Calculator {
     double h = obstacle.getHeight();
     double pos = obstacle.getPosition();
     double bp = aircraft.getBlastProt();
-    double lda = rws.get(1).getLDA();
+    double lda = rws.get(1).getLDA1();
     double resa = rws.get(1).getResa();
     double finalValue;
 
