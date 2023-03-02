@@ -179,13 +179,13 @@ public class RunwayInitialisation {
 
     private void addPRunway(double[] data, int degree, char pos, Airport airport) {
         Runway newRunway = new PRunway(degree, pos, data[0], data[1], data[2], data[3], data[4],
-            data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12]);
+            data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13]);
         airport.addRunway(newRunway);
     }
 
     private void addSRunway(double[] data, int degree, Airport airport) {
         Runway newRunway = new SRunway(degree, data[0], data[1], data[2], data[3], data[4], data[5],
-            data[6], data[7], data[8], data[9], data[10], data[11], data[12]);
+            data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13]);
         airport.addRunway(newRunway);
     }
 

@@ -5,8 +5,8 @@ public class PRunway extends Runway {
     private char pos;
     private char logicPos;
 
-    public PRunway(int d, char pos, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh) {
-        super(d, pos, rl, rw, stripL, stripW, stopwayL, stopwayW, clearwayL, clearwayW, tora, toda, asda, lda, disThresh);
+    public PRunway(int d, char pos, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh, double resa) {
+        super(d, pos, rl, rw, stripL, stripW, stopwayL, stopwayW, clearwayL, clearwayW, tora, toda, asda, lda, disThresh,resa);
         this.pos = pos;
         setLogicalPos();
         setId();
