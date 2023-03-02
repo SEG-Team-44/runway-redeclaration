@@ -24,75 +24,24 @@ public class TopDownView extends VisualisationBase {
         logger.info("Initialised the Top Down View");
     }
 
+
     /**
-     * Paint the canvas to visualise the runway
+     * Paint custom canvas features for the top-down view
      */
-    protected void paint() {
-        // Reset previous coordinates
-        guideLineCoordsUp.clear();
-        guideLineCoordsDown.clear();
-
-        // Load loading screen if necessary
-        if (isLoadingScreen) {
-            paintLoadingScreen();
-            return;
-        }
-
+    @Override
+    protected void paintCanvasCustom() {
         // Set new size
-        double width = getWidth();
         double height = getHeight();
         var gc = getGraphicsContext2D();
 
-        // Clear the current canvas
-        gc.clearRect(0, 0, width, height);
+        // Clearway
+        gc.setStroke(Color.WHITE);
+        gc.setLineDashes();
+        gc.strokeRect(runwayX1 - leftClearwayLength, runwayY1 - 15, leftClearwayLength,
+            runwayHeight + 30);
+        gc.strokeRect(runwayX2, runwayY1 - 15, rightClearwayLength, runwayHeight + 30);
 
-        // Draw the new canvas
-        gc.setFill(Color.DARKGREEN);
-        gc.fillRect(0, 0, width, height);
-
-        // Runway cords and info:
-        this.runwayX1 = width * 0.15;
-        this.runwayY1 = (height / 2) - (runwayHeight / 2);
-        this.runwayWidth = width - (runwayX1 * 2);
-        this.runwayX2 = runwayX1 + runwayWidth;
-        this.runwayY2 = runwayY1 + runwayHeight;
-        updateValues();
-
-        // Draw background rectangle to join with the hexagon
-        gc.setFill(Color.CORNFLOWERBLUE);
-        double rectangleSize = 50; // distance from top of runway to top of rectangle
-        double rectangleY1 = runwayY1 - rectangleSize;
-        double rectangleHeight = runwayHeight + (rectangleSize * 2);
-        gc.fillRect(0, rectangleY1, width, rectangleHeight);
-
-        // Draw hexagon
-        double gradedAreaOffset = 50; // offset from the side edges of the runway inwards
-        double hexagonOffsetHeight = 50; // offset from top/bottom of rectangle outwards
-        double hexagonOffsetWidth =
-            gradedAreaOffset + 60; //offset from the side edges of the runway inwards
-        gc.fillPolygon(
-            new double[]{runwayX1 + gradedAreaOffset,
-                runwayX1 + gradedAreaOffset,
-                runwayX1 + hexagonOffsetWidth,
-                runwayX2 - hexagonOffsetWidth,
-                runwayX2 - gradedAreaOffset,
-                runwayX2 - gradedAreaOffset,
-                runwayX2 - hexagonOffsetWidth,
-                runwayX1 + hexagonOffsetWidth},
-            new double[]{rectangleY1 + rectangleHeight,
-                rectangleY1,
-                rectangleY1 - hexagonOffsetHeight,
-                rectangleY1 - hexagonOffsetHeight,
-                rectangleY1,
-                rectangleY1 + rectangleHeight,
-                rectangleY1 + rectangleHeight + hexagonOffsetHeight,
-                rectangleY1 + rectangleHeight + hexagonOffsetHeight}, 8);
-
-        // Draw the runway strip
-        gc.setFill(Color.DIMGRAY);
-        gc.fillRect(runwayX1, runwayY1, runwayWidth, runwayHeight);
-
-        // Draw the runway line markings
+        // Draw the runway line markings (Displaced threshold)
         gc.setStroke(Color.WHITE);
         gc.setLineDashes();
         gc.setLineWidth(1.6);
@@ -128,47 +77,56 @@ public class TopDownView extends VisualisationBase {
             height / 2;
         gc.strokeLine(centreLineX1, centreLineY1, centreLineX2, centreLineY2);
 
-        // Left side stopway
-        gc.setFill(Color.web("2e2e2e"));
-        gc.fillRect(runwayX1 - leftStopwayLength, runwayY1, leftStopwayLength, runwayHeight);
-
-        // Right side stopway
-        gc.fillRect(runwayX2, runwayY1, rightStopwayLength, runwayHeight);
-
-        // Clearway
-        gc.setLineDashes();
-        gc.strokeRect(runwayX1 - leftClearwayLength, runwayY1 - 15, leftClearwayLength,
-            runwayHeight + 30);
-        gc.strokeRect(runwayX2, runwayY1 - 15, rightClearwayLength, runwayHeight + 30);
-
         // Threshold designators
         addText("09L", 18, centreLineX1 - 20, runwayY1 + 15, 90);
         addText("27R", 18, centreLineX2 + 20, runwayY2 - 15, -90);
-
-        // Draw initial arrows and the obstacle if necessary
-        if (!isObstacleScreen) {
-            drawAllArrowsInitial();
-        } else if (isObstacleOnLeftSide) {
-            drawAllArrowsRecalculatedLeft();
-            drawObstacle();
-        } else {
-            drawAllArrowsRecalculatedRight();
-            drawObstacle();
-        }
-
-        // Draw the guidelines
-        drawGuidelines();
-
-        // Draw the take-off/landing direction and text
-        drawTakeOffLandingDirection();
-
     }
 
+    /**
+     * Paint custom canvas background for the top down-view
+     */
+    @Override
+    protected void paintCanvasBackground() {
+        // Set new size
+        double width = getWidth();
+        var gc = getGraphicsContext2D();
+
+        // Draw background rectangle to join with the hexagon
+        gc.setFill(Color.CORNFLOWERBLUE);
+        double rectangleSize = 50; // distance from top of runway to top of rectangle
+        double rectangleY1 = runwayY1 - rectangleSize;
+        double rectangleHeight = runwayHeight + (rectangleSize * 2);
+        gc.fillRect(0, rectangleY1, width, rectangleHeight);
+
+        // Draw hexagon
+        double gradedAreaOffset = 50; // offset from the side edges of the runway inwards
+        double hexagonOffsetHeight = 50; // offset from top/bottom of rectangle outwards
+        double hexagonOffsetWidth =
+            gradedAreaOffset + 60; //offset from the side edges of the runway inwards
+        gc.fillPolygon(
+            new double[]{runwayX1 + gradedAreaOffset,
+                runwayX1 + gradedAreaOffset,
+                runwayX1 + hexagonOffsetWidth,
+                runwayX2 - hexagonOffsetWidth,
+                runwayX2 - gradedAreaOffset,
+                runwayX2 - gradedAreaOffset,
+                runwayX2 - hexagonOffsetWidth,
+                runwayX1 + hexagonOffsetWidth},
+            new double[]{rectangleY1 + rectangleHeight,
+                rectangleY1,
+                rectangleY1 - hexagonOffsetHeight,
+                rectangleY1 - hexagonOffsetHeight,
+                rectangleY1,
+                rectangleY1 + rectangleHeight,
+                rectangleY1 + rectangleHeight + hexagonOffsetHeight,
+                rectangleY1 + rectangleHeight + hexagonOffsetHeight}, 8);
+    }
 
     /**
      * Draw a circle representing the obstacle on the runway
      */
-    private void drawObstacle() {
+    @Override
+    protected void drawObstacle() {
         var gc = getGraphicsContext2D();
 
         // Set properties

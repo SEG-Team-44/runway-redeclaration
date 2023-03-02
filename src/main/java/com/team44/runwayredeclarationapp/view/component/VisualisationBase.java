@@ -84,6 +84,7 @@ public abstract class VisualisationBase extends Canvas {
      */
     protected double obstacleDistanceFromStart, obstacleDistanceFromStartActual;
     protected double obstacleDistanceFromCentreLine, obstacleDistanceFromCentreLineActual;
+    protected double obstacleHeight, obstacleHeightActual;
 
 
     /**
@@ -129,9 +130,88 @@ public abstract class VisualisationBase extends Canvas {
     }
 
     /**
-     * Draw the background, runway and annotations to the canvas
+     * Paint the canvas to visualise the runway
      */
-    protected abstract void paint();
+    protected void paint() {
+        // Reset previous coordinates
+        guideLineCoordsUp.clear();
+        guideLineCoordsDown.clear();
+
+        // Load loading screen if necessary
+        if (isLoadingScreen) {
+            paintLoadingScreen();
+            return;
+        }
+
+        // Set new size
+        double width = getWidth();
+        double height = getHeight();
+        var gc = getGraphicsContext2D();
+
+        // Clear the current canvas
+        gc.clearRect(0, 0, width, height);
+
+        // Draw the new canvas
+        gc.setFill(Color.DARKGREEN);
+        gc.fillRect(0, 0, width, height);
+
+        // Runway cords and info:
+        this.runwayX1 = width * 0.15;
+        this.runwayY1 = (height / 2) - (runwayHeight / 2);
+        this.runwayWidth = width - (runwayX1 * 2);
+        this.runwayX2 = runwayX1 + runwayWidth;
+        this.runwayY2 = runwayY1 + runwayHeight;
+        updateValues();
+
+        // Paint the canvas background (for separate subclasses)
+        paintCanvasBackground();
+
+        // Draw the runway strip
+        gc.setFill(Color.DIMGRAY);
+        gc.fillRect(runwayX1, runwayY1, runwayWidth, runwayHeight);
+
+        // Left side stopway
+        gc.setFill(Color.web("2e2e2e"));
+        gc.fillRect(runwayX1 - leftStopwayLength, runwayY1, leftStopwayLength, runwayHeight);
+
+        // Right side stopway
+        gc.fillRect(runwayX2, runwayY1, rightStopwayLength, runwayHeight);
+
+        // Paint custom canvas features (for separate subclasses)
+        paintCanvasCustom();
+
+        // Draw initial arrows and the obstacle if necessary
+        if (!isObstacleScreen) {
+            drawAllArrowsInitial();
+        } else if (isObstacleOnLeftSide) {
+            drawAllArrowsRecalculatedLeft();
+            drawObstacle();
+        } else {
+            drawAllArrowsRecalculatedRight();
+            drawObstacle();
+        }
+
+        // Draw the guidelines
+        drawGuidelines();
+
+        // Draw the take-off/landing direction and text
+        drawTakeOffLandingDirection();
+    }
+
+    /**
+     * Paint custom canvas features for different visualisation views
+     */
+    protected abstract void paintCanvasCustom();
+
+    /**
+     * Paint custom canvas background for different visualisation views
+     */
+    protected abstract void paintCanvasBackground();
+
+    /**
+     * Draw the obstacle
+     */
+    protected abstract void drawObstacle();
 
     /**
      * Draw the loading screen to the canvas
@@ -172,12 +252,8 @@ public abstract class VisualisationBase extends Canvas {
             }
         });
 
-        mapUp.values().forEach((crd) -> {
-            addGuideline(crd.getX(), crd.getY(), runwayY1);
-        });
-        mapDown.values().forEach((crd) -> {
-            addGuideline(crd.getX(), crd.getY(), runwayY2);
-        });
+        mapUp.values().forEach((crd) -> addGuideline(crd.getX(), crd.getY(), runwayY1));
+        mapDown.values().forEach((crd) -> addGuideline(crd.getX(), crd.getY(), runwayY2));
     }
 
     /**
@@ -665,6 +741,7 @@ public abstract class VisualisationBase extends Canvas {
         this.obstacleDistanceFromStart = calculateRatioValue(obstacleDistanceFromStartActual);
         this.obstacleDistanceFromCentreLine = calculateRatioValue(
             obstacleDistanceFromCentreLineActual);
+        this.obstacleHeight = calculateRatioValue(obstacleHeightActual) + 10;
 
         // Update the re-calculated parameters
         this.slope = calculateRatioValue(slopeActual);
@@ -690,6 +767,7 @@ public abstract class VisualisationBase extends Canvas {
      * @param blast                     the blast protection value
      * @param obstacleDistanceFromStart the distance of the obstacle from the start of the runway
      *                                  strip
+     * @param obstacleHeight            the height of the obstacle
      * @param isObstacleOnLeftSide      indicates whether the obstacle is on the left of the runway
      *                                  (True) or on the right (False)
      */
@@ -707,6 +785,7 @@ public abstract class VisualisationBase extends Canvas {
         double resa,
         double blast,
         double obstacleDistanceFromStart,
+        double obstacleHeight,
         boolean isObstacleOnLeftSide
     ) {
         // Set the new distance parameters
@@ -729,6 +808,7 @@ public abstract class VisualisationBase extends Canvas {
 
         // Set the obstacle information
         this.obstacleDistanceFromStartActual = obstacleDistanceFromStart;
+        this.obstacleHeightActual = obstacleHeight;
         this.isObstacleOnLeftSide = isObstacleOnLeftSide;
 
         // Set obstacle screen
