@@ -151,32 +151,23 @@ public class RunwayInitialisation {
         getDataPage.add(addBtn,7,9);
         GridPane.setHalignment(addBtn, HPos.RIGHT);
 
-/*        addBtn.setOnAction(ActionEvent -> {
+        addBtn.setOnAction(ActionEvent -> {
             List<TextField> textFields = new ArrayList<>(
-                Arrays.asList(runwayLTf, runwayWTf, stripLTf, stripWTf, stopLTf, stopWTf, clearLTf,
-                    clearWTf, toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf));
-            Boolean isParallel = (posCb1.isSelected() || posCb2.isSelected());
+                Arrays.asList(runwayLTf, runwayWTf, stripLTf, stripWTf, stopLTf, stopWTf, clearLTf, clearWTf,
+                        toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf));
 
-            if (isParallel) {
-                char[] posChar = posTf.getText().toCharArray();
-                if (validInput(textFields, degreeTf.getText()) && posChar.length == 1 && (
-                    Character.toUpperCase(posChar[0]) == 'L'
-                        || Character.toUpperCase(posChar[0]) == 'C'
-                        || Character.toUpperCase(posChar[0]) == 'R')) {
-                    addPRunway(convertTextTodouble(textFields), Integer.valueOf(degreeTf.getText()),
-                        posChar[0], airport);
-                    printAlert(true);
-                    stage.close();
-                }
-            } else if (validInput(textFields, degreeTf.getText())) {
-                addSRunway(convertTextTodouble(textFields), Integer.valueOf(degreeTf.getText()),
-                    airport);
-                printAlert(true);
-                stage.close();
-            } else {
+            if (!validInput(textFields, posCb1.isSelected(), posCb2.isSelected(), posTf1.getText(),
+                    posTf2.getText(), degreeTf1.getText(), degreeTf2.getText())) {
                 printAlert(false);
             }
-        });*/
+
+            else {
+                addNewRunway(posCb1.isSelected() && posCb2.isSelected(), degreeTf1.getText(),
+                        degreeTf2.getText(), posTf1.getText(), posTf2.getText(), textFields, airport);
+                printAlert(true);
+                stage.close();
+            }
+        });
 
         Scene scene = new Scene(getDataPage);
         stage.setTitle("Log in new runway");
@@ -189,22 +180,49 @@ public class RunwayInitialisation {
         stage.show();
     }
 
-    private Boolean validInput(List<TextField> textFields, String degree) {
+    private Boolean validInput(List<TextField> textFields, Boolean pos1Selected, Boolean pos2Selected, String pos1, String pos2, String degree1, String degree2) {
         try {
-            Integer.parseInt(degree);
+            //Check if degree1 & degree2 are int value
+            int d1 = Integer.parseInt(degree1);
+            int d2 = Integer.parseInt(degree2);
+
+            //Check if degree1 & degree2 are with in the right range
+            if (d1 < 1 || d1 > 36 || d2 < 1 || d2 > 36 ||  Math.abs(d1 - d2) != 18) {
+                return false;
+            }
         } catch (Exception e) {
             return false;
         }
 
+        //Check if parallel runway selection is valid
+        if ((!pos1Selected && pos2Selected) || (pos1Selected && !pos2Selected)) {
+            return false;
+        }
+
+        else if (pos1Selected && pos2Selected) {
+            char[] p1 = pos1.toCharArray();
+            char[] p2 = pos2.toCharArray();
+
+            //Check if position chars are valid
+            if (p1.length != 1 || p2.length != 1) {
+                return false;
+            }
+
+            if ((p1[0] != 'L' && p1[0] != 'C' && p1[0] != 'R') || (p2[0]!= 'L' && p2[0] != 'C' && p2[0] != 'R')) {
+                return false;
+            }
+        }
+
+        //check if all numerical inputs can be converted into double values
         for (TextField textField : textFields) {
-            if (!textField.getText().isEmpty()) {
+            if (textField.getText().isEmpty()) {
+                return false;
+            } else {
                 try {
                     Double.parseDouble(textField.getText());
                 } catch (Exception e) {
                     return false;
                 }
-            } else {
-                return false;
             }
         }
 
@@ -215,24 +233,34 @@ public class RunwayInitialisation {
         double[] data = new double[textFields.size()];
         int p = 0;
         for (TextField textField : textFields) {
-            data[p] = Double.valueOf(textField.getText());
+            data[p] = Double.parseDouble(textField.getText());
             p++;
         }
 
         return data;
     }
 
-/*    private void addPRunway(double[] data, int degree, char pos, Airport airport) {
-        Runway newRunway = new PRunway(degree, pos, data[0], data[1], data[2], data[3], data[4],
-            data[5], data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13]);
-        airport.addRunway(newRunway);
-    }
+    private void addNewRunway(Boolean isParallel, String degree1, String degree2, String pos1, String pos2, List<TextField> textFields, Airport airport) {
+        int d1 = Integer.parseInt(degree1);
+        int d2 = Integer.parseInt(degree2);
 
-    private void addSRunway(double[] data, int degree, Airport airport) {
-        Runway newRunway = new SRunway(degree, data[0], data[1], data[2], data[3], data[4], data[5],
-            data[6], data[7], data[8], data[9], data[10], data[11], data[12], data[13]);
-        airport.addRunway(newRunway);
-    }*/
+        double[] data = convertTextTodouble(textFields);
+
+        if (isParallel) {
+            char p1 = pos1.toCharArray()[0];
+            char p2 = pos2.toCharArray()[0];
+
+            Runway newRunway = new PRunway(d1, d2, p1, p2, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
+                    data[8], data[9], data[10], data[11], data[12], data[13], data[14],data[15], data[16], data[17], data[18]);
+            airport.addRunway(newRunway);
+        }
+
+        else {
+            Runway newRunway = new SRunway(d1, d2, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
+                    data[8], data[9], data[10], data[11], data[12], data[13], data[14],data[15], data[16], data[17], data[18]);
+            airport.addRunway(newRunway);
+        }
+    }
 
     private void printAlert(Boolean success) {
         Alert a;
