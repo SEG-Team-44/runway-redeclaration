@@ -108,7 +108,8 @@ public class MainScene extends BaseScene {
         Button addRunwayBtn = new Button("Log in New Runway");
         //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
-            RunwayInitialisation initPage = new RunwayInitialisation(airport);
+            RunwayInitialisation initPage = new RunwayInitialisation(mainWindow.getStage(),
+                airport);
         });
         infoPane.getChildren().add(addRunwayBtn);
 
