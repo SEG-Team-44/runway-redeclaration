@@ -89,9 +89,10 @@ public class MainScene extends BaseScene {
         visualTabPane.getTabs().addAll(tab1, tab2);
 
         // Add the visualisations to the tabs
-        var topDownView = new TopDownView(0, 0);
-        var topDownPane = new VisualisationPane(topDownView);
-        var sideOnPane = new VisualisationPane(new SideOnView(0, 0));
+        var topDownCanvas = new TopDownView(0, 0);
+        var sideOnCanvas = new SideOnView(0, 0);
+        var topDownPane = new VisualisationPane(topDownCanvas);
+        var sideOnPane = new VisualisationPane(sideOnCanvas);
         tab1.setContent(topDownPane);
         tab2.setContent(sideOnPane);
 
@@ -108,21 +109,43 @@ public class MainScene extends BaseScene {
         Button addRunwayBtn = new Button("Log in New Runway");
         //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
-            RunwayInitialisation initPage = new RunwayInitialisation(airport);
+            RunwayInitialisation initPage = new RunwayInitialisation(mainWindow.getStage(),
+                airport);
         });
         infoPane.getChildren().add(addRunwayBtn);
 
         // Testing -
+        var loadRunwayBtn = new Button("Load Runway (testing)");
         var recalculateBtn = new Button("Recalculate (testing)");
-        infoPane.getChildren().add(recalculateBtn);
+        recalculateBtn.setDisable(true);
+        infoPane.getChildren().addAll(loadRunwayBtn, recalculateBtn);
+
+        loadRunwayBtn.setOnAction((e) -> {
+            logger.info("Load runway button pressed (testing)");
+            recalculateBtn.setDisable(false);
+
+            topDownCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
+                306, 0, 0, 0, 78,
+                0);
+            sideOnCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
+                306, 0, 0, 0, 78,
+                0);
+        });
 
         recalculateBtn.setOnAction((e) -> {
             logger.info("Recalculate button pressed (testing)");
 
-            topDownView.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
-                12 * 50, 60, 240, 300, 306 - 50, true);
+            topDownCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
+                12 * 50, 60, 240, 300, 306 - 50, 12, true);
+            sideOnCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
+                12 * 50, 60, 240, 300, 306 - 50, 12, true);
+
+            // Parameters of obstacle on right below
 //            topDownView.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
-//                20 * 50, 60, 240, 300, 3546 + 306, false);
+//                20 * 50, 60, 240, 300, 3546 + 306, 20, false);
+//            sideOnCanvas.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
+//                20 * 50, 60, 240, 300, 3546 + 306, 20, false);
+
         });
     }
 }
