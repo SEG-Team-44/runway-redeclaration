@@ -6,6 +6,7 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.SRunway;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -32,9 +33,9 @@ public class RunwayInitialisation {
     public RunwayInitialisation(Window parent, Airport airport) {
         Stage stage = new Stage();
 
-        //Physical runway parameter inputs
+        //Components for physical inputs
         Label phyParameter = new Label("Physical parameters:");
-        phyParameter.setFont(Font.font("SansSerif", FontWeight.BOLD, 15));
+        phyParameter.setFont(new Font(17));
         Label runwayL = new Label("Runway Length (m)");
         TextField runwayLTf = new TextField();
         Label runwayW = new Label("Runway Width (m)");
@@ -52,74 +53,60 @@ public class RunwayInitialisation {
         HBox resaBox = new HBox();
         resaBox.getChildren().addAll(resa, resaTf);
 
-        //One logical runway inputs
-        Label parameter1 = new Label("Parameters for one logical runway:");
-        parameter1.setFont(Font.font("SansSerif", FontWeight.BOLD, 15));
-        Label degree1 = new Label("Degree (01-26)");
-        TextField degreeTf1 = new TextField();
+        //Layout the physical input components
+        GridPane phyPane = new GridPane();
+        phyPane.setHgap(5);
+        phyPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60), new ColumnConstraints(), new ColumnConstraints(60));
+        phyPane.add(phyParameter, 0,0,4,1);
+        phyPane.addRow(1, runwayL, runwayLTf, stripL, stripLTf);
+        phyPane.addRow(2, runwayW, runwayWTf, stripW, stripWTf);
+        phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
 
-        //Position character
-        Label pos1 = new Label("Position (L/C/R)");
+        //Components for one logical runway inputs
+        String lbl1 = "Parameters For One Logical Runway:";
+        TextField degreeTf1 = new TextField();
         CheckBox posCb1 = new CheckBox();
         TextField posTf1 = new TextField();
 
         //Display the TextField only when checkbox is selected
         posTf1.visibleProperty().bind(posCb1.selectedProperty());
 
-        //Clear the Text in the TextField when unselecting the checkbox
+        //Clear the Text in the TextField when deselecting the checkbox
         posCb1.setOnAction(ActionEvent -> {
             if (!posCb1.isSelected()) {
                 posTf1.clear();
             }
         });
 
-        //parameter inputs
-        HBox posBox1 = new HBox();
-        posBox1.getChildren().addAll(pos1, posCb1);
-        Label tora1 = new Label("TORA (m)");
         TextField toraTf1 = new TextField();
-        Label toda1 = new Label("TODA (m)");
         TextField todaTf1 = new TextField();
-        Label asda1 = new Label("ASDA (m)");
         TextField asdaTf1 = new TextField();
-        Label lda1 = new Label("LDA (m)");
         TextField ldaTf1 = new TextField();
-        Label disThresh1 = new Label("Displaced Threshold (m)");
         TextField disThreshTf1 = new TextField();
 
-        //Corresponding logical runway inputs
-        Label parameter2 = new Label("Parameters for corresponding logical runway:");
-        parameter2.setFont(Font.font("SansSerif", FontWeight.BOLD, 15));
-        Label degree2 = new Label("Degree (01-36)");
-        TextField degreeTf2 = new TextField();
+        //Layout of components for logical runway input 1
+        GridPane runway1 = getLayout(lbl1, degreeTf1, posCb1, posTf1, toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1);
 
-        //Position character
-        Label pos2 = new Label("Position (L/C/R)");
+        //Components for the other logical runway inputs
+        String lbl2 = "Parameters for corresponding logical runway:";
+        TextField degreeTf2 = new TextField();
         CheckBox posCb2 = new CheckBox();
         TextField posTf2 = new TextField();
 
         //Display the TextField only when checkbox is selected
         posTf2.visibleProperty().bind(posCb2.selectedProperty());
 
-        //Clear the Text in the TextField when unselecting the checkbox
+        //Clear the Text in the TextField when deselecting the checkbox
         posCb2.setOnAction(ActionEvent -> {
             if (!posCb2.isSelected()) {
                 posTf2.clear();
             }
         });
 
-        //parameter inputs
-        HBox posBox2 = new HBox();
-        posBox2.getChildren().addAll(pos2, posCb2);
-        Label tora2 = new Label("TORA (m)");
         TextField toraTf2 = new TextField();
-        Label toda2 = new Label("TODA (m)");
         TextField todaTf2 = new TextField();
-        Label asda2 = new Label("ASDA (m)");
         TextField asdaTf2 = new TextField();
-        Label lda2 = new Label("LDA (m)");
         TextField ldaTf2 = new TextField();
-        Label disThresh2 = new Label("Displaced Threshold (m)");
         TextField disThreshTf2 = new TextField();
 
         //'Add runway' button
@@ -147,61 +134,69 @@ public class RunwayInitialisation {
             }
         });
 
-        ColumnConstraints col1 = new ColumnConstraints();
-        ColumnConstraints col2 = new ColumnConstraints(60);
-
-        //logical runway 1 input interface Layout
-        GridPane runway1 = new GridPane();
-        runway1.setHgap(5);
-        runway1.getColumnConstraints().addAll(col1, col2, col1, col2);
-        runway1.setAlignment(Pos.CENTER_LEFT);
-        runway1.add(parameter1,0,0,4,1);
-        runway1.addRow(1,degree1, degreeTf1, posBox1, posTf1);
-        runway1.addRow(2, tora1, toraTf1, asda1, asdaTf1);
-        runway1.addRow(3, toda1, todaTf1, lda1, ldaTf1);
-        runway1.addRow(4, disThresh1, disThreshTf1);
-
-        //logical runway 2 input interface Layout
-        GridPane runway2 = new GridPane();
-        runway2.setHgap(5);
-        runway2.getColumnConstraints().addAll(col1, col2, col1, col2);
-        runway2.setAlignment(Pos.CENTER_LEFT);
-        runway2.add(parameter2,0,0,4,1);
-        runway2.addRow(1, degree2, degreeTf2, posBox2, posTf2);
-        runway2.addRow(2, tora2, toraTf2, asda2, asdaTf2);
-        runway2.addRow(3, toda2, todaTf2, lda2, ldaTf2);
-        runway2.addRow(4, disThresh2, disThreshTf2);
-
-
-        GridPane phyPane = new GridPane();
-        phyPane.setHgap(5);
-        phyPane.getColumnConstraints().addAll(col1, col2, col1, col2);
-        phyPane.add(phyParameter, 0,0,4,1);
-        phyPane.addRow(1, runwayL, runwayLTf, stripL, stripLTf);
-        phyPane.addRow(2, runwayW, runwayWTf, stripW, stripWTf);
-        phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
+        //Layout of components for logical runway input 2
+        GridPane runway2 = getLayout(lbl2, degreeTf2, posCb2, posTf2, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2);
 
         //Setup main pane
-        GridPane getDataPane = new GridPane();
-        getDataPane.setAlignment(Pos.CENTER_LEFT);
-        getDataPane.setPadding(new Insets(5, 5, 5, 5));
-        getDataPane.setVgap(10);
+        GridPane mainPane = new GridPane();
+        mainPane.setAlignment(Pos.CENTER_LEFT);
+        mainPane.setPadding(new Insets(5, 5, 5, 5));
+        mainPane.setVgap(10);
 
-        //Add all layout & component to main pane
-        getDataPane.add(runway1, 0,1);
-        getDataPane.add(runway2,0,2);
-        getDataPane.add(phyPane, 0, 0, 2,1);
-        getDataPane.add(addBtn,1,2);
+        //Add all layouts & components to main pane
+        mainPane.add(phyPane, 0, 0, 2,1);
+        mainPane.add(runway1, 0,1);
+        mainPane.add(runway2,0,2);
+        mainPane.add(addBtn,1,2);
         GridPane.setHalignment(addBtn, HPos.RIGHT);
         GridPane.setValignment(addBtn, VPos.BOTTOM);
 
         //Set scene
-        Scene scene = new Scene(getDataPane);
+        Scene scene = new Scene(mainPane);
+        mainPane.requestFocus();
+        scene.setOnMouseClicked(mouseEvent -> {
+            mainPane.requestFocus();
+        });
+
         stage.setTitle("Log In New Runway");
         stage.setScene(scene);
+        stage.initOwner(parent);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setResizable(false);
 
         stage.show();
     }
+
+    private GridPane getLayout(String lblContent, TextField degree, CheckBox posCb, TextField pos, TextField tora, TextField toda, TextField asda, TextField lda, TextField disThresh) {
+        Label lbl = new Label(lblContent);
+        lbl.setFont(new Font(17));
+        Label degreeLbl = new Label("Degree (01-26)");
+        Label posLbl = new Label("Position (L/C/R)");
+        Label toraLbl = new Label("TORA (m)");
+        Label todaLbl = new Label("TODA (m)");
+        Label asdaLbl = new Label("ASDA (m)");
+        Label ldaLbl = new Label("LDA (m)");
+        Label disThreshLbl = new Label("Displaced Threshold (m)");
+
+        HBox posBox = new HBox();
+        posBox.getChildren().addAll(posLbl, posCb);
+
+        ColumnConstraints col1 = new ColumnConstraints();
+        ColumnConstraints col2 = new ColumnConstraints(60);
+
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(5);
+        gridPane.getColumnConstraints().addAll(col1, col2, col1, col2);
+        gridPane.setAlignment(Pos.CENTER_LEFT);
+        gridPane.add(lbl,0,0,4,1);
+        gridPane.addRow(1,degreeLbl, degree, posBox, pos);
+        gridPane.addRow(2, toraLbl, tora, asdaLbl, asda);
+        gridPane.addRow(3, todaLbl, toda, ldaLbl, lda);
+        gridPane.addRow(4, disThreshLbl, disThresh);
+
+        return gridPane;
+    }
+
 
     private Boolean validInput(List<TextField> textFields, Boolean pos1Selected, Boolean pos2Selected, String pos1, String pos2, String degree1, String degree2) {
         try {

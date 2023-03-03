@@ -1,15 +1,12 @@
 package com.team44.runwayredeclarationapp.view;
 
-import com.team44.runwayredeclarationapp.controller.ModifyParameters;
+import com.team44.runwayredeclarationapp.controller.ParameterModification;
 import com.team44.runwayredeclarationapp.controller.RunwayInitialisation;
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
@@ -120,7 +117,8 @@ public class MainScene extends BaseScene {
                 a.setContentText("There are no runways recorded on the system.");
                 a.show();
             }
-            else {ModifyParameters modifyPage = new ModifyParameters(mainWindow.getStage(), airport);}
+            else {
+                ParameterModification modifyPage = new ParameterModification(mainWindow.getStage(), airport);}
         });
         infoPane.getChildren().add(modifyBtn);
 
