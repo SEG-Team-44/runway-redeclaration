@@ -18,8 +18,9 @@ public class Runway {
     private double asda;
     private double lda;
     private double disThresh;
+    private double resa;
 
-    public Runway(int d, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh) {
+    public Runway(int d, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh, double resa) {
         this.degree = d;
         setLogicalDecree();
         this.runwayL = rl;
@@ -35,9 +36,10 @@ public class Runway {
         this.asda = asda;
         this.lda = lda;
         this.disThresh = disThresh;
+        this.resa = resa;
     }
 
-    public Runway(int d, char pos, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh) {
+    public Runway(int d, char pos, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW, double clearwayL, double clearwayW, double tora, double toda, double asda, double lda, double disThresh, double resa) {
         this.degree = d;
         setLogicalDecree();
         this.runwayL = rl;
@@ -53,6 +55,7 @@ public class Runway {
         this.asda = asda;
         this.lda = lda;
         this.disThresh = disThresh;
+        this.resa = resa;
     }
 
     protected void setId() {
@@ -91,5 +94,7 @@ public class Runway {
     public double getASDA() {return asda;}
     public double getLDA() {return lda;}
     public double getDisThresh() {return disThresh;}
-
+    public double getResa() {
+        return resa;
+    }
 }
