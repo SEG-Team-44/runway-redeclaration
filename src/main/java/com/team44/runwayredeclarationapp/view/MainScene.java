@@ -1,20 +1,18 @@
 package com.team44.runwayredeclarationapp.view;
 
+import com.team44.runwayredeclarationapp.controller.ModifyParameters;
 import com.team44.runwayredeclarationapp.controller.RunwayInitialisation;
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.*;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -113,6 +111,18 @@ public class MainScene extends BaseScene {
                 airport);
         });
         infoPane.getChildren().add(addRunwayBtn);
+
+        Button modifyBtn = new Button("Modify Runway");
+
+        modifyBtn.setOnAction(ActionEvent -> {
+            if (airport.getRunways().isEmpty()) {
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setContentText("There are no runways recorded on the system.");
+                a.show();
+            }
+            else {ModifyParameters modifyPage = new ModifyParameters(mainWindow.getStage(), airport);}
+        });
+        infoPane.getChildren().add(modifyBtn);
 
         // Testing -
         var loadRunwayBtn = new Button("Load Runway (testing)");

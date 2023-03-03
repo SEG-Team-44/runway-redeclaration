@@ -25,8 +25,8 @@ public class Runway {
     private double lda2;
     private double disThresh2;
 
-    public Runway(int d1, int d2, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW,
-                  double clearwayL, double clearwayW, double tora1, double toda1, double asda1, double lda1, double disThresh1,
+    public Runway(int d1, int d2, double rl, double rw, double stripL, double stripW, double clearwayW,
+                  double tora1, double toda1, double asda1, double lda1, double disThresh1,
                   double tora2, double toda2, double asda2, double lda2, double disThresh2, double resa) {
 
         //Physical parameters
@@ -34,9 +34,9 @@ public class Runway {
         this.runwayW = rw;
         this.stripL = stripL;
         this.stripW = stripW;
-        this.stopwayL = stopwayL;
-        this.stopwayW = stopwayW;
-        this.clearwayL = clearwayL;
+        this.stripW = stripW;
+        this.stopwayL = asda1 - tora1;
+        this.clearwayL = toda1 - tora1;
         this.clearwayW = clearwayW;
 
         //One logical parameters
@@ -58,8 +58,8 @@ public class Runway {
         this.resa = resa;
     }
 
-    public Runway(int d1, int d2, char pos1, char pos2, double rl, double rw, double stripL, double stripW, double stopwayL, double stopwayW,
-                  double clearwayL, double clearwayW, double tora1, double toda1, double asda1, double lda1, double disThresh1,
+    public Runway(int d1, int d2, char pos1, char pos2, double rl, double rw, double stripL, double stripW, double clearwayW,
+                  double tora1, double toda1, double asda1, double lda1, double disThresh1,
                   double tora2, double toda2, double asda2, double lda2, double disThresh2, double resa) {
 
         //Physical parameters
@@ -67,9 +67,9 @@ public class Runway {
         this.runwayW = rw;
         this.stripL = stripL;
         this.stripW = stripW;
-        this.stopwayL = stopwayL;
-        this.stopwayW = stopwayW;
-        this.clearwayL = clearwayL;
+        this.stopwayL = asda1 - tora1;
+        this.stopwayW = rw;
+        this.clearwayL = toda1 - tora1;
         this.clearwayW = clearwayW;
 
         //One logical parameters
@@ -101,9 +101,10 @@ public class Runway {
             id += "/0" + degree2;
         }
 
-        else id += String.valueOf(degree2);
+        else id += "/" + degree2;
     }
 
+    public String getId() {return id;}
     public int getDegree() {return degree1;}
     public int getLogicDegree() {return degree2;}
     public double getRunwayL() {return runwayL;}
