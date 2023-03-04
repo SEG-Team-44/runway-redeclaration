@@ -1,20 +1,15 @@
 package com.team44.runwayredeclarationapp.view;
 
-import com.team44.runwayredeclarationapp.controller.RunwayInitialisation;
+import com.team44.runwayredeclarationapp.controller.ModifyWindow;
+import com.team44.runwayredeclarationapp.controller.InitialiseWindow;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -109,10 +104,23 @@ public class MainScene extends BaseScene {
         Button addRunwayBtn = new Button("Log in New Runway");
         //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
-            RunwayInitialisation initPage = new RunwayInitialisation(mainWindow.getStage(),
+            InitialiseWindow initPage = new InitialiseWindow(mainWindow.getStage(),
                 airport);
         });
         infoPane.getChildren().add(addRunwayBtn);
+
+        Button modifyBtn = new Button("Modify Runway");
+
+        modifyBtn.setOnAction(ActionEvent -> {
+            if (airport.getRunways().isEmpty()) {
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setContentText("There are no runways recorded on the system.");
+                a.show();
+            }
+            else {
+                ModifyWindow modifyPage = new ModifyWindow(mainWindow.getStage(), airport);}
+        });
+        infoPane.getChildren().add(modifyBtn);
 
         // Testing -
         var loadRunwayBtn = new Button("Load Runway (testing)");
