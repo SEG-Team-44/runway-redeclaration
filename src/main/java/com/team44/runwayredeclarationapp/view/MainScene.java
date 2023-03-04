@@ -1,7 +1,7 @@
 package com.team44.runwayredeclarationapp.view;
 
-import com.team44.runwayredeclarationapp.controller.ParameterModification;
-import com.team44.runwayredeclarationapp.controller.RunwayInitialisation;
+import com.team44.runwayredeclarationapp.controller.ModifyWindow;
+import com.team44.runwayredeclarationapp.controller.InitialiseWindow;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
@@ -104,7 +104,7 @@ public class MainScene extends BaseScene {
         Button addRunwayBtn = new Button("Log in New Runway");
         //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
-            RunwayInitialisation initPage = new RunwayInitialisation(mainWindow.getStage(),
+            InitialiseWindow initPage = new InitialiseWindow(mainWindow.getStage(),
                 airport);
         });
         infoPane.getChildren().add(addRunwayBtn);
@@ -118,7 +118,7 @@ public class MainScene extends BaseScene {
                 a.show();
             }
             else {
-                ParameterModification modifyPage = new ParameterModification(mainWindow.getStage(), airport);}
+                ModifyWindow modifyPage = new ModifyWindow(mainWindow.getStage(), airport);}
         });
         infoPane.getChildren().add(modifyBtn);
 

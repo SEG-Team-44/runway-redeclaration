@@ -1,13 +1,6 @@
 package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.model.PRunway;
-import com.team44.runwayredeclarationapp.model.Runway;
-import com.team44.runwayredeclarationapp.model.SRunway;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,15 +15,14 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
 
-public class RunwayInitialisation {
+public class InitialiseWindow extends ParameterController {
 
-    public RunwayInitialisation(Window parent, Airport airport) {
+    public InitialiseWindow(Window parent, Airport airport) {
         Stage stage = new Stage();
 
         //Components for physical inputs
@@ -67,17 +59,6 @@ public class RunwayInitialisation {
         TextField degreeTf1 = new TextField();
         CheckBox posCb1 = new CheckBox();
         TextField posTf1 = new TextField();
-
-        //Display the TextField only when checkbox is selected
-        posTf1.visibleProperty().bind(posCb1.selectedProperty());
-
-        //Clear the Text in the TextField when deselecting the checkbox
-        posCb1.setOnAction(ActionEvent -> {
-            if (!posCb1.isSelected()) {
-                posTf1.clear();
-            }
-        });
-
         TextField toraTf1 = new TextField();
         TextField todaTf1 = new TextField();
         TextField asdaTf1 = new TextField();
@@ -92,17 +73,6 @@ public class RunwayInitialisation {
         TextField degreeTf2 = new TextField();
         CheckBox posCb2 = new CheckBox();
         TextField posTf2 = new TextField();
-
-        //Display the TextField only when checkbox is selected
-        posTf2.visibleProperty().bind(posCb2.selectedProperty());
-
-        //Clear the Text in the TextField when deselecting the checkbox
-        posCb2.setOnAction(ActionEvent -> {
-            if (!posCb2.isSelected()) {
-                posTf2.clear();
-            }
-        });
-
         TextField toraTf2 = new TextField();
         TextField todaTf2 = new TextField();
         TextField asdaTf2 = new TextField();
@@ -113,25 +83,20 @@ public class RunwayInitialisation {
         Button addBtn = new Button("Log in");
         addBtn.setFont(new Font(18));
         addBtn.setOnAction(ActionEvent -> {
-            List<TextField> textFields = new ArrayList<>(
-                    Arrays.asList(runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf,
-                            toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf));
+            TextField[] textFields = {
+                    runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, toraTf1, todaTf1,
+                    asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf};
 
-            //Check if all inputs are valid
-            if (!validInput(textFields, posCb1.isSelected(), posCb2.isSelected(), posTf1.getText(),
-                    posTf2.getText(), degreeTf1.getText(), degreeTf2.getText())) {
-                printAlert(false);
-            }
-
-            //If inputs are valid then create the runway & add to airport
-            else {
-                addNewRunway(posCb1.isSelected() && posCb2.isSelected(), degreeTf1.getText(),
-                        degreeTf2.getText(), posTf1.getText(), posTf2.getText(), textFields, airport);
+            //Close window if runway has been successfully added
+            if (addNewRunway(posCb1.isSelected(), posCb2.isSelected(), posTf1.getText(), posTf2.getText(),
+                    degreeTf1.getText(), degreeTf2.getText(), textFields, airport)) {
                 printAlert(true);
 
-                //Window close when runway is added
                 stage.close();
             }
+
+            //Display alert if add runway failed
+            else printAlert(false);
         });
 
         //Layout of components for logical runway input 2
@@ -140,6 +105,7 @@ public class RunwayInitialisation {
         //Setup main pane
         GridPane mainPane = new GridPane();
         mainPane.setAlignment(Pos.CENTER_LEFT);
+
         mainPane.setPadding(new Insets(5, 5, 5, 5));
         mainPane.setVgap(10);
 
@@ -170,7 +136,7 @@ public class RunwayInitialisation {
     private GridPane getLayout(String lblContent, TextField degree, CheckBox posCb, TextField pos, TextField tora, TextField toda, TextField asda, TextField lda, TextField disThresh) {
         Label lbl = new Label(lblContent);
         lbl.setFont(new Font(17));
-        Label degreeLbl = new Label("Degree (01-26)");
+        Label degreeLbl = new Label("Degree (01-36)");
         Label posLbl = new Label("Position (L/C/R)");
         Label toraLbl = new Label("TORA (m)");
         Label todaLbl = new Label("TODA (m)");
@@ -181,11 +147,22 @@ public class RunwayInitialisation {
         HBox posBox = new HBox();
         posBox.getChildren().addAll(posLbl, posCb);
 
+        //Display the TextField only when checkbox is selected
+        pos.visibleProperty().bind(posCb.selectedProperty());
+
+        //Clear the Text in the TextField when deselecting the checkbox
+        posCb.setOnAction(ActionEvent -> {
+            if (!posCb.isSelected()) {
+                pos.clear();
+            }
+        });
+
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints(60);
 
         GridPane gridPane = new GridPane();
         gridPane.setHgap(5);
+        gridPane.setVgap(5);
         gridPane.getColumnConstraints().addAll(col1, col2, col1, col2);
         gridPane.setAlignment(Pos.CENTER_LEFT);
         gridPane.add(lbl,0,0,4,1);
@@ -197,99 +174,15 @@ public class RunwayInitialisation {
         return gridPane;
     }
 
+    @Override
+    protected void printAlert(boolean success) {
 
-    private Boolean validInput(List<TextField> textFields, Boolean pos1Selected, Boolean pos2Selected, String pos1, String pos2, String degree1, String degree2) {
-        try {
-            //Check if degree1 & degree2 are int value
-            int d1 = Integer.parseInt(degree1);
-            int d2 = Integer.parseInt(degree2);
-
-            //Check if degree1 & degree2 are with in the right range
-            if (d1 < 1 || d1 > 36 || d2 < 1 || d2 > 36 ||  Math.abs(d1 - d2) != 18) {
-                return false;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-
-        //Check if parallel runway selection is valid
-        if ((!pos1Selected && pos2Selected) || (pos1Selected && !pos2Selected)) {
-            return false;
-        }
-
-        else if (pos1Selected && pos2Selected) {
-            char[] p1 = pos1.toCharArray();
-            char[] p2 = pos2.toCharArray();
-
-            //Check if position chars are valid
-            if (p1.length != 1 || p2.length != 1) {
-                return false;
-            }
-
-            if ((p1[0] != 'L' && p1[0] != 'C' && p1[0] != 'R') || (p2[0] != 'L' && p2[0] != 'C' && p2[0] != 'R')) {
-                return false;
-            }
-
-            else if (!((p1[0] == 'C' && p2[0] == 'C') || (p1[0] == 'L' && p2[0] == 'R') || (p1[0] == 'R' || p2[0] == 'L'))) {
-                return false;
-            }
-        }
-
-        //check if all numerical inputs can be converted into double values
-        for (TextField textField : textFields) {
-            if (textField.getText().isEmpty()) {
-                return false;
-            } else {
-                try {
-                    Double.parseDouble(textField.getText());
-                } catch (Exception e) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private double[] convertTextToDouble(List<TextField> textFields) {
-        double[] data = new double[textFields.size()];
-        int p = 0;
-        for (TextField textField : textFields) {
-            data[p] = Double.parseDouble(textField.getText());
-            p++;
-        }
-
-        return data;
-    }
-
-    private void addNewRunway(Boolean isParallel, String degree1, String degree2, String pos1, String pos2, List<TextField> textFields, Airport airport) {
-        int d1 = Integer.parseInt(degree1);
-        int d2 = Integer.parseInt(degree2);
-
-        double[] data = convertTextToDouble(textFields);
-
-        if (isParallel) {
-            char p1 = pos1.toCharArray()[0];
-            char p2 = pos2.toCharArray()[0];
-
-            Runway newRunway = new PRunway(d1, d2, p1, p2, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
-                    data[8], data[9], data[10], data[11], data[12], data[13], data[14],data[15]);
-            airport.addRunway(newRunway);
-        }
-
-        else {
-            Runway newRunway = new SRunway(d1, d2, data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7],
-                    data[8], data[9], data[10], data[11], data[12], data[13], data[14],data[15]);
-            airport.addRunway(newRunway);
-        }
-    }
-
-    private void printAlert(Boolean success) {
+        super.printAlert(success);
         Alert a;
 
         if (success) {
             a = new Alert(Alert.AlertType.INFORMATION);
-            a.setContentText("Runway has been logged");
+            a.setContentText("Runway has been logged.");
         } else {
             a = new Alert(Alert.AlertType.ERROR);
             a.setContentText("Invalid Input");

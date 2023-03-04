@@ -12,7 +12,6 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -20,21 +19,21 @@ import javafx.stage.Window;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParameterModification {
+public class ModifyWindow extends ParameterController {
 
     Stage stage;
 
-    public ParameterModification(Window parent, Airport airport) {
+    public ModifyWindow(Window parent, Airport airport) {
         stage = new Stage();
         stage.setTitle("Parameters Modification");
         stage.initOwner(parent);
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setResizable(false);
 
-        optionScene(airport);
+        showOptionScene(airport);
     }
 
-    private void optionScene(Airport airport) {
+    private void showOptionScene(Airport airport) {
         ScrollPane scroll = new ScrollPane();
         ListView<String> options = new ListView<>();
 
@@ -50,7 +49,7 @@ public class ParameterModification {
                 (observableValue, s, t1) -> modifyBtn.setDisable(false));
 
         modifyBtn.setOnAction(ActionEvent ->
-            modifyScene(airport, options.getSelectionModel().getSelectedItem())
+            showModifyScene(airport, options.getSelectionModel().getSelectedItem())
         );
         VBox optionBox = new VBox();
         optionBox.getChildren().addAll(scroll, modifyBtn);
@@ -62,30 +61,25 @@ public class ParameterModification {
         stage.show();
     }
 
-    private void modifyScene(Airport airport, String id) {
+    private void showModifyScene(Airport airport, String id) {
         Runway runway = airport.getRunway(id);
-        double[] parameters = {runway.getRunwayL(), runway.getRunwayW(), runway.getStripL(), runway.getStripW(),
-        runway.getClearwayW(), runway.getResa(), runway.getTORA1(), runway.getTODA1(), runway.getASDA1(), runway.getLDA1(),
-        runway.getDisThresh1(), runway.getTORA2(), runway.getTODA2(), runway.getASDA2(), runway.getLDA2(), runway.getDisThresh2()};
-
-        List<String> paraInString = convertDataToStrings(parameters);
 
         //Physical runway parameter inputs
         Label phyParameter = new Label("Current Physical Parameters of " + id + ":");
-        phyParameter.setFont(Font.font("SansSerif", FontWeight.BOLD, 15));
+        phyParameter.setFont(new Font(17));
 
         Label runwayL = new Label("Runway Length (m)");
-        TextField runwayLTf = new TextField(paraInString.get(0));
+        TextField runwayLTf = new TextField(String.valueOf(runway.getRunwayL()));
         Label runwayW = new Label("Runway Width (m)");
-        TextField runwayWTf = new TextField(paraInString.get(1));
+        TextField runwayWTf = new TextField(String.valueOf(runway.getRunwayW()));
         Label stripL = new Label("Strip Horizontal Length (m)");
-        TextField stripLTf = new TextField(paraInString.get(2));
+        TextField stripLTf = new TextField(String.valueOf(runway.getStripL()));
         Label stripW = new Label("Strip Vertical Width (m)");
-        TextField stripWTf = new TextField(paraInString.get(3));
+        TextField stripWTf = new TextField(String.valueOf(runway.getStripW()));
         Label clearW = new Label("Clearway Vertical Width (m)");
-        TextField clearWTf = new TextField(paraInString.get(4));
+        TextField clearWTf = new TextField(String.valueOf(runway.getClearwayW()));
         Label resa = new Label("RESA For Both Logical Runways (m) ");
-        TextField resaTf = new TextField(paraInString.get(5));
+        TextField resaTf = new TextField(String.valueOf(runway.getResa()));
         resaTf.setPrefSize(60, 20);
 
         GridPane phyPane = new GridPane();
@@ -109,31 +103,46 @@ public class ParameterModification {
             runway2 = String.valueOf(runway.getLogicDegree());
         }
 
-        TextField toraTf1 = new TextField(paraInString.get(6));
-        TextField todaTf1 = new TextField(paraInString.get(7));
-        TextField asdaTf1 = new TextField(paraInString.get(8));
-        TextField ldaTf1 = new TextField(paraInString.get(9));
-        TextField disThreshTf1 = new TextField(paraInString.get(10));
+        TextField toraTf1 = new TextField(String.valueOf(runway.getTORA1()));
+        TextField todaTf1 = new TextField(String.valueOf(runway.getTODA1()));
+        TextField asdaTf1 = new TextField(String.valueOf(runway.getASDA1()));
+        TextField ldaTf1 = new TextField(String.valueOf(runway.getLDA1()));
+        TextField disThreshTf1 = new TextField(String.valueOf(runway.getDisThresh1()));
 
         //logical runway 1 input interface Layout
         GridPane gridPane1 = getLayout(runway1, toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1);
 
-        TextField toraTf2 = new TextField(paraInString.get(11));
-        TextField todaTf2 = new TextField(paraInString.get(12));
-        TextField asdaTf2 = new TextField(paraInString.get(13));
-        TextField ldaTf2 = new TextField(paraInString.get(14));
-        TextField disThreshTf2 = new TextField(paraInString.get(15));
+        TextField toraTf2 = new TextField(String.valueOf(runway.getTORA2()));
+        TextField todaTf2 = new TextField(String.valueOf(runway.getTODA2()));
+        TextField asdaTf2 = new TextField(String.valueOf(runway.getASDA2()));
+        TextField ldaTf2 = new TextField(String.valueOf(runway.getLDA2()));
+        TextField disThreshTf2 = new TextField(String.valueOf(runway.getDisThresh2()));
 
         //logical runway 2 input interface Layout
         GridPane gridPane2 = getLayout(runway2, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2);
 
-        Button modifyBtn = new Button("Modify");
+        TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, toraTf1, todaTf1,
+                asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf};
 
-        Button returnBtn = new Button("Return to Runway Selection");
+        Button modifyBtn = new Button("Modify");
+        modifyBtn.setOnAction(ActionEvent -> {
+            if (validNumericalInput(textFields)) {
+                runway.updateParameters(convertTextToDouble(textFields));
+                printAlert(true);
+                stage.close();
+            }
+
+            else printAlert(false);
+        });
+
+        Button returnBtn = new Button("Return to Selection Page");
+        returnBtn.setOnAction(ActionEvent -> {
+            showOptionScene(airport);
+        });
 
         //Setup main pane
         GridPane mainPane = new GridPane();
-        mainPane.setAlignment(Pos.CENTER_LEFT);
+        mainPane.setAlignment(Pos.CENTER);
         mainPane.setPadding(new Insets(5, 5, 5, 5));
         mainPane.setVgap(10);
 
@@ -141,6 +150,7 @@ public class ParameterModification {
         mainPane.add(phyPane, 0, 0, 2,1);
         mainPane.add(gridPane1, 0,1);
         mainPane.add(gridPane2,0,2);
+        mainPane.add(modifyBtn, 1,2);
 
         //Setup scene
         Scene scene = new Scene(mainPane);
@@ -158,15 +168,16 @@ public class ParameterModification {
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints(60);
         gridPane.setHgap(5);
+        gridPane.setVgap(5);
 
+        Label lbl = new Label();
+        lbl.setFont(new Font(17));
+        lbl.setText("Current Parameters of " + degree + ":");
         Label toraLbl = new Label("TORA (m)");
         Label todaLbl = new Label("TODA (m)");
         Label asdaLbl = new Label("ASDA (m)");
         Label ldaLbl = new Label("LDA (m)");
         Label disThreshLbl = new Label("Displaced Threshold (m)");
-        Label lbl = new Label();
-        lbl.setFont(Font.font("SansSerif", FontWeight.BOLD, 15));
-        lbl.setText("Current Parameters of " + degree + ":");
 
         gridPane.getColumnConstraints().addAll(col1, col2, col1, col2);
         gridPane.setAlignment(Pos.CENTER_LEFT);
@@ -188,7 +199,20 @@ public class ParameterModification {
         return paraInString;
     }
 
-    private void modifyBtnClicked() {
+    @Override
+    protected void printAlert(boolean success) {
 
+        super.printAlert(success);
+        Alert a;
+
+        if (success) {
+            a = new Alert(Alert.AlertType.INFORMATION);
+            a.setContentText("Parameters updated.");
+        } else {
+            a = new Alert(Alert.AlertType.ERROR);
+            a.setContentText("Invalid Input");
+        }
+
+        a.show();
     }
 }

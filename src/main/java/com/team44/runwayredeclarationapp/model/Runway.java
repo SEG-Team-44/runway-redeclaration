@@ -9,7 +9,8 @@ public class Runway {
     private double stripW;
     private double stopwayL;
     private double stopwayW;
-    private double clearwayL;
+    private double clearwayL1;
+    private double clearwayL2;
     private double clearwayW;
     protected int degree1;
     private double tora1;
@@ -25,70 +26,18 @@ public class Runway {
     private double lda2;
     private double disThresh2;
 
-    public Runway(int d1, int d2, double rl, double rw, double stripL, double stripW, double clearwayW,
-                  double tora1, double toda1, double asda1, double lda1, double disThresh1,
-                  double tora2, double toda2, double asda2, double lda2, double disThresh2, double resa) {
-
-        //Physical parameters
-        this.runwayL = rl;
-        this.runwayW = rw;
-        this.stripL = stripL;
-        this.stripW = stripW;
-        this.stripW = stripW;
-        this.stopwayL = asda1 - tora1;
-        this.clearwayL = toda1 - tora1;
-        this.clearwayW = clearwayW;
-
-        //One logical parameters
+    public Runway(int d1, int d2, double[] parameters) {
         degree1 = d1;
-        this.tora1 = tora1;
-        this.toda1 = toda1;
-        this.asda1 = asda1;
-        this.lda1 = lda1;
-        this.disThresh1 = disThresh1;
-
-        //The other logical parameters
         degree2 = d2;
-        this.tora2 = tora2;
-        this.toda2 = toda2;
-        this.asda2 = asda2;
-        this.lda2 = lda2;
-        this.disThresh2 = disThresh2;
 
-        this.resa = resa;
+        updateParameters(parameters);
     }
 
-    public Runway(int d1, int d2, char pos1, char pos2, double rl, double rw, double stripL, double stripW, double clearwayW,
-                  double tora1, double toda1, double asda1, double lda1, double disThresh1,
-                  double tora2, double toda2, double asda2, double lda2, double disThresh2, double resa) {
-
-        //Physical parameters
-        this.runwayL = rl;
-        this.runwayW = rw;
-        this.stripL = stripL;
-        this.stripW = stripW;
-        this.stopwayL = asda1 - tora1;
-        this.stopwayW = rw;
-        this.clearwayL = toda1 - tora1;
-        this.clearwayW = clearwayW;
-
-        //One logical parameters
+    public Runway(int d1, int d2, char pos1, char pos2, double[] parameters) {
         degree1 = d1;
-        this.tora1 = tora1;
-        this.toda1 = toda1;
-        this.asda1 = asda1;
-        this.lda1 = lda1;
-        this.disThresh1 = disThresh1;
-
-        //The other logical parameters
         degree2 = d2;
-        this.tora2 = tora2;
-        this.toda2 = toda2;
-        this.asda2 = asda2;
-        this.lda2 = lda2;
-        this.disThresh2 = disThresh2;
 
-        this.resa = resa;
+        updateParameters(parameters);
     }
 
     protected void setId() {
@@ -103,6 +52,29 @@ public class Runway {
 
         else id += "/" + degree2;
     }
+    public void updateParameters(double[] parameters) {
+        runwayL = parameters[0];
+        runwayW = parameters[1];
+        stripL = parameters[2];
+        stripW = parameters[3];
+        clearwayW = parameters[4];
+        tora1 = parameters[5];
+        toda1 = parameters[6];
+        asda1 = parameters[7];
+        lda1 = parameters[8];
+        disThresh1 = parameters[9];
+        tora2 = parameters[10];
+        toda2 = parameters[11];
+        asda2 = parameters[12];
+        lda2 = parameters[13];
+        disThresh2 = parameters[14];
+        resa = parameters[15];
+
+        this.stopwayL = asda1 - tora1;
+        this.stopwayW = runwayW;
+        this.clearwayL1 = toda1 - tora1;
+        this.clearwayL2 = toda2 - tora2;
+    }
 
     public String getId() {return id;}
     public int getDegree() {return degree1;}
@@ -113,7 +85,8 @@ public class Runway {
     public double getStripW() {return stripW;}
     public double getStopwayL() {return stopwayL;}
     public double getStopwayW() {return stopwayW;}
-    public double getClearwayL() {return clearwayL;}
+    public double getClearwayL1() {return clearwayL1;}
+    public double getClearwayL2() {return clearwayL2;}
     public double getClearwayW() {return clearwayW;}
 
     public double getTORA1() {return tora1;}
