@@ -104,7 +104,7 @@ public class InitialiseWindow extends ParameterController {
 
         //Setup main pane
         GridPane mainPane = new GridPane();
-        mainPane.setAlignment(Pos.CENTER_LEFT);
+        mainPane.setAlignment(Pos.CENTER);
 
         mainPane.setPadding(new Insets(5, 5, 5, 5));
         mainPane.setVgap(10);
