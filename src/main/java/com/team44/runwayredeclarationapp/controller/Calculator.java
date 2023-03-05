@@ -19,7 +19,7 @@ public class Calculator {
     double h = obstacle.getHeight();
     double pos = obstacle.getPositionL();
     double bp = aircraft.getBlastProt();
-    double lda = rw.getLDA1();
+    double lda = rw.getLda(rw.getLogicId1());
     double resa = rw.getResa();
     double finalLDA;
 
@@ -57,14 +57,14 @@ public class Calculator {
     newParams[5] = finalValue;
     newParams[6] = finalValue;
     newParams[7] = finalValue;
-    newParams[8] = rw.getLDA1();
-    newParams[9] = rw.getDisThresh1();
-    newParams[10] = rw.getTORA2();
-    newParams[11] = rw.getLDA1();
-    newParams[12] = rw.getDisThresh1();
-    newParams[13] = rw.getTORA2();
-    newParams[14] = rw.getLDA1();
-    newParams[15] = rw.getDisThresh1();
+    newParams[8] = rw.getLda(rw.getLogicId1());
+    newParams[9] = rw.getDisThresh(rw.getLogicId1());
+    newParams[10] = rw.getTora(rw.getLogicId2());
+    newParams[11] = rw.getToda(rw.getLogicId2());
+    newParams[12] = rw.getAsda(rw.getLogicId2());
+    newParams[13] = rw.getLda(rw.getLogicId2());
+    newParams[14] = rw.getDisThresh(rw.getLogicId2());
+    newParams[15] = rw.getResa();
 
     rw.updateParameters(newParams);
     return rw;
@@ -87,14 +87,14 @@ public class Calculator {
     newParams[5] = finalValue;
     newParams[6] = finalValue;
     newParams[7] = finalValue;
-    newParams[8] = rw.getLDA1();
-    newParams[9] = rw.getDisThresh1();
-    newParams[10] = rw.getTORA2();
-    newParams[11] = rw.getLDA1();
-    newParams[12] = rw.getDisThresh1();
-    newParams[13] = rw.getTORA2();
-    newParams[14] = rw.getLDA1();
-    newParams[15] = rw.getDisThresh1();
+    newParams[8] = rw.getLda(rw.getLogicId1());
+    newParams[9] = rw.getDisThresh(rw.getLogicId1());
+    newParams[10] = rw.getTora(rw.getLogicId2());
+    newParams[11] = rw.getToda(rw.getLogicId2());
+    newParams[12] = rw.getAsda(rw.getLogicId2());
+    newParams[13] = rw.getLda(rw.getLogicId2());
+    newParams[14] = rw.getDisThresh(rw.getLogicId2());
+    newParams[15] = rw.getResa();
 
     rw.updateParameters(newParams);
     return rw;
