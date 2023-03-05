@@ -1,15 +1,17 @@
 package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -30,19 +32,22 @@ public class ModifyWindow extends ParameterController {
         stage.initModality(Modality.WINDOW_MODAL);
         stage.setResizable(false);
 
+        //Pop up option window for user to choose runways
         showOptionScene(airport);
     }
 
     private void showOptionScene(Airport airport) {
+        //listing all runways recorded in the system
         ScrollPane scroll = new ScrollPane();
         ListView<String> options = new ListView<>();
 
         for (Runway runway : airport.getRunways()) {
-            options.getItems().add(runway.getId());
+            options.getItems().add(runway.getPhyId());
         }
          scroll.setContent(options);
 
         Button modifyBtn = new Button("Modify");
+        //enable button only when a user selected a runway
         modifyBtn.setDisable(true);
 
         options.getSelectionModel().selectedItemProperty().addListener(
@@ -51,6 +56,8 @@ public class ModifyWindow extends ParameterController {
         modifyBtn.setOnAction(ActionEvent ->
             showModifyScene(airport, options.getSelectionModel().getSelectedItem())
         );
+
+        //combine the scroll pane & button
         VBox optionBox = new VBox();
         optionBox.getChildren().addAll(scroll, modifyBtn);
         optionBox.setAlignment(Pos.CENTER);
@@ -64,7 +71,7 @@ public class ModifyWindow extends ParameterController {
     private void showModifyScene(Airport airport, String id) {
         Runway runway = airport.getRunway(id);
 
-        //Physical runway parameter inputs
+        //components for physical measurements
         Label phyParameter = new Label("Current Physical Parameters of " + id + ":");
         phyParameter.setFont(new Font(17));
 
@@ -82,6 +89,7 @@ public class ModifyWindow extends ParameterController {
         TextField resaTf = new TextField(String.valueOf(runway.getResa()));
         resaTf.setPrefSize(60, 20);
 
+        //combine components of physical input part
         GridPane phyPane = new GridPane();
         phyPane.setHgap(5);
         phyPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60),
@@ -91,32 +99,24 @@ public class ModifyWindow extends ParameterController {
         phyPane.addRow(2, runwayW, runwayWTf, stripW, stripWTf);
         phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
 
-        String runway1;
-        String runway2;
-
-        if (runway instanceof PRunway) {
-            runway1 = String.valueOf(runway.getDegree()) + ((PRunway) runway).getPos();
-            runway2 = String.valueOf(runway.getLogicDegree() + ((PRunway) runway).getLogicPos());
-        }
-        else {
-            runway1 = String.valueOf(runway.getDegree());
-            runway2 = String.valueOf(runway.getLogicDegree());
-        }
-
-        TextField toraTf1 = new TextField(String.valueOf(runway.getTORA1()));
-        TextField todaTf1 = new TextField(String.valueOf(runway.getTODA1()));
-        TextField asdaTf1 = new TextField(String.valueOf(runway.getASDA1()));
-        TextField ldaTf1 = new TextField(String.valueOf(runway.getLDA1()));
-        TextField disThreshTf1 = new TextField(String.valueOf(runway.getDisThresh1()));
+        //components for 1 logical parameters
+        String runway1 = runway.getLogicId1();
+        TextField toraTf1 = new TextField(String.valueOf(runway.getTora(runway1)));
+        TextField todaTf1 = new TextField(String.valueOf(runway.getToda(runway1)));
+        TextField asdaTf1 = new TextField(String.valueOf(runway.getAsda(runway1)));
+        TextField ldaTf1 = new TextField(String.valueOf(runway.getLda(runway1)));
+        TextField disThreshTf1 = new TextField(String.valueOf(runway.getDisThresh(runway1)));
 
         //logical runway 1 input interface Layout
         GridPane gridPane1 = getLayout(runway1, toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1);
 
-        TextField toraTf2 = new TextField(String.valueOf(runway.getTORA2()));
-        TextField todaTf2 = new TextField(String.valueOf(runway.getTODA2()));
-        TextField asdaTf2 = new TextField(String.valueOf(runway.getASDA2()));
-        TextField ldaTf2 = new TextField(String.valueOf(runway.getLDA2()));
-        TextField disThreshTf2 = new TextField(String.valueOf(runway.getDisThresh2()));
+        //components for the other logical parameters
+        String runway2 = runway.getLogicId2();
+        TextField toraTf2 = new TextField(String.valueOf(runway.getTora(runway2)));
+        TextField todaTf2 = new TextField(String.valueOf(runway.getToda(runway2)));
+        TextField asdaTf2 = new TextField(String.valueOf(runway.getAsda(runway2)));
+        TextField ldaTf2 = new TextField(String.valueOf(runway.getLda(runway2)));
+        TextField disThreshTf2 = new TextField(String.valueOf(runway.getDisThresh(runway2)));
 
         //logical runway 2 input interface Layout
         GridPane gridPane2 = getLayout(runway2, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2);
@@ -126,19 +126,26 @@ public class ModifyWindow extends ParameterController {
 
         Button modifyBtn = new Button("Modify");
         modifyBtn.setOnAction(ActionEvent -> {
+            //update all values if inputs are valid
             if (validNumericalInput(textFields)) {
                 runway.updateParameters(convertTextToDouble(textFields));
                 printAlert(true);
                 stage.close();
             }
 
+            //else print alert
             else printAlert(false);
         });
 
-        Button returnBtn = new Button("Return to Selection Page");
+        //return to option page
+        Button returnBtn = new Button("Return to Selection");
         returnBtn.setOnAction(ActionEvent -> {
             showOptionScene(airport);
         });
+
+        HBox buttons = new HBox();
+        buttons.setSpacing(5);
+        buttons.getChildren().addAll(returnBtn, modifyBtn);
 
         //Setup main pane
         GridPane mainPane = new GridPane();
@@ -150,7 +157,10 @@ public class ModifyWindow extends ParameterController {
         mainPane.add(phyPane, 0, 0, 2,1);
         mainPane.add(gridPane1, 0,1);
         mainPane.add(gridPane2,0,2);
-        mainPane.add(modifyBtn, 1,2);
+        mainPane.add(buttons, 1,2);
+        GridPane.setHalignment(buttons, HPos.RIGHT);
+        GridPane.setValignment(buttons, VPos.BOTTOM);
+
 
         //Setup scene
         Scene scene = new Scene(mainPane);
@@ -187,16 +197,6 @@ public class ModifyWindow extends ParameterController {
         gridPane.addRow(3, disThreshLbl, disThreshTf);
 
         return gridPane;
-    }
-
-    private List<String> convertDataToStrings(double[] parameters) {
-
-        List<String> paraInString = new ArrayList<>();
-        for (double parameter : parameters) {
-            paraInString.add(String.valueOf(parameter));
-        }
-
-        return paraInString;
     }
 
     @Override

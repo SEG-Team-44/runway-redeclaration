@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Airport {
-
-
     private List<Runway> runways;
 
     public Airport() {
@@ -24,7 +22,7 @@ public class Airport {
 
         while (it.hasNext()) {
             Runway runway = it.next();
-            if(runway.getId().equals(id)) {
+            if(runway.getPhyId().equals(id)) {
                 return runway;
             }
         }
