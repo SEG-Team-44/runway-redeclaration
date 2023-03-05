@@ -52,7 +52,7 @@ public class Runway {
         logicId2 = getDegreeInString(degree2);
     }
 
-    protected String getDegreeInString(int degree) {
+    private String getDegreeInString(int degree) {
         String newDegree;
 
         if (degree < 10) {
@@ -131,25 +131,15 @@ public class Runway {
         } else return clearwayL2;
     }
 
-/*    public double getClearwayL1() {return clearwayL1;}
-    public double getClearwayL2() {return clearwayL2;}*/
     public double getClearwayW() {return clearwayW;}
     public String getLogicId1() {return logicId1;}
     public String getLogicId2() {return logicId2;}
 
 
     public int getDegree1() {return degree1;}
-/*    public double getTORA1() {return tora1;}
-    public double getTODA1() {return toda1;}
-    public double getASDA1() {return asda1;}
-    public double getLDA1() {return lda1;}
-    public double getDisThresh1() {return disThresh1;}*/
+
 
     public int getDegree2() {return degree2;}
-/*    public double getTORA2() {return tora2;}
-    public double getTODA2() {return toda2;}
-    public double getASDA2() {return asda2;}
-    public double getLDA2() {return lda2;}
-    public double getDisThresh2() {return disThresh2;}*/
+
     public double getResa() {return resa;}
 }
