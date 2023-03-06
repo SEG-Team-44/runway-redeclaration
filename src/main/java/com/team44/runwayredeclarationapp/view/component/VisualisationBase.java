@@ -237,21 +237,27 @@ public abstract class VisualisationBase extends Canvas {
      * Draw guidelines on the canvas, relative to the runway and parameters
      */
     protected void drawGuidelines() {
+        // Dict for the coordinate x-values
         var mapUp = new HashMap<Double, Coord>();
         var mapDown = new HashMap<Double, Coord>();
 
+        // Add the top guidelines to the map
         guideLineCoordsUp.forEach((crd) -> {
+            // Only add the lowest y-value coordinate
             if (!mapUp.containsKey(crd.getX()) || crd.getY() < mapUp.get(crd.getX()).getY()) {
                 mapUp.put(crd.getX(), crd);
             }
         });
 
+        // Add the bottom guidelines to the map
         guideLineCoordsDown.forEach((crd) -> {
+            // Only add the highest y-value coordinate
             if (!mapDown.containsKey(crd.getX()) || crd.getY() > mapDown.get(crd.getX()).getY()) {
                 mapDown.put(crd.getX(), crd);
             }
         });
 
+        // Draw the guideline for each of the coordinates
         mapUp.values().forEach((crd) -> addGuideline(crd.getX(), crd.getY(), runwayY1));
         mapDown.values().forEach((crd) -> addGuideline(crd.getX(), crd.getY(), runwayY2));
     }

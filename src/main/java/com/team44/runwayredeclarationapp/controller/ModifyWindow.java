@@ -2,13 +2,17 @@ package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
-
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -17,9 +21,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ModifyWindow extends ParameterController {
 
@@ -44,14 +45,14 @@ public class ModifyWindow extends ParameterController {
         for (Runway runway : airport.getRunways()) {
             options.getItems().add(runway.getPhyId());
         }
-         scroll.setContent(options);
+        scroll.setContent(options);
 
         Button modifyBtn = new Button("Modify");
         //enable button only when a user selected a runway
         modifyBtn.setDisable(true);
 
         options.getSelectionModel().selectedItemProperty().addListener(
-                (observableValue, s, t1) -> modifyBtn.setDisable(false));
+            (observableValue, s, t1) -> modifyBtn.setDisable(false));
 
         modifyBtn.setOnAction(ActionEvent ->
             showModifyScene(airport, options.getSelectionModel().getSelectedItem())
@@ -93,8 +94,8 @@ public class ModifyWindow extends ParameterController {
         GridPane phyPane = new GridPane();
         phyPane.setHgap(5);
         phyPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60),
-                new ColumnConstraints(), new ColumnConstraints(60));
-        phyPane.add(phyParameter, 0,0,4,1);
+            new ColumnConstraints(), new ColumnConstraints(60));
+        phyPane.add(phyParameter, 0, 0, 4, 1);
         phyPane.addRow(1, runwayL, runwayLTf, stripL, stripLTf);
         phyPane.addRow(2, runwayW, runwayWTf, stripW, stripWTf);
         phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
@@ -121,20 +122,26 @@ public class ModifyWindow extends ParameterController {
         //logical runway 2 input interface Layout
         GridPane gridPane2 = getLayout(runway2, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2);
 
-        TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, toraTf1, todaTf1,
-                asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf};
+        TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, toraTf1,
+            todaTf1,
+            asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf};
 
         Button modifyBtn = new Button("Modify");
         modifyBtn.setOnAction(ActionEvent -> {
             //update all values if inputs are valid
             if (validNumericalInput(textFields)) {
                 runway.updateParameters(convertTextToDouble(textFields));
+
+                // Call the listener to set the updated runway to the UI
+                newRunwayListener.newRunway(runway);
                 printAlert(true);
                 stage.close();
             }
 
             //else print alert
-            else printAlert(false);
+            else {
+                printAlert(false);
+            }
         });
 
         //return to option page
@@ -154,13 +161,12 @@ public class ModifyWindow extends ParameterController {
         mainPane.setVgap(10);
 
         //Add all layouts & components to main pane
-        mainPane.add(phyPane, 0, 0, 2,1);
-        mainPane.add(gridPane1, 0,1);
-        mainPane.add(gridPane2,0,2);
-        mainPane.add(buttons, 1,2);
+        mainPane.add(phyPane, 0, 0, 2, 1);
+        mainPane.add(gridPane1, 0, 1);
+        mainPane.add(gridPane2, 0, 2);
+        mainPane.add(buttons, 1, 2);
         GridPane.setHalignment(buttons, HPos.RIGHT);
         GridPane.setValignment(buttons, VPos.BOTTOM);
-
 
         //Setup scene
         Scene scene = new Scene(mainPane);
@@ -172,8 +178,8 @@ public class ModifyWindow extends ParameterController {
         stage.show();
     }
 
-    private GridPane getLayout(String degree,  TextField toraTf, TextField todaTf, TextField asdaTf,
-                               TextField ldaTf, TextField disThreshTf) {
+    private GridPane getLayout(String degree, TextField toraTf, TextField todaTf, TextField asdaTf,
+        TextField ldaTf, TextField disThreshTf) {
         GridPane gridPane = new GridPane();
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints(60);
@@ -191,7 +197,7 @@ public class ModifyWindow extends ParameterController {
 
         gridPane.getColumnConstraints().addAll(col1, col2, col1, col2);
         gridPane.setAlignment(Pos.CENTER_LEFT);
-        gridPane.add(lbl,0,0,4,1);
+        gridPane.add(lbl, 0, 0, 4, 1);
         gridPane.addRow(1, toraLbl, toraTf, asdaLbl, asdaTf);
         gridPane.addRow(2, todaLbl, todaTf, ldaLbl, ldaTf);
         gridPane.addRow(3, disThreshLbl, disThreshTf);

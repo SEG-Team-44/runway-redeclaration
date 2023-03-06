@@ -1,16 +1,28 @@
 package com.team44.runwayredeclarationapp.view;
 
-import com.team44.runwayredeclarationapp.controller.ModifyWindow;
 import com.team44.runwayredeclarationapp.controller.InitialiseWindow;
+import com.team44.runwayredeclarationapp.controller.ModifyWindow;
+import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
+import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
+import com.team44.runwayredeclarationapp.view.component.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
+import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -21,7 +33,25 @@ import javafx.scene.text.Text;
  */
 public class MainScene extends BaseScene {
 
+    /**
+     * The selected airport
+     */
     private Airport airport = new Airport();
+
+    /**
+     * The controller responsible for setting the recalculated values
+     */
+    private RecalculationController recalculationController = new RecalculationController();
+
+    /**
+     * The grid displaying the original and recalculated values
+     */
+    private ValuesGrid ogValuesGrid, newValuesGrid;
+
+    /**
+     * The canvas displaying the top down and side on view
+     */
+    private VisualisationBase topDownCanvas, sideOnCanvas;
 
     /**
      * Create scene within the main window
@@ -65,6 +95,7 @@ public class MainScene extends BaseScene {
         mainPane.setLeft(infoPane);
         mainPane.setRight(visualTabPane);
         infoPane.getStyleClass().add("info-pane");
+        infoPane.setSpacing(10);
         visualTabPane.getStyleClass().add("visual-tab-pane");
 
         // Set the visualisation tab size
@@ -84,8 +115,8 @@ public class MainScene extends BaseScene {
         visualTabPane.getTabs().addAll(tab1, tab2);
 
         // Add the visualisations to the tabs
-        var topDownCanvas = new TopDownView(0, 0);
-        var sideOnCanvas = new SideOnView(0, 0);
+        topDownCanvas = new TopDownView(0, 0);
+        sideOnCanvas = new SideOnView(0, 0);
         var topDownPane = new VisualisationPane(topDownCanvas);
         var sideOnPane = new VisualisationPane(sideOnCanvas);
         tab1.setContent(topDownPane);
@@ -106,6 +137,9 @@ public class MainScene extends BaseScene {
         addRunwayBtn.setOnAction(ActionEvent -> {
             InitialiseWindow initPage = new InitialiseWindow(mainWindow.getStage(),
                 airport);
+
+            // Set the new runway listener
+            initPage.setNewRunwayListener(this::setNewRunway);
         });
         infoPane.getChildren().add(addRunwayBtn);
 
@@ -116,9 +150,12 @@ public class MainScene extends BaseScene {
                 Alert a = new Alert(Alert.AlertType.INFORMATION);
                 a.setContentText("There are no runways recorded on the system.");
                 a.show();
+            } else {
+                ModifyWindow modifyPage = new ModifyWindow(mainWindow.getStage(), airport);
+
+                // Set the runway listener to update
+                modifyPage.setNewRunwayListener(this::setNewRunway);
             }
-            else {
-                ModifyWindow modifyPage = new ModifyWindow(mainWindow.getStage(), airport);}
         });
         infoPane.getChildren().add(modifyBtn);
 
@@ -132,22 +169,40 @@ public class MainScene extends BaseScene {
             logger.info("Load runway button pressed (testing)");
             recalculateBtn.setDisable(false);
 
-            topDownCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
-                306, 0, 0, 0, 78,
-                0);
-            sideOnCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
-                306, 0, 0, 0, 78,
-                0);
+            // 09R
+            topDownCanvas.setInitialParameters(3660, 3660, 3660, 3660, 3353, 3660, 3660, 3660, 3660,
+                307, 0, 0, 0, 0, 0);
+            sideOnCanvas.setInitialParameters(3660, 3660, 3660, 3660, 3353, 3660, 3660, 3660, 3660,
+                307, 0, 0, 0, 0, 0);
+
+            // 09L
+//            topDownCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
+//                306, 0, 0, 0, 78,
+//                0);
+//            sideOnCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
+//                306, 0, 0, 0, 78,
+//                0);
         });
 
         recalculateBtn.setOnAction((e) -> {
             logger.info("Recalculate button pressed (testing)");
 
-            topDownCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
-                12 * 50, 60, 240, 300, 306 - 50, 12, true);
-            sideOnCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
-                12 * 50, 60, 240, 300, 306 - 50, 12, true);
+            // 09R
+            topDownCanvas.setRecalculatedParameters(1850, 1850, 1850, 2553, 2860, 2860, 2860, 1850,
+                25 * 50, 60, 240, 300, 2853 + 307, 25, false);
+            sideOnCanvas.setRecalculatedParameters(1850, 1850, 1850, 2553, 2860, 2860, 2860, 1850,
+                25 * 50, 60, 240, 300, 2853 + 307, 25, false);
+            // Parameters of obstacle on the left
+            topDownCanvas.setRecalculatedParameters(2903, 2903, 2903, 2393, 2393, 2393, 2393, 2903,
+                15 * 50, 60, 240, 300, 150 + 307, 15, true);
+            sideOnCanvas.setRecalculatedParameters(2903, 2903, 2903, 2393, 2393, 2393, 2393, 2903,
+                15 * 50, 60, 240, 300, 150 + 307, 15, true);
 
+            // 09L
+//            topDownCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
+//                12 * 50, 60, 240, 300, 306 - 50, 12, true);
+//            sideOnCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
+//                12 * 50, 60, 240, 300, 306 - 50, 12, true);
             // Parameters of obstacle on right below
 //            topDownView.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
 //                20 * 50, 60, 240, 300, 3546 + 306, 20, false);
@@ -155,5 +210,41 @@ public class MainScene extends BaseScene {
 //                20 * 50, 60, 240, 300, 3546 + 306, 20, false);
 
         });
+
+        // Set the listener to handle when parameters have been recalculated
+        recalculationController.setRecalculatedViewListener(() -> {
+        });
+
+        // Create horizontal box for both value grid
+        var valueGridsBox = new HBox();
+        valueGridsBox.setSpacing(30);
+
+        // Create the value grid
+        ogValuesGrid = new ValuesGrid("Original Values:");
+        newValuesGrid = new ValuesGrid("Recalculated Values:");
+
+        // Add the grids to the information pane
+        valueGridsBox.getChildren().addAll(ogValuesGrid, newValuesGrid);
+        infoPane.getChildren().add(valueGridsBox);
+    }
+
+    /**
+     * Set the runway that the user has selected/updated
+     *
+     * @param runway the runway object
+     */
+    private void setNewRunway(Runway runway) {
+        ogValuesGrid.setRunway(runway);
+    }
+
+    /**
+     * Set the initial runway to show on the visualisation tabs
+     *
+     * @param runway the runway object
+     */
+    private void setVisualisationInitialRunway(Runway runway) {
+    }
+
+    private void setVisualisationReCalculatedRunway() {
     }
 }
