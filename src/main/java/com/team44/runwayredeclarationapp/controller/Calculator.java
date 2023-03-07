@@ -7,7 +7,7 @@ public class Calculator {
 
   public static double calcLandingTowardsObs(Runway rw, Obstacles obstacle){
     double pos = obstacle.getPositionR();
-    double resa = rw.getResa();
+    double resa = rw.getResaL();
     double finalLDA;
 
     finalLDA = pos - resa - 60;
@@ -20,7 +20,7 @@ public class Calculator {
     double pos = obstacle.getPositionL();
     double bp = aircraft.getBlastProt();
     double lda = rw.getLda(rw.getLogicId1());
-    double resa = rw.getResa();
+    double resa = rw.getResaL();
     double finalLDA;
 
     if (resa < bp){
@@ -44,7 +44,7 @@ public class Calculator {
   public static Runway calcTakeOffTowardsObs(Runway rw, Obstacles obstacle){
     double h = obstacle.getHeight();
     double pos = obstacle.getPositionL();
-    double resa = rw.getResa();
+    double resa = rw.getResaL();
 
     double finalValue = pos - (h * 50) - resa;
     double[] newParams = new double[15];
@@ -64,7 +64,7 @@ public class Calculator {
     newParams[12] = rw.getAsda(rw.getLogicId2());
     newParams[13] = rw.getLda(rw.getLogicId2());
     newParams[14] = rw.getDisThresh(rw.getLogicId2());
-    newParams[15] = rw.getResa();
+    newParams[15] = rw.getResaL();
 
     rw.updateParameters(newParams);
     return rw;
@@ -74,7 +74,7 @@ public class Calculator {
     double h = obstacle.getHeight();
     double pos = obstacle.getPositionL();
     double bp = aircraft.getBlastProt();
-    double resa = rw.getResa();
+    double resa = rw.getResaL();
 
     double finalValue = pos - (h * 50) - resa;
     double[] newParams = new double[15];
@@ -94,7 +94,7 @@ public class Calculator {
     newParams[12] = rw.getAsda(rw.getLogicId2());
     newParams[13] = rw.getLda(rw.getLogicId2());
     newParams[14] = rw.getDisThresh(rw.getLogicId2());
-    newParams[15] = rw.getResa();
+    newParams[15] = rw.getResaL();
 
     rw.updateParameters(newParams);
     return rw;
