@@ -4,9 +4,11 @@ import com.team44.runwayredeclarationapp.controller.InitialiseWindow;
 import com.team44.runwayredeclarationapp.controller.ModifyWindow;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.model.Obstacles;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
+import com.team44.runwayredeclarationapp.view.component.Title;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
 import com.team44.runwayredeclarationapp.view.component.VisualisationBase;
@@ -23,10 +25,8 @@ import javafx.scene.control.TabPane.TabDragPolicy;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 /**
  * The main scene that will be shown when the user opens the program
@@ -122,17 +122,30 @@ public class MainScene extends BaseScene {
         tab1.setContent(topDownPane);
         tab2.setContent(sideOnPane);
 
-        // For testing:
-        var testText = new Text("Test");
-        var titledPane = new TitledPane();
-        titledPane.setText("Input Obstacle");
-        var testBox = new VBox();
-        titledPane.setContent(testBox);
-        VBox.setVgrow(titledPane, Priority.ALWAYS);
-        infoPane.getChildren().addAll(testText, titledPane);
+        // Input section
+        var inputSectionTitle = new Title("Input:");
+
+        // Input runway pane
+        var inputRunwayPane = new TitledPane();
+        inputRunwayPane.setText("Select Runway");
+        var inputRunwayPaneBox = new VBox();
+
+        // Input runway pane (button layout)
+        var inputRunwayPaneButtonBox = new HBox();
+        inputRunwayPaneButtonBox.setSpacing(10);
+        inputRunwayPane.setContent(inputRunwayPaneBox);
+        inputRunwayPaneBox.getChildren().add(inputRunwayPaneButtonBox);
+
+        // Input obstacle pane
+        var inputObstaclePane = new TitledPane();
+        inputObstaclePane.setText("Select Obstacle");
+        var inputObstaclePaneBox = new VBox();
+        inputObstaclePane.setContent(inputObstaclePaneBox);
+
+        infoPane.getChildren().addAll(inputSectionTitle, inputRunwayPane, inputObstaclePane);
 
         //Add runway button
-        Button addRunwayBtn = new Button("Log in New Runway");
+        Button addRunwayBtn = new Button("Add New Runway");
         //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
             InitialiseWindow initPage = new InitialiseWindow(mainWindow.getStage(),
@@ -141,7 +154,7 @@ public class MainScene extends BaseScene {
             // Set the new runway listener
             initPage.setNewRunwayListener(this::setNewRunway);
         });
-        infoPane.getChildren().add(addRunwayBtn);
+        inputRunwayPaneButtonBox.getChildren().add(addRunwayBtn);
 
         Button modifyBtn = new Button("Modify Runway");
 
@@ -157,17 +170,17 @@ public class MainScene extends BaseScene {
                 modifyPage.setNewRunwayListener(this::setNewRunway);
             }
         });
-        infoPane.getChildren().add(modifyBtn);
+        inputRunwayPaneButtonBox.getChildren().add(modifyBtn);
 
         // Testing -
-        var loadRunwayBtn = new Button("Load Runway (testing)");
-        var recalculateBtn = new Button("Recalculate (testing)");
-        recalculateBtn.setDisable(true);
-        infoPane.getChildren().addAll(loadRunwayBtn, recalculateBtn);
+        var loadRunwayBtnTest = new Button("Load Runway (testing)");
+        var recalculateBtnTest = new Button("Recalculate (testing)");
+        recalculateBtnTest.setDisable(true);
+        infoPane.getChildren().addAll(loadRunwayBtnTest, recalculateBtnTest);
 
-        loadRunwayBtn.setOnAction((e) -> {
+        loadRunwayBtnTest.setOnAction((e) -> {
             logger.info("Load runway button pressed (testing)");
-            recalculateBtn.setDisable(false);
+            recalculateBtnTest.setDisable(false);
 
             // 09R
             topDownCanvas.setInitialParameters(3660, 3660, 3660, 3660, 3353, 3660, 3660, 3660, 3660,
@@ -176,15 +189,15 @@ public class MainScene extends BaseScene {
                 307, 0, 0, 0, 0, 0);
 
             // 09L
-//            topDownCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
-//                306, 0, 0, 0, 78,
-//                0);
-//            sideOnCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
-//                306, 0, 0, 0, 78,
-//                0);
+            // topDownCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
+            //     306, 0, 0, 0, 78,
+            //     0);
+            // sideOnCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
+            //     306, 0, 0, 0, 78,
+            //     0);
         });
 
-        recalculateBtn.setOnAction((e) -> {
+        recalculateBtnTest.setOnAction((e) -> {
             logger.info("Recalculate button pressed (testing)");
 
             // 09R
@@ -199,21 +212,32 @@ public class MainScene extends BaseScene {
                 15 * 50, 60, 240, 300, 150 + 307, 15, true);
 
             // 09L
-//            topDownCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
-//                12 * 50, 60, 240, 300, 306 - 50, 12, true);
-//            sideOnCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
-//                12 * 50, 60, 240, 300, 306 - 50, 12, true);
+            // topDownCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
+            //     12 * 50, 60, 240, 300, 306 - 50, 12, true);
+            // sideOnCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
+            //     12 * 50, 60, 240, 300, 306 - 50, 12, true);
             // Parameters of obstacle on right below
-//            topDownView.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
-//                20 * 50, 60, 240, 300, 3546 + 306, 20, false);
-//            sideOnCanvas.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
-//                20 * 50, 60, 240, 300, 3546 + 306, 20, false);
+            // topDownView.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
+            //     20 * 50, 60, 240, 300, 3546 + 306, 20, false);
+            // sideOnCanvas.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
+            //     20 * 50, 60, 240, 300, 3546 + 306, 20, false);
 
         });
+
+        // Recalculate button
+        var recalculateBtn = new Button("Recalculate");
+        var obstacle = new Obstacles("Something", 12, -50, 3646);
+        recalculateBtn.setOnAction(event -> {
+            // recalculationController.recalculateRunway(); // todo
+        });
+        // todo: add this to the infoPane
 
         // Set the listener to handle when parameters have been recalculated
-        recalculationController.setRecalculatedViewListener(() -> {
-        });
+        recalculationController.setSetRunwayListener(this::setRecalculatedRunway);
+
+        // Input section
+        var outputSectionTitle = new Title("Output:");
+        infoPane.getChildren().add(outputSectionTitle);
 
         // Create horizontal box for both value grid
         var valueGridsBox = new HBox();
@@ -235,16 +259,15 @@ public class MainScene extends BaseScene {
      */
     private void setNewRunway(Runway runway) {
         ogValuesGrid.setRunway(runway);
+        newValuesGrid.reset();
     }
 
     /**
-     * Set the initial runway to show on the visualisation tabs
+     * Set the recalculated runway to the gui
      *
-     * @param runway the runway object
+     * @param runway the recalculated runway object
      */
-    private void setVisualisationInitialRunway(Runway runway) {
-    }
-
-    private void setVisualisationReCalculatedRunway() {
+    private void setRecalculatedRunway(Runway runway) {
+        newValuesGrid.setRunway(runway);
     }
 }

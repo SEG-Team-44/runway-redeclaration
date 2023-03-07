@@ -12,11 +12,11 @@ import javafx.scene.text.Text;
  */
 public class ValuesGrid extends GridPane {
 
-    private SimpleStringProperty runway1, runway2;
-    private SimpleStringProperty tora1, tora2;
-    private SimpleStringProperty toda1, toda2;
-    private SimpleStringProperty asda1, asda2;
-    private SimpleStringProperty lda1, lda2;
+    private final SimpleStringProperty runway1, runway2;
+    private final SimpleStringProperty tora1, tora2;
+    private final SimpleStringProperty toda1, toda2;
+    private final SimpleStringProperty asda1, asda2;
+    private final SimpleStringProperty lda1, lda2;
 
 
     /**
@@ -142,5 +142,24 @@ public class ValuesGrid extends GridPane {
 
         // Add the text to the grid
         add(textObj, col, row);
+    }
+
+    /**
+     * Reset all the text properties
+     */
+    public void reset() {
+        // Reset property values for logical runway 1
+        this.runway1.set("");
+        this.tora1.set("");
+        this.toda1.set("");
+        this.asda1.set("");
+        this.lda1.set("");
+
+        // Reset property values for logical runway 2
+        this.runway2.set("");
+        this.tora2.set("");
+        this.toda2.set("");
+        this.asda2.set("");
+        this.lda2.set("");
     }
 }

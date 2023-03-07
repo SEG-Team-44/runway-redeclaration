@@ -1,6 +1,6 @@
 package com.team44.runwayredeclarationapp.controller;
 
-import com.team44.runwayredeclarationapp.event.NewRunwayListener;
+import com.team44.runwayredeclarationapp.event.SetRunwayListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
@@ -9,7 +9,7 @@ import javafx.scene.control.TextField;
 
 public abstract class ParameterController {
 
-    protected NewRunwayListener newRunwayListener;
+    protected SetRunwayListener setRunwayListener;
 
     protected boolean validInitInput(boolean pos1Selected, boolean pos2Selected, String pos1,
         String pos2, String degree1, String degree2, TextField[] textFields) {
@@ -92,7 +92,7 @@ public abstract class ParameterController {
             }
 
             // Call the listener to set the new runway to the UI
-            newRunwayListener.newRunway(newRunway);
+            setRunwayListener.updateRunway(newRunway);
 
             return true;
         } else {
@@ -117,9 +117,9 @@ public abstract class ParameterController {
     /**
      * Set the listener to be called when a runway has been selected or updated
      *
-     * @param newRunwayListener the listener
+     * @param setRunwayListener the listener
      */
-    public void setNewRunwayListener(NewRunwayListener newRunwayListener) {
-        this.newRunwayListener = newRunwayListener;
+    public void setNewRunwayListener(SetRunwayListener setRunwayListener) {
+        this.setRunwayListener = setRunwayListener;
     }
 }

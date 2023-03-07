@@ -142,4 +142,9 @@ public class Runway {
     public int getDegree2() {return degree2;}
 
     public double getResa() {return resa;}
+
+    @Override
+    public Runway clone() {
+        return this.clone();
+    }
 }

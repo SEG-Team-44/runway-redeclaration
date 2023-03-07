@@ -133,7 +133,7 @@ public class ModifyWindow extends ParameterController {
                 runway.updateParameters(convertTextToDouble(textFields));
 
                 // Call the listener to set the updated runway to the UI
-                newRunwayListener.newRunway(runway);
+                setRunwayListener.updateRunway(runway);
                 printAlert(true);
                 stage.close();
             }
