@@ -32,26 +32,26 @@ public class InitialiseWindow extends ParameterController {
         TextField runwayLTf = new TextField();
         Label runwayW = new Label("Runway Width (m)");
         TextField runwayWTf = new TextField();
-        Label stripL = new Label("Strip Horizontal Length (m)");
+        Label stripL = new Label("Distance between runway \n end & strip end (m)");
         TextField stripLTf = new TextField();
-        Label stripW = new Label("Strip Vertical Width (m)");
+        Label stripW = new Label("Distance between runway \n centreline & strip edge (m)");
         TextField stripWTf = new TextField();
         Label clearW = new Label("Clearway Vertical Width (m)");
         TextField clearWTf = new TextField();
 
-        Label resa = new Label("RESA For Both Logical Runways (m) ");
+        Label resa = new Label("RESA Length (m) ");
         TextField resaTf = new TextField();
         resaTf.setPrefSize(60, 20);
-        HBox resaBox = new HBox();
-        resaBox.getChildren().addAll(resa, resaTf);
 
         //Layout the physical input components
         GridPane phyPane = new GridPane();
         phyPane.setHgap(5);
-        phyPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60), new ColumnConstraints(), new ColumnConstraints(60));
+        phyPane.setVgap(5);
+        phyPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60),
+                new ColumnConstraints(), new ColumnConstraints(60));
         phyPane.add(phyParameter, 0,0,4,1);
-        phyPane.addRow(1, runwayL, runwayLTf, stripL, stripLTf);
-        phyPane.addRow(2, runwayW, runwayWTf, stripW, stripWTf);
+        phyPane.addRow(1, runwayL, runwayLTf, runwayW, runwayWTf);
+        phyPane.addRow(2,  stripL, stripLTf, stripW, stripWTf);
         phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
 
         //Components for one logical runway inputs
@@ -81,11 +81,10 @@ public class InitialiseWindow extends ParameterController {
 
         //'Add runway' button
         Button addBtn = new Button("Log in");
-        addBtn.setFont(new Font(18));
+        addBtn.setFont(new Font(17));
         addBtn.setOnAction(ActionEvent -> {
-            TextField[] textFields = {
-                    runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, toraTf1, todaTf1,
-                    asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf};
+            TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf, toraTf1,
+                    todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf1, disThreshTf2};
 
             //Close window if runway has been successfully added
             if (addNewRunway(posCb1.isSelected(), posCb2.isSelected(), posTf1.getText(), posTf2.getText(),
@@ -185,7 +184,7 @@ public class InitialiseWindow extends ParameterController {
             a.setContentText("Runway has been logged.");
         } else {
             a = new Alert(Alert.AlertType.ERROR);
-            a.setContentText("Invalid Input");
+            a.setContentText("Invalid Input.");
         }
 
         a.show();
