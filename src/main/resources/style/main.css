@@ -1,3 +1,10 @@
+.title-text {
+  -fx-font-size: 13pt;
+  -fx-font-family: "Helvetica";
+  -fx-font-weight: bold;
+}
+
+
 .info-pane {
   -fx-padding: 12px;
 }

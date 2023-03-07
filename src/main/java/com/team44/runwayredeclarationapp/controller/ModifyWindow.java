@@ -99,7 +99,7 @@ public class ModifyWindow extends ParameterController {
             new ColumnConstraints(), new ColumnConstraints(60));
         phyPane.add(phyParameter, 0, 0, 4, 1);
         phyPane.addRow(1, runwayL, runwayLTf, runwayW, runwayWTf);
-        phyPane.addRow(2,  stripL, stripLTf, stripW, stripWTf);
+        phyPane.addRow(2, stripL, stripLTf, stripW, stripWTf);
         phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
 
         //components for 1 logical parameters
@@ -124,8 +124,10 @@ public class ModifyWindow extends ParameterController {
         //logical runway 2 input interface Layout
         GridPane gridPane2 = getLayout(runway2, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2);
 
-        TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf, toraTf1,
-            todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf1, disThreshTf2};
+        TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf,
+            toraTf1,
+            todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf1,
+            disThreshTf2};
 
         Button modifyBtn = new Button("Modify");
         modifyBtn.setOnAction(ActionEvent -> {
@@ -134,7 +136,7 @@ public class ModifyWindow extends ParameterController {
                 runway.updateParameters(convertTextToDouble(textFields));
 
                 // Call the listener to set the updated runway to the UI
-                newRunwayListener.newRunway(runway);
+                setRunwayListener.updateRunway(runway);
                 printAlert(true);
                 stage.close();
             }

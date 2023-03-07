@@ -1,18 +1,17 @@
 package com.team44.runwayredeclarationapp.controller;
 
-import com.team44.runwayredeclarationapp.event.NewRunwayListener;
+import com.team44.runwayredeclarationapp.event.SetRunwayListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.SRunway;
-import javafx.scene.control.TextField;
-
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.control.TextField;
 
 public abstract class ParameterController {
 
-    protected NewRunwayListener newRunwayListener;
+    protected SetRunwayListener setRunwayListener;
 
     protected boolean validInitInput(boolean pos1Selected, boolean pos2Selected, String pos1,
         String pos2, String degree1, String degree2, TextField[] textFields) {
@@ -32,9 +31,7 @@ public abstract class ParameterController {
         //return false if position checkboxes are not selected/deselected the same time
         if ((!pos1Selected && pos2Selected) || (pos1Selected && !pos2Selected)) {
             return false;
-        }
-
-        else if (pos1Selected && pos2Selected) {
+        } else if (pos1Selected && pos2Selected) {
             char[] p1 = pos1.toCharArray();
             char[] p2 = pos2.toCharArray();
 
@@ -82,7 +79,7 @@ public abstract class ParameterController {
 
         //return false if TODA/ASDA <= corresponding TORA for one of the logical runways
         if (parameters.get(7) <= parameters.get(6) || parameters.get(8) <= parameters.get(6) ||
-                parameters.get(11) <= parameters.get(10) || parameters.get(12) <= parameters.get(10)) {
+            parameters.get(11) <= parameters.get(10) || parameters.get(12) <= parameters.get(10)) {
             return false;
         }
 
@@ -93,7 +90,7 @@ public abstract class ParameterController {
 
         //return false if one of the displaced threshold either < 0 or > corresponding TORA
         if (parameters.get(14) < 0 || parameters.get(14) > parameters.get(6) ||
-                parameters.get(15) < 0 || parameters.get(15) > parameters.get(10)) {
+            parameters.get(15) < 0 || parameters.get(15) > parameters.get(10)) {
             return false;
         }
 
@@ -123,7 +120,7 @@ public abstract class ParameterController {
             }
 
             // Call the listener to set the new runway to the UI
-            newRunwayListener.newRunway(newRunway);
+            setRunwayListener.updateRunway(newRunway);
 
             return true;
         } else {
@@ -148,9 +145,9 @@ public abstract class ParameterController {
     /**
      * Set the listener to be called when a runway has been selected or updated
      *
-     * @param newRunwayListener the listener
+     * @param setRunwayListener the listener
      */
-    public void setNewRunwayListener(NewRunwayListener newRunwayListener) {
-        this.newRunwayListener = newRunwayListener;
+    public void setNewRunwayListener(SetRunwayListener setRunwayListener) {
+        this.setRunwayListener = setRunwayListener;
     }
 }
