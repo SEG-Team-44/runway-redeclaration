@@ -5,6 +5,8 @@ import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.SRunway;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.control.TextField;
 
 public abstract class ParameterController {
@@ -26,7 +28,7 @@ public abstract class ParameterController {
             return false;
         }
 
-        //Check if parallel runway selection is valid
+        //return false if position checkboxes are not selected/deselected the same time
         if ((!pos1Selected && pos2Selected) || (pos1Selected && !pos2Selected)) {
             return false;
         } else if (pos1Selected && pos2Selected) {
@@ -52,18 +54,44 @@ public abstract class ParameterController {
 
 
     protected boolean validNumericalInput(TextField[] textFields) {
+        List<Double> parameters = new ArrayList<>();
 
-        //check if all numerical inputs can be converted into double values
-        for (TextField textField : textFields) {
-            if (textField.getText().isEmpty()) {
-                return false;
-            } else {
-                try {
-                    Double.parseDouble(textField.getText());
-                } catch (Exception e) {
-                    return false;
-                }
+        //check if displaced threshold is >= 0
+        try {
+            for (TextField textField : textFields) {
+                parameters.add(Double.parseDouble(textField.getText()));
             }
+
+        } catch (Exception e) {
+            return false;
+        }
+
+        for (int i = 0; i < 6; i++) {
+            if (parameters.get(i) < 1) {
+                return false;
+            }
+        }
+
+        //return false if one of the TORA > runway length
+        if (parameters.get(6) > parameters.get(0) || parameters.get(10) > parameters.get(0)) {
+            return false;
+        }
+
+        //return false if TODA/ASDA <= corresponding TORA for one of the logical runways
+        if (parameters.get(7) <= parameters.get(6) || parameters.get(8) <= parameters.get(6) ||
+            parameters.get(11) <= parameters.get(10) || parameters.get(12) <= parameters.get(10)) {
+            return false;
+        }
+
+        //return false if LDA > TORA for one of the logical runways
+        if (parameters.get(9) > parameters.get(6) || parameters.get(13) > parameters.get(10)) {
+            return false;
+        }
+
+        //return false if one of the displaced threshold either < 0 or > corresponding TORA
+        if (parameters.get(14) < 0 || parameters.get(14) > parameters.get(6) ||
+            parameters.get(15) < 0 || parameters.get(15) > parameters.get(10)) {
+            return false;
         }
 
         return true;

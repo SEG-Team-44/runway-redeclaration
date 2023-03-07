@@ -5,6 +5,7 @@ import com.team44.runwayredeclarationapp.controller.ModifyWindow;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacles;
+import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
@@ -14,6 +15,7 @@ import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
 import com.team44.runwayredeclarationapp.view.component.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -39,9 +41,19 @@ public class MainScene extends BaseScene {
     private Airport airport = new Airport();
 
     /**
+     * The selected runway
+     */
+    private Runway selectedRunway;
+
+    /**
+     * The selected obstacle
+     */
+    private Obstacles selectedObstacle;
+
+    /**
      * The controller responsible for setting the recalculated values
      */
-    private RecalculationController recalculationController = new RecalculationController();
+    private final RecalculationController recalculationController = new RecalculationController();
 
     /**
      * The grid displaying the original and recalculated values
@@ -81,7 +93,24 @@ public class MainScene extends BaseScene {
         var menuItemTest2 = new MenuItem("Test2");
 
         fileMenu.getItems().addAll(menuItemTest1, menuItemTest2);
-        menuBar.getMenus().add(fileMenu);
+
+        // Create a menu for selecting scenarios to test the program with
+        var testDevMenu = new Menu("Test (for devs)");
+        var scenario1MenuItem = new MenuItem("Select Scenario 1");
+        var scenario2MenuItem = new MenuItem("Select Scenario 2");
+        var scenario3MenuItem = new MenuItem("Select Scenario 3");
+        var scenario4MenuItem = new MenuItem("Select Scenario 4");
+
+        // Set the actions for the menu item buttons
+        scenario1MenuItem.setOnAction(event -> setTestScenario(1));
+        scenario2MenuItem.setOnAction(event -> setTestScenario(2));
+        scenario3MenuItem.setOnAction(event -> setTestScenario(3));
+        scenario4MenuItem.setOnAction(event -> setTestScenario(4));
+
+        // Add all the scenario buttons to the menu
+        testDevMenu.getItems()
+            .addAll(scenario1MenuItem, scenario2MenuItem, scenario3MenuItem, scenario4MenuItem);
+        menuBar.getMenus().addAll(fileMenu, testDevMenu);
 
         // Set up the main pane
         root = new StackPane();
@@ -152,7 +181,7 @@ public class MainScene extends BaseScene {
                 airport);
 
             // Set the new runway listener
-            initPage.setNewRunwayListener(this::setNewRunway);
+            initPage.setNewRunwayListener(this::updateInitialRunway);
         });
         inputRunwayPaneButtonBox.getChildren().add(addRunwayBtn);
 
@@ -167,73 +196,28 @@ public class MainScene extends BaseScene {
                 ModifyWindow modifyPage = new ModifyWindow(mainWindow.getStage(), airport);
 
                 // Set the runway listener to update
-                modifyPage.setNewRunwayListener(this::setNewRunway);
+                modifyPage.setNewRunwayListener(this::updateInitialRunway);
             }
         });
         inputRunwayPaneButtonBox.getChildren().add(modifyBtn);
 
-        // Testing -
-        var loadRunwayBtnTest = new Button("Load Runway (testing)");
-        var recalculateBtnTest = new Button("Recalculate (testing)");
-        recalculateBtnTest.setDisable(true);
-        infoPane.getChildren().addAll(loadRunwayBtnTest, recalculateBtnTest);
-
-        loadRunwayBtnTest.setOnAction((e) -> {
-            logger.info("Load runway button pressed (testing)");
-            recalculateBtnTest.setDisable(false);
-
-            // 09R
-            topDownCanvas.setInitialParameters(3660, 3660, 3660, 3660, 3353, 3660, 3660, 3660, 3660,
-                307, 0, 0, 0, 0, 0);
-            sideOnCanvas.setInitialParameters(3660, 3660, 3660, 3660, 3353, 3660, 3660, 3660, 3660,
-                307, 0, 0, 0, 0, 0);
-
-            // 09L
-            // topDownCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
-            //     306, 0, 0, 0, 78,
-            //     0);
-            // sideOnCanvas.setInitialParameters(3902, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884,
-            //     306, 0, 0, 0, 78,
-            //     0);
-        });
-
-        recalculateBtnTest.setOnAction((e) -> {
-            logger.info("Recalculate button pressed (testing)");
-
-            // 09R
-            topDownCanvas.setRecalculatedParameters(1850, 1850, 1850, 2553, 2860, 2860, 2860, 1850,
-                25 * 50, 60, 240, 300, 2853 + 307, 25, false);
-            sideOnCanvas.setRecalculatedParameters(1850, 1850, 1850, 2553, 2860, 2860, 2860, 1850,
-                25 * 50, 60, 240, 300, 2853 + 307, 25, false);
-            // Parameters of obstacle on the left
-            topDownCanvas.setRecalculatedParameters(2903, 2903, 2903, 2393, 2393, 2393, 2393, 2903,
-                15 * 50, 60, 240, 300, 150 + 307, 15, true);
-            sideOnCanvas.setRecalculatedParameters(2903, 2903, 2903, 2393, 2393, 2393, 2393, 2903,
-                15 * 50, 60, 240, 300, 150 + 307, 15, true);
-
-            // 09L
-            // topDownCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
-            //     12 * 50, 60, 240, 300, 306 - 50, 12, true);
-            // sideOnCanvas.setRecalculatedParameters(3346, 3346, 3346, 2985, 2986, 2986, 2986, 3346,
-            //     12 * 50, 60, 240, 300, 306 - 50, 12, true);
-            // Parameters of obstacle on right below
-            // topDownView.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
-            //     20 * 50, 60, 240, 300, 3546 + 306, 20, false);
-            // sideOnCanvas.setRecalculatedParameters(2792, 2792, 2792, 3246, 3534, 3612, 3534, 2774,
-            //     20 * 50, 60, 240, 300, 3546 + 306, 20, false);
-
-        });
-
         // Recalculate button
         var recalculateBtn = new Button("Recalculate");
-        var obstacle = new Obstacles("Something", 12, -50, 3646);
         recalculateBtn.setOnAction(event -> {
-            // recalculationController.recalculateRunway(); // todo
+            // Check if the user has already selected the runway and obstacle to recalculate
+            if (selectedRunway == null || selectedObstacle == null) {
+                var alert = new Alert(AlertType.ERROR);
+                alert.setContentText("Please select a runway and an obstacle.");
+                alert.show();
+
+            } else {
+                recalculationController.recalculateRunway(selectedRunway, selectedObstacle, 300);
+            }
         });
-        // todo: add this to the infoPane
+        infoPane.getChildren().add(recalculateBtn);
 
         // Set the listener to handle when parameters have been recalculated
-        recalculationController.setSetRunwayListener(this::setRecalculatedRunway);
+        recalculationController.setSetRunwayListener(this::updateRecalculatedRunway);
 
         // Input section
         var outputSectionTitle = new Title("Output:");
@@ -253,13 +237,18 @@ public class MainScene extends BaseScene {
     }
 
     /**
-     * Set the runway that the user has selected/updated
+     * Set the runway that the user has selected/updated to the gui
      *
      * @param runway the runway object
      */
-    private void setNewRunway(Runway runway) {
+    private void updateInitialRunway(Runway runway) {
+        // Set the initial runway to the original values grid
         ogValuesGrid.setRunway(runway);
         newValuesGrid.reset();
+
+        // Update both canvas
+        topDownCanvas.setInitialParameters(runway);
+        sideOnCanvas.setInitialParameters(runway);
     }
 
     /**
@@ -267,7 +256,85 @@ public class MainScene extends BaseScene {
      *
      * @param runway the recalculated runway object
      */
-    private void setRecalculatedRunway(Runway runway) {
+    private void updateRecalculatedRunway(Runway runway) {
+        // Set the recalculated runway parameters to the recalculated values grid
         newValuesGrid.setRunway(runway);
+
+        // Update both canvas
+        topDownCanvas.setRecalculatedParameters(runway, selectedObstacle,
+            selectedObstacle.getSlope(),
+            300, selectedObstacle.getPositionL(), selectedObstacle.getPositionR());
+        sideOnCanvas.setRecalculatedParameters(runway, selectedObstacle,
+            selectedObstacle.getSlope(),
+            300, selectedObstacle.getPositionL(), selectedObstacle.getPositionR());
+    }
+
+    /**
+     * Select a specific scenario to test the program with
+     *
+     * @param scenario the scenario number (1-4)
+     */
+    private void setTestScenario(int scenario) {
+        logger.info("Setting scenario - " + scenario);
+
+        Obstacles obstacle;
+        Runway runway;
+
+        // Create the specified obstacle
+        if (scenario == 1) {
+            obstacle = new Obstacles("Obstacle Name", 12, -50, 3646);
+        } else if (scenario == 2) {
+            obstacle = new Obstacles("Obstacle Name", 25, 2853, 500);
+        } else if (scenario == 3) {
+            obstacle = new Obstacles("Obstacle Name", 15, 150, 3203);
+        } else {
+            obstacle = new Obstacles("Obstacle Name", 20, 3546, 50);
+        }
+
+        // Create and set the runway corresponding to the scenario
+        if (scenario == 1 || scenario == 4) {
+            runway = new PRunway(9, 27, 'L', 'R', new double[]{
+                3902,//runwayL
+                100,//runwayW
+                60,//stripL
+                100,//stripW
+                100,//clearwayW
+                240, //resaL
+                3902,//tora1
+                3902,//toda1
+                3902,//asda1
+                3595,//lda1
+                3884,//tora2
+                3962,//toda2
+                3884,//asda2
+                3884,//lda2
+                0,//disThresh1
+                306//disThresh2
+            });
+        } else {
+            runway = new PRunway(9, 27, 'R', 'L', new double[]{
+                3660,//runwayL
+                100,//runwayW
+                60,//stripL
+                100,//stripW
+                100,//clearwayW
+                240, //resaL
+                3660,//tora1
+                3660,//toda1
+                3660,//asda1
+                3353,//lda1
+                3660,//tora2
+                3660,//toda2
+                3660,//asda2
+                3660,//lda2
+                0,//disThresh1
+                307//disThresh2
+            });
+        }
+
+        // Select the runway and obstacle to show on the program
+        selectedRunway = runway;
+        updateInitialRunway(runway);
+        selectedObstacle = obstacle;
     }
 }

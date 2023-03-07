@@ -80,24 +80,26 @@ public class ModifyWindow extends ParameterController {
         TextField runwayLTf = new TextField(String.valueOf(runway.getRunwayL()));
         Label runwayW = new Label("Runway Width (m)");
         TextField runwayWTf = new TextField(String.valueOf(runway.getRunwayW()));
-        Label stripL = new Label("Strip Horizontal Length (m)");
+        Label stripL = new Label("Distance between runway \n end & strip end (m)");
         TextField stripLTf = new TextField(String.valueOf(runway.getStripL()));
-        Label stripW = new Label("Strip Vertical Width (m)");
+        Label stripW = new Label("Distance between runway \n centreline & strip edge (m)");
         TextField stripWTf = new TextField(String.valueOf(runway.getStripW()));
         Label clearW = new Label("Clearway Vertical Width (m)");
         TextField clearWTf = new TextField(String.valueOf(runway.getClearwayW()));
-        Label resa = new Label("RESA For Both Logical Runways (m) ");
-        TextField resaTf = new TextField(String.valueOf(runway.getResa()));
+
+        Label resa = new Label("RESA Length (m) ");
+        TextField resaTf = new TextField(String.valueOf(runway.getResaL()));
         resaTf.setPrefSize(60, 20);
 
         //combine components of physical input part
         GridPane phyPane = new GridPane();
         phyPane.setHgap(5);
+        phyPane.setVgap(5);
         phyPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60),
             new ColumnConstraints(), new ColumnConstraints(60));
         phyPane.add(phyParameter, 0, 0, 4, 1);
-        phyPane.addRow(1, runwayL, runwayLTf, stripL, stripLTf);
-        phyPane.addRow(2, runwayW, runwayWTf, stripW, stripWTf);
+        phyPane.addRow(1, runwayL, runwayLTf, runwayW, runwayWTf);
+        phyPane.addRow(2, stripL, stripLTf, stripW, stripWTf);
         phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
 
         //components for 1 logical parameters
@@ -122,9 +124,10 @@ public class ModifyWindow extends ParameterController {
         //logical runway 2 input interface Layout
         GridPane gridPane2 = getLayout(runway2, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2);
 
-        TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, toraTf1,
-            todaTf1,
-            asdaTf1, ldaTf1, disThreshTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2, resaTf};
+        TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf,
+            toraTf1,
+            todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf1,
+            disThreshTf2};
 
         Button modifyBtn = new Button("Modify");
         modifyBtn.setOnAction(ActionEvent -> {
@@ -216,7 +219,7 @@ public class ModifyWindow extends ParameterController {
             a.setContentText("Parameters updated.");
         } else {
             a = new Alert(Alert.AlertType.ERROR);
-            a.setContentText("Invalid Input");
+            a.setContentText("Invalid Input.");
         }
 
         a.show();

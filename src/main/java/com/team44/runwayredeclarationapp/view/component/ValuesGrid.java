@@ -90,14 +90,14 @@ public class ValuesGrid extends GridPane {
         this.tora1.set(String.valueOf(runway.getTora(runway1ID)));
         this.toda1.set(String.valueOf(runway.getToda(runway1ID)));
         this.asda1.set(String.valueOf(runway.getAsda(runway1ID)));
-        this.lda1.set(String.valueOf(runway.getAsda(runway1ID)));
+        this.lda1.set(String.valueOf(runway.getLda(runway1ID)));
 
         // Set the new property values for logical runway 2
         this.runway2.set(runway2ID);
         this.tora2.set(String.valueOf(runway.getTora(runway2ID)));
         this.toda2.set(String.valueOf(runway.getToda(runway2ID)));
         this.asda2.set(String.valueOf(runway.getAsda(runway2ID)));
-        this.lda2.set(String.valueOf(runway.getAsda(runway2ID)));
+        this.lda2.set(String.valueOf(runway.getLda(runway2ID)));
 
     }
 
