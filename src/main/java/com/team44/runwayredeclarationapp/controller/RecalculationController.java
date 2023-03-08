@@ -3,6 +3,7 @@ package com.team44.runwayredeclarationapp.controller;
 import com.team44.runwayredeclarationapp.event.SetRunwayListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.Runway;
+import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -21,11 +22,11 @@ public class RecalculationController {
      *
      * @param runway          the runway
      * @param logicID         the id of the logical runway
-     * @param obstacle        the obstacle
+     * @param rwObst          the obstacle on the runway
      * @param blastProtection the blast protection value
      * @return the new TORA value
      */
-    private double recalculateTORA(Runway runway, String logicID, Obstacle obstacle,
+    private double recalculateTORA(Runway runway, String logicID, RunwayObstacle rwObst,
         double blastProtection) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
@@ -36,9 +37,9 @@ public class RecalculationController {
 
         // Work out the sides
         var isRunway1Or2 = Objects.equals(logicID, runway1) ? 1 : 2;
-        var isObstacleLeftOrRight = obstacle.isObstacleOnRightOfRunway() ? 1 : 2;
+        var isObstacleLeftOrRight = rwObst.isObstacleOnRightOfRunway() ? 1 : 2;
 
-        var slopeCalc = obstacle.getSlope();
+        var slopeCalc = rwObst.getObst().getSlope();
 
         double displacedThreshold;
         double result;
@@ -58,7 +59,7 @@ public class RecalculationController {
                 valueMap.put("resa", runway.getResaL());
             }
             valueMap.put("distanceFromThreshold",
-                isRunway1Or2 == 1 ? obstacle.getPositionL() : obstacle.getPositionR());
+                isRunway1Or2 == 1 ? rwObst.getPositionL() : rwObst.getPositionR());
             if (displacedThreshold > 0) {
                 valueMap.put("displacedThreshold", displacedThreshold);
             }
@@ -73,7 +74,7 @@ public class RecalculationController {
 
             // Add the values to the hashmap
             valueMap.put("distanceFromThreshold",
-                isRunway1Or2 == 1 ? obstacle.getPositionL() : obstacle.getPositionR());
+                isRunway1Or2 == 1 ? rwObst.getPositionL() : rwObst.getPositionR());
             if (displacedThreshold > 0) {
                 valueMap.put("displacedThreshold", -displacedThreshold);
             }
@@ -97,11 +98,11 @@ public class RecalculationController {
      *
      * @param runway   the runway
      * @param logicID  the id of the logical runway
-     * @param obstacle the obstacle
+     * @param rwObst   the obstacle on the runway
      * @param tora     the recalculated tora value
      * @return the new ASDA value
      */
-    private double recalculateASDA(Runway runway, String logicID, Obstacle obstacle,
+    private double recalculateASDA(Runway runway, String logicID, RunwayObstacle rwObst,
         double tora) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
@@ -112,7 +113,7 @@ public class RecalculationController {
 
         // Work out the sides
         var isRunway1Or2 = Objects.equals(logicID, runway1) ? 1 : 2;
-        var isObstacleLeftOrRight = obstacle.isObstacleOnRightOfRunway() ? 1 : 2;
+        var isObstacleLeftOrRight = rwObst.isObstacleOnRightOfRunway() ? 1 : 2;
 
         // Get the stopway for the correct side
         var stopway = runway.getStopwayL(isRunway1Or2 == 1 ? runway1 : runway2);
@@ -141,11 +142,11 @@ public class RecalculationController {
      *
      * @param runway   the runway
      * @param logicID  the id of the logical runway
-     * @param obstacle the obstacle
+     * @param rwObst   the obstacle on the runway
      * @param tora     the recalculated tora value
      * @return the new TODA value
      */
-    private double recalculateTODA(Runway runway, String logicID, Obstacle obstacle, double tora) {
+    private double recalculateTODA(Runway runway, String logicID, RunwayObstacle rwObst, double tora) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
 
@@ -155,7 +156,7 @@ public class RecalculationController {
 
         // Work out the sides
         var isRunway1Or2 = Objects.equals(logicID, runway1) ? 1 : 2;
-        var isObstacleLeftOrRight = obstacle.isObstacleOnRightOfRunway() ? 1 : 2;
+        var isObstacleLeftOrRight = rwObst.isObstacleOnRightOfRunway() ? 1 : 2;
 
         // Get the clearway for the correct side
         var clearway = runway.getClearwayL(isRunway1Or2 == 1 ? runway1 : runway2);
@@ -183,10 +184,10 @@ public class RecalculationController {
      *
      * @param runway   the runway
      * @param logicID  the id of the logical runway
-     * @param obstacle the obstacle
+     * @param rwObst   the obstacle on the runway
      * @return the new LDA value
      */
-    private double recalculateLDA(Runway runway, String logicID, Obstacle obstacle) {
+    private double recalculateLDA(Runway runway, String logicID, RunwayObstacle rwObst) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
 
@@ -195,10 +196,10 @@ public class RecalculationController {
 
         // Work out the sides
         var isRunway1Or2 = Objects.equals(logicID, runway1) ? 1 : 2;
-        var isObstacleLeftOrRight = obstacle.isObstacleOnRightOfRunway() ? 1 : 2;
+        var isObstacleLeftOrRight = rwObst.isObstacleOnRightOfRunway() ? 1 : 2;
 
         // Calculate the slope angle of the obstacle
-        var slopeCalc = obstacle.getSlope();
+        var slopeCalc = rwObst.getObst().getSlope();
 
         double result;
 
@@ -207,7 +208,7 @@ public class RecalculationController {
             // Add the values to the hashmap
             valueMap.put("ogLDA", runway.getLda(logicID));
             valueMap.put("distanceFromThreshold",
-                isRunway1Or2 == 1 ? obstacle.getPositionL() : obstacle.getPositionR());
+                isRunway1Or2 == 1 ? rwObst.getPositionL() : rwObst.getPositionR());
             valueMap.put("slopeCalculation", slopeCalc);
             valueMap.put("stripEnd", runway.getStripL());
 
@@ -218,7 +219,7 @@ public class RecalculationController {
         else {
             // Add the values to the hashmap
             valueMap.put("distanceFromThreshold",
-                isRunway1Or2 == 1 ? obstacle.getPositionL() : obstacle.getPositionR());
+                isRunway1Or2 == 1 ? rwObst.getPositionL() : rwObst.getPositionR());
             valueMap.put("stripEnd", runway.getStripL());
             valueMap.put("resa", runway.getResaL());
 
@@ -246,11 +247,11 @@ public class RecalculationController {
      * Recalculate a given runway
      *
      * @param runway          the runway
-     * @param obstacle        the obstacle on the runway
+     * @param rwObst          the obstacle on the runway
      * @param blastProtection the blast protection value
      * @return the updated runway
      */
-    public Runway recalculateRunway(Runway runway, Obstacle obstacle, double blastProtection) {
+    public Runway recalculateRunway(Runway runway, RunwayObstacle rwObst, double blastProtection) {
         // Clone the current runway to edit
         var recalculatedRunway = runway.clone();
 
@@ -262,16 +263,16 @@ public class RecalculationController {
 
         // Recalculate the parameters separately
         // Logical Runway 1
-        tora1 = recalculateTORA(runway, runway1ID, obstacle, blastProtection);
-        asda1 = recalculateASDA(runway, runway1ID, obstacle, tora1);
-        toda1 = recalculateTODA(runway, runway1ID, obstacle, tora1);
-        lda1 = recalculateLDA(runway, runway1ID, obstacle);
+        tora1 = recalculateTORA(runway, runway1ID, rwObst, blastProtection);
+        asda1 = recalculateASDA(runway, runway1ID, rwObst, tora1);
+        toda1 = recalculateTODA(runway, runway1ID, rwObst, tora1);
+        lda1 = recalculateLDA(runway, runway1ID, rwObst);
 
         // Logical Runway 2
-        tora2 = recalculateTORA(runway, runway2ID, obstacle, blastProtection);
-        asda2 = recalculateASDA(runway, runway2ID, obstacle, tora2);
-        toda2 = recalculateTODA(runway, runway2ID, obstacle, tora2);
-        lda2 = recalculateLDA(runway, runway2ID, obstacle);
+        tora2 = recalculateTORA(runway, runway2ID, rwObst, blastProtection);
+        asda2 = recalculateASDA(runway, runway2ID, rwObst, tora2);
+        toda2 = recalculateTODA(runway, runway2ID, rwObst, tora2);
+        lda2 = recalculateLDA(runway, runway2ID, rwObst);
 
         // Update the parameters of the cloned runway object
         recalculatedRunway.updateParameters(new double[]{

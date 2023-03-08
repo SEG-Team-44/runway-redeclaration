@@ -7,6 +7,7 @@ import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
+import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.Title;
@@ -18,6 +19,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -25,8 +28,11 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -49,7 +55,7 @@ public class MainScene extends BaseScene {
     /**
      * The selected obstacle
      */
-    private Obstacle selectedObstacle;
+    private RunwayObstacle selectedObstacle;
 
     /**
      * The controller responsible for setting the recalculated values
@@ -171,11 +177,39 @@ public class MainScene extends BaseScene {
         inputRunwayPane.setContent(inputRunwayPaneBox);
         inputRunwayPaneBox.getChildren().add(inputRunwayPaneButtonBox);
 
-        // Input obstacle pane
+        // Input Obstacle titledPane
         var inputObstaclePane = new TitledPane();
-        inputObstaclePane.setText("Select Obstacle");
-        var inputObstaclePaneBox = new VBox();
-        inputObstaclePane.setContent(inputObstaclePaneBox);
+        inputObstaclePane.setText("Input Obstacle");
+        inputObstaclePane.setExpanded(false);
+        var nameLabel = new Label("Obstacle name ");
+        ComboBox<String> nameField = new ComboBox<String>();
+        nameField.getItems().addAll("Aircraft","Other");
+        nameField.setEditable(true);
+        var heightLabel = new Label("Height of obstacle (m) ");
+        var heightField = new TextField();
+        var posLLabel = new Label("Position from one end of the runway (m)");
+        var posLField = new TextField();
+        var posRLabel = new Label("Position from other end of the runway (m)");
+        var posRField = new TextField();
+        var distLabel = new Label("Distance from centre line (m)");
+        var distField = new TextField();
+
+        var logButton = new Button("Set obstacle");
+        /*logButton.setOnAction(ActionEvent -> {
+
+        });*/
+
+        var obstPane = new GridPane();
+        obstPane.setHgap(5);
+        obstPane.setVgap(5);
+        obstPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60),
+            new ColumnConstraints(), new ColumnConstraints(60));
+        obstPane.addRow(1, nameLabel, nameField);
+        obstPane.addRow(2, heightLabel, heightField);
+        obstPane.addRow(3, posLLabel, posLField);
+        obstPane.addRow(4, posRLabel, posRField);
+        obstPane.addRow(5, distLabel, distField, logButton);
+        inputObstaclePane.setContent(obstPane);
 
         infoPane.getChildren().addAll(inputSectionTitle, inputRunwayPane, inputObstaclePane);
 
@@ -283,17 +317,7 @@ public class MainScene extends BaseScene {
 
         Obstacle obstacle;
         Runway runway;
-
-        // Create the specified obstacle
-        if (scenario == 1) {
-            obstacle = new Obstacle("Obstacle Name", 12, -50, 3646);
-        } else if (scenario == 2) {
-            obstacle = new Obstacle("Obstacle Name", 25, 2853, 500);
-        } else if (scenario == 3) {
-            obstacle = new Obstacle("Obstacle Name", 15, 150, 3203);
-        } else {
-            obstacle = new Obstacle("Obstacle Name", 20, 3546, 50);
-        }
+        RunwayObstacle runwayObstacle;
 
         // Create and set the runway corresponding to the scenario
         if (scenario == 1 || scenario == 4) {
@@ -336,9 +360,24 @@ public class MainScene extends BaseScene {
             });
         }
 
+        // Create the specified obstacle
+        if (scenario == 1) {
+            obstacle = new Obstacle("Obstacle Name", 12);
+            runwayObstacle = new RunwayObstacle(obstacle, runway, -50.0, 3646.0, 0.0);
+        } else if (scenario == 2) {
+            obstacle = new Obstacle("Obstacle Name", 25);
+            runwayObstacle = new RunwayObstacle(obstacle, runway, 2853.0, 500.0, -20.0);
+        } else if (scenario == 3) {
+            obstacle = new Obstacle("Obstacle Name", 15);
+            runwayObstacle = new RunwayObstacle(obstacle, runway, 150.0, 3203.0, 60.0);
+        } else {
+            obstacle = new Obstacle("Obstacle Name", 20);
+            runwayObstacle = new RunwayObstacle(obstacle, runway, 3546.0, 50.0, 20.0);
+        }
+
         // Select the runway and obstacle to show on the program
         selectedRunway = runway;
         updateInitialRunway(runway);
-        selectedObstacle = obstacle;
+        selectedObstacle = runwayObstacle;
     }
 }
