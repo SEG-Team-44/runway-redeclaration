@@ -14,10 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -60,6 +57,7 @@ public class ModifyWindow extends ParameterController {
         scroll.setContent(options);
 
         Button modifyBtn = new Button("Modify");
+        modifyBtn.setFont(new Font(17));
         //enable button only when a user selected a runway
         modifyBtn.setDisable(true);
 
@@ -70,11 +68,15 @@ public class ModifyWindow extends ParameterController {
             showModifyScene(airport, options.getSelectionModel().getSelectedItem())
         );
 
+        Label lbl = new Label("Select a Runway:");
+        lbl.setFont(new Font(18));
+
         //combine the scroll pane & button
         VBox optionBox = new VBox();
-        optionBox.getChildren().addAll(scroll, modifyBtn);
+        optionBox.getChildren().addAll(lbl, scroll, modifyBtn);
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setSpacing(5);
+        optionBox.setPadding(new Insets(5));
 
         Scene scene = new Scene(optionBox);
         stage.setScene(scene);
@@ -147,6 +149,7 @@ public class ModifyWindow extends ParameterController {
             disThreshTf2};
 
         Button modifyBtn = new Button("Modify");
+        modifyBtn.setFont(new Font(15));
         modifyBtn.setOnAction(ActionEvent -> {
             //update all values if inputs are valid
             if (validNumericalInput(textFields)) {
@@ -165,13 +168,15 @@ public class ModifyWindow extends ParameterController {
         });
 
         //return to option page
-        Button returnBtn = new Button("Return to Selection");
+        Button returnBtn = new Button("Back");
+        returnBtn.setFont(new Font(15));
         returnBtn.setOnAction(ActionEvent -> {
             showOptionScene(airport);
         });
 
         HBox buttons = new HBox();
-        buttons.setSpacing(5);
+        buttons.setSpacing(2);
+        buttons.setAlignment(Pos.BOTTOM_RIGHT);
         buttons.getChildren().addAll(returnBtn, modifyBtn);
 
         //Setup main pane
