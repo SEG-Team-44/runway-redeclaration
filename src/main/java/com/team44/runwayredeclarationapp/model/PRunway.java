@@ -28,7 +28,11 @@ public class PRunway extends Runway {
         logicId2 += pos2;
     }
 
-    public char getPos1() {return pos1;}
+    public char getPos1() {
+        return pos1;
+    }
 
-    public char getPos2() {return pos2;}
+    public char getPos2() {
+        return pos2;
+    }
 }
