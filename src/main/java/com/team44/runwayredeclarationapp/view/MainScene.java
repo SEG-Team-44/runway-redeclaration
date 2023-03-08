@@ -187,17 +187,29 @@ public class MainScene extends BaseScene {
         nameField.setEditable(true);
         var heightLabel = new Label("Height of obstacle (m) ");
         var heightField = new TextField();
-        var posLLabel = new Label("Position from one end of the runway (m)");
+        var posLLabel = new Label("Position from left end of the runway (m)");
         var posLField = new TextField();
-        var posRLabel = new Label("Position from other end of the runway (m)");
+        var posRLabel = new Label("Position from right end of the runway (m)");
         var posRField = new TextField();
         var distLabel = new Label("Distance from centre line (m)");
         var distField = new TextField();
 
-        var logButton = new Button("Set obstacle");
-        /*logButton.setOnAction(ActionEvent -> {
+        var obstButton = new Button("Set obstacle");
+        obstButton.setOnAction(ActionEvent -> {
 
-        });*/
+            if (selectedRunway == null){
+                var alert = new Alert(AlertType.ERROR);
+                alert.setContentText("Please select a runway.");
+                alert.show();
+            } else {
+                Obstacle obst = new Obstacle(nameField.getValue(),
+                    Double.parseDouble(heightField.getText()));
+                selectedObstacle = new RunwayObstacle(obst, selectedRunway,
+                    Double.parseDouble(posLField.getText()),
+                    Double.parseDouble(posRField.getText()),
+                    Double.parseDouble(distField.getText()));
+            }
+        });
 
         var obstPane = new GridPane();
         obstPane.setHgap(5);
@@ -208,7 +220,7 @@ public class MainScene extends BaseScene {
         obstPane.addRow(2, heightLabel, heightField);
         obstPane.addRow(3, posLLabel, posLField);
         obstPane.addRow(4, posRLabel, posRField);
-        obstPane.addRow(5, distLabel, distField, logButton);
+        obstPane.addRow(5, distLabel, distField, obstButton);
         inputObstaclePane.setContent(obstPane);
 
         infoPane.getChildren().addAll(inputSectionTitle, inputRunwayPane, inputObstaclePane);
