@@ -1,5 +1,6 @@
-package com.team44.runwayredeclarationapp.controller;
+package com.team44.runwayredeclarationapp.ui;
 
+import com.team44.runwayredeclarationapp.controller.ParameterController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
 import javafx.geometry.HPos;
@@ -22,10 +23,17 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+/**
+ * The class responsible for generate & display the UI for modify initial parameters of runways
+ */
 public class ModifyWindow extends ParameterController {
-
     Stage stage;
 
+    /**
+     * Initialising the stage
+     * @param parent
+     * @param airport current airport
+     */
     public ModifyWindow(Window parent, Airport airport) {
         stage = new Stage();
         stage.setTitle("Parameters Modification");
@@ -37,6 +45,10 @@ public class ModifyWindow extends ParameterController {
         showOptionScene(airport);
     }
 
+    /**
+     * Setup & display the option window
+     * @param airport current airport
+     */
     private void showOptionScene(Airport airport) {
         //listing all runways recorded in the system
         ScrollPane scroll = new ScrollPane();
@@ -69,6 +81,11 @@ public class ModifyWindow extends ParameterController {
         stage.show();
     }
 
+    /**
+     * Setup & display the UI for user to update the parameters for the selected runway
+     * @param airport current airport
+     * @param id physical id of the selected runway
+     */
     private void showModifyScene(Airport airport, String id) {
         Runway runway = airport.getRunway(id);
 

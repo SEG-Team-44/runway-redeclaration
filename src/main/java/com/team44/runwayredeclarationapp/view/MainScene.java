@@ -1,7 +1,7 @@
 package com.team44.runwayredeclarationapp.view;
 
-import com.team44.runwayredeclarationapp.controller.InitialiseWindow;
-import com.team44.runwayredeclarationapp.controller.ModifyWindow;
+import com.team44.runwayredeclarationapp.ui.InitialiseWindow;
+import com.team44.runwayredeclarationapp.ui.ModifyWindow;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;

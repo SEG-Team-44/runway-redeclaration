@@ -1,5 +1,6 @@
-package com.team44.runwayredeclarationapp.controller;
+package com.team44.runwayredeclarationapp.ui;
 
+import com.team44.runwayredeclarationapp.controller.ParameterController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -19,7 +20,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-
+/**
+ * The class responsible for generate & display the UI for adding a new runway
+ */
 public class InitialiseWindow extends ParameterController {
 
     public InitialiseWindow(Window parent, Airport airport) {
@@ -38,7 +41,6 @@ public class InitialiseWindow extends ParameterController {
         TextField stripWTf = new TextField();
         Label clearW = new Label("Clearway Vertical Width (m)");
         TextField clearWTf = new TextField();
-
         Label resa = new Label("RESA Length (m) ");
         TextField resaTf = new TextField();
         resaTf.setPrefSize(60, 20);
@@ -132,6 +134,19 @@ public class InitialiseWindow extends ParameterController {
         stage.show();
     }
 
+    /**
+     * Generate the UI containing given components that ask for inputs for logical runways
+     * @param lblContent section title
+     * @param degree TextField for degree
+     * @param posCb checkbox of whether to input a position character
+     * @param pos TextField for position character
+     * @param tora TextField for TORA
+     * @param toda TextField for TODA
+     * @param asda TextField for ASDA
+     * @param lda TextField for LDA
+     * @param disThresh TextField for displaced threshold
+     * @return a gridPane includes all components
+     */
     private GridPane getLayout(String lblContent, TextField degree, CheckBox posCb, TextField pos, TextField tora, TextField toda, TextField asda, TextField lda, TextField disThresh) {
         Label lbl = new Label(lblContent);
         lbl.setFont(new Font(17));
@@ -159,6 +174,7 @@ public class InitialiseWindow extends ParameterController {
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints(60);
 
+        //Adding all components to the GridPane
         GridPane gridPane = new GridPane();
         gridPane.setHgap(5);
         gridPane.setVgap(5);
@@ -173,6 +189,10 @@ public class InitialiseWindow extends ParameterController {
         return gridPane;
     }
 
+    /**
+     * Print an alert correspond to the boolean
+     * @param success if tasks have been successfully performed
+     */
     @Override
     protected void printAlert(boolean success) {
 
