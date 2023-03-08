@@ -14,6 +14,7 @@ import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
 import com.team44.runwayredeclarationapp.view.component.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -125,14 +126,19 @@ public class MainScene extends BaseScene {
         mainPane.setRight(visualTabPane);
         infoPane.getStyleClass().add("info-pane");
         infoPane.setSpacing(10);
+        infoPane.setAlignment(Pos.TOP_CENTER);
         visualTabPane.getStyleClass().add("visual-tab-pane");
 
         // Set the visualisation tab size
         visualTabPane.setMinWidth(mainWindow.getWidth() / 2);
         // Always make the visualisation tab half the size of the window
         root.widthProperty().addListener(
-            (observableValue, oldWidth, newWidth) -> visualTabPane.setPrefWidth(
-                newWidth.doubleValue() / 2));
+            (observableValue, oldWidth, newWidth) -> {
+                visualTabPane.setPrefWidth(
+                    newWidth.doubleValue() / 2);
+                infoPane.setPrefWidth(
+                    newWidth.doubleValue() / 2);
+            });
 
         // Set tab properties
         visualTabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
@@ -203,6 +209,7 @@ public class MainScene extends BaseScene {
 
         // Recalculate button
         var recalculateBtn = new Button("Recalculate");
+        recalculateBtn.getStyleClass().add("recalculate-btn");
         recalculateBtn.setOnAction(event -> {
             // Check if the user has already selected the runway and obstacle to recalculate
             if (selectedRunway == null || selectedObstacle == null) {
@@ -233,6 +240,7 @@ public class MainScene extends BaseScene {
 
         // Add the grids to the information pane
         valueGridsBox.getChildren().addAll(ogValuesGrid, newValuesGrid);
+        valueGridsBox.setAlignment(Pos.CENTER);
         infoPane.getChildren().add(valueGridsBox);
     }
 
