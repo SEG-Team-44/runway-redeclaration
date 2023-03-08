@@ -1,7 +1,7 @@
 package com.team44.runwayredeclarationapp.view.component;
 
 import com.team44.runwayredeclarationapp.model.Coord;
-import com.team44.runwayredeclarationapp.model.Obstacles;
+import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.Runway;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -787,12 +787,18 @@ public abstract class VisualisationBase extends Canvas {
         this.blastProtection = calculateRatioValue(blastProtectionActual);
     }
 
+
     /**
      * Set the new re-calculated parameters
      *
-     * @param runway the runway object
+     * @param runway                 the runway object
+     * @param obstacle               the obstacle
+     * @param slope                  the slope angle
+     * @param blast                  the blast protection
+     * @param obstacleFromThresholdL the obstacles distance from the left threshold
+     * @param obstacleFromThresholdR the obstacles distance from the right threshold
      */
-    public void setRecalculatedParameters(Runway runway, Obstacles obstacle, double slope,
+    public void setRecalculatedParameters(Runway runway, Obstacle obstacle, double slope,
         double blast, double obstacleFromThresholdL, double obstacleFromThresholdR) {
         // Get the 2 logical runway ID's
         var runway1ID = runway.getLogicId1();

@@ -4,7 +4,7 @@ import com.team44.runwayredeclarationapp.controller.InitialiseWindow;
 import com.team44.runwayredeclarationapp.controller.ModifyWindow;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.model.Obstacles;
+import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
@@ -48,7 +48,7 @@ public class MainScene extends BaseScene {
     /**
      * The selected obstacle
      */
-    private Obstacles selectedObstacle;
+    private Obstacle selectedObstacle;
 
     /**
      * The controller responsible for setting the recalculated values
@@ -277,18 +277,18 @@ public class MainScene extends BaseScene {
     private void setTestScenario(int scenario) {
         logger.info("Setting scenario - " + scenario);
 
-        Obstacles obstacle;
+        Obstacle obstacle;
         Runway runway;
 
         // Create the specified obstacle
         if (scenario == 1) {
-            obstacle = new Obstacles("Obstacle Name", 12, -50, 3646);
+            obstacle = new Obstacle("Obstacle Name", 12, -50, 3646);
         } else if (scenario == 2) {
-            obstacle = new Obstacles("Obstacle Name", 25, 2853, 500);
+            obstacle = new Obstacle("Obstacle Name", 25, 2853, 500);
         } else if (scenario == 3) {
-            obstacle = new Obstacles("Obstacle Name", 15, 150, 3203);
+            obstacle = new Obstacle("Obstacle Name", 15, 150, 3203);
         } else {
-            obstacle = new Obstacles("Obstacle Name", 20, 3546, 50);
+            obstacle = new Obstacle("Obstacle Name", 20, 3546, 50);
         }
 
         // Create and set the runway corresponding to the scenario
