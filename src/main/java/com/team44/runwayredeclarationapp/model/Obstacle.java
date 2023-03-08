@@ -1,13 +1,13 @@
 package com.team44.runwayredeclarationapp.model;
 
-public class Obstacles {
+public class Obstacle {
 
     private String obstName;
     private double height;
     private double positionL;
     private double positionR;
 
-    public Obstacles(String obstName, double height, double positionL, double positionR) {
+    public Obstacle(String obstName, double height, double positionL, double positionR) {
         this.obstName = obstName;
         this.height = height;
         this.positionL = positionL;

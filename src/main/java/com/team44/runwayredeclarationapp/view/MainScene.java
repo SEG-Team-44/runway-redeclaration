@@ -4,7 +4,7 @@ import com.team44.runwayredeclarationapp.controller.InitialiseWindow;
 import com.team44.runwayredeclarationapp.controller.ModifyWindow;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.model.Obstacles;
+import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
@@ -14,6 +14,7 @@ import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
 import com.team44.runwayredeclarationapp.view.component.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -48,7 +49,7 @@ public class MainScene extends BaseScene {
     /**
      * The selected obstacle
      */
-    private Obstacles selectedObstacle;
+    private Obstacle selectedObstacle;
 
     /**
      * The controller responsible for setting the recalculated values
@@ -125,14 +126,19 @@ public class MainScene extends BaseScene {
         mainPane.setRight(visualTabPane);
         infoPane.getStyleClass().add("info-pane");
         infoPane.setSpacing(10);
+        infoPane.setAlignment(Pos.TOP_CENTER);
         visualTabPane.getStyleClass().add("visual-tab-pane");
 
         // Set the visualisation tab size
         visualTabPane.setMinWidth(mainWindow.getWidth() / 2);
         // Always make the visualisation tab half the size of the window
         root.widthProperty().addListener(
-            (observableValue, oldWidth, newWidth) -> visualTabPane.setPrefWidth(
-                newWidth.doubleValue() / 2));
+            (observableValue, oldWidth, newWidth) -> {
+                visualTabPane.setPrefWidth(
+                    newWidth.doubleValue() / 2);
+                infoPane.setPrefWidth(
+                    newWidth.doubleValue() / 2);
+            });
 
         // Set tab properties
         visualTabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
@@ -203,6 +209,7 @@ public class MainScene extends BaseScene {
 
         // Recalculate button
         var recalculateBtn = new Button("Recalculate");
+        recalculateBtn.getStyleClass().add("recalculate-btn");
         recalculateBtn.setOnAction(event -> {
             // Check if the user has already selected the runway and obstacle to recalculate
             if (selectedRunway == null || selectedObstacle == null) {
@@ -233,6 +240,7 @@ public class MainScene extends BaseScene {
 
         // Add the grids to the information pane
         valueGridsBox.getChildren().addAll(ogValuesGrid, newValuesGrid);
+        valueGridsBox.setAlignment(Pos.CENTER);
         infoPane.getChildren().add(valueGridsBox);
     }
 
@@ -261,12 +269,8 @@ public class MainScene extends BaseScene {
         newValuesGrid.setRunway(runway);
 
         // Update both canvas
-        topDownCanvas.setRecalculatedParameters(runway, selectedObstacle,
-            selectedObstacle.getSlope(),
-            300, selectedObstacle.getPositionL(), selectedObstacle.getPositionR());
-        sideOnCanvas.setRecalculatedParameters(runway, selectedObstacle,
-            selectedObstacle.getSlope(),
-            300, selectedObstacle.getPositionL(), selectedObstacle.getPositionR());
+        topDownCanvas.setRecalculatedParameters(runway, selectedObstacle, 300);
+        sideOnCanvas.setRecalculatedParameters(runway, selectedObstacle, 300);
     }
 
     /**
@@ -277,18 +281,18 @@ public class MainScene extends BaseScene {
     private void setTestScenario(int scenario) {
         logger.info("Setting scenario - " + scenario);
 
-        Obstacles obstacle;
+        Obstacle obstacle;
         Runway runway;
 
         // Create the specified obstacle
         if (scenario == 1) {
-            obstacle = new Obstacles("Obstacle Name", 12, -50, 3646);
+            obstacle = new Obstacle("Obstacle Name", 12, -50, 3646);
         } else if (scenario == 2) {
-            obstacle = new Obstacles("Obstacle Name", 25, 2853, 500);
+            obstacle = new Obstacle("Obstacle Name", 25, 2853, 500);
         } else if (scenario == 3) {
-            obstacle = new Obstacles("Obstacle Name", 15, 150, 3203);
+            obstacle = new Obstacle("Obstacle Name", 15, 150, 3203);
         } else {
-            obstacle = new Obstacles("Obstacle Name", 20, 3546, 50);
+            obstacle = new Obstacle("Obstacle Name", 20, 3546, 50);
         }
 
         // Create and set the runway corresponding to the scenario

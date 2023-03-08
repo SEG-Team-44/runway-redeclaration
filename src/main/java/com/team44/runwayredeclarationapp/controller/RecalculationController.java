@@ -1,7 +1,7 @@
 package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.event.SetRunwayListener;
-import com.team44.runwayredeclarationapp.model.Obstacles;
+import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.Runway;
 import java.util.HashMap;
 import java.util.Objects;
@@ -25,7 +25,7 @@ public class RecalculationController {
      * @param blastProtection the blast protection value
      * @return the new TORA value
      */
-    private double recalculateTORA(Runway runway, String logicID, Obstacles obstacle,
+    private double recalculateTORA(Runway runway, String logicID, Obstacle obstacle,
         double blastProtection) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
@@ -101,7 +101,7 @@ public class RecalculationController {
      * @param tora     the recalculated tora value
      * @return the new ASDA value
      */
-    private double recalculateASDA(Runway runway, String logicID, Obstacles obstacle,
+    private double recalculateASDA(Runway runway, String logicID, Obstacle obstacle,
         double tora) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
@@ -145,7 +145,7 @@ public class RecalculationController {
      * @param tora     the recalculated tora value
      * @return the new TODA value
      */
-    private double recalculateTODA(Runway runway, String logicID, Obstacles obstacle, double tora) {
+    private double recalculateTODA(Runway runway, String logicID, Obstacle obstacle, double tora) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
 
@@ -186,7 +186,7 @@ public class RecalculationController {
      * @param obstacle the obstacle
      * @return the new LDA value
      */
-    private double recalculateLDA(Runway runway, String logicID, Obstacles obstacle) {
+    private double recalculateLDA(Runway runway, String logicID, Obstacle obstacle) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
 
@@ -248,8 +248,9 @@ public class RecalculationController {
      * @param runway          the runway
      * @param obstacle        the obstacle on the runway
      * @param blastProtection the blast protection value
+     * @return the updated runway
      */
-    public void recalculateRunway(Runway runway, Obstacles obstacle, double blastProtection) {
+    public Runway recalculateRunway(Runway runway, Obstacle obstacle, double blastProtection) {
         // Clone the current runway to edit
         var recalculatedRunway = runway.clone();
 
@@ -293,6 +294,10 @@ public class RecalculationController {
         });
 
         // Call the listener to update the GUI
-        setRunwayListener.updateRunway(recalculatedRunway);
+        if (setRunwayListener != null) {
+            setRunwayListener.updateRunway(recalculatedRunway);
+        }
+
+        return recalculatedRunway;
     }
 }

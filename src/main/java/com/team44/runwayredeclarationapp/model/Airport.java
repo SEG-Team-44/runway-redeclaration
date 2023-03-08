@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Airport {
+
     private List<Runway> runways;
 
     public Airport() {
@@ -15,14 +16,16 @@ public class Airport {
         runways.add(newRunway);
     }
 
-    public List<Runway> getRunways() {return runways;}
+    public List<Runway> getRunways() {
+        return runways;
+    }
 
     public Runway getRunway(String id) {
         Iterator<Runway> it = runways.iterator();
 
         while (it.hasNext()) {
             Runway runway = it.next();
-            if(runway.getPhyId().equals(id)) {
+            if (runway.getPhyId().equals(id)) {
                 return runway;
             }
         }
