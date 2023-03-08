@@ -1,6 +1,8 @@
 package com.team44.runwayredeclarationapp.view.component;
 
 import com.team44.runwayredeclarationapp.model.Coord;
+import com.team44.runwayredeclarationapp.model.Obstacle;
+import com.team44.runwayredeclarationapp.model.Runway;
 import java.util.HashMap;
 import java.util.HashSet;
 import javafx.scene.canvas.Canvas;
@@ -652,6 +654,35 @@ public abstract class VisualisationBase extends Canvas {
         gc.strokeLine(x1, y1, x1, y2);
     }
 
+    /**
+     * Set the initial runway parameters (without the obstacle)
+     *
+     * @param runway the runway object
+     */
+    public void setInitialParameters(Runway runway) {
+        // Get the 2 logical runway ID's
+        var runway1ID = runway.getLogicId1();
+        var runway2ID = runway.getLogicId2();
+
+        // Send the data to the other overloaded method
+        setInitialParameters(
+            runway.getRunwayL(),
+            runway.getTora(runway1ID),
+            runway.getToda(runway1ID),
+            runway.getAsda(runway1ID),
+            runway.getLda(runway1ID),
+            runway.getTora(runway2ID),
+            runway.getToda(runway2ID),
+            runway.getAsda(runway2ID),
+            runway.getLda(runway2ID),
+            runway.getDisThresh(runway2ID),
+            runway.getDisThresh(runway1ID),
+            runway.getStopwayL(runway2ID),
+            runway.getStopwayL(runway1ID),
+            runway.getClearwayL(runway2ID),
+            runway.getClearwayL(runway1ID)
+        );
+    }
 
     /**
      * Set the initial runway parameters (without the obstacle)
@@ -754,6 +785,39 @@ public abstract class VisualisationBase extends Canvas {
         this.stripEnd = calculateRatioValue(stripEndActual);
         this.resa = calculateRatioValue(resaActual);
         this.blastProtection = calculateRatioValue(blastProtectionActual);
+    }
+
+
+    /**
+     * Set the new re-calculated parameters
+     *
+     * @param runway   the runway object
+     * @param obstacle the obstacle
+     * @param blast    the blast protection
+     */
+    public void setRecalculatedParameters(Runway runway, Obstacle obstacle, double blast) {
+        // Get the 2 logical runway ID's
+        var runway1ID = runway.getLogicId1();
+        var runway2ID = runway.getLogicId2();
+
+        // Send the data to the other overloaded method
+        setRecalculatedParameters(
+            runway.getTora(runway1ID),
+            runway.getToda(runway1ID),
+            runway.getAsda(runway1ID),
+            runway.getLda(runway1ID),
+            runway.getTora(runway2ID),
+            runway.getToda(runway2ID),
+            runway.getAsda(runway2ID),
+            runway.getLda(runway2ID),
+            obstacle.getSlope(),
+            runway.getStripL(),
+            runway.getResaL(),
+            blast,
+            runway.getDisThresh(runway2ID) + obstacle.getPositionL(),
+            obstacle.getHeight(),
+            obstacle.getPositionL() < obstacle.getPositionR()
+        );
     }
 
     /**

@@ -3,7 +3,8 @@ package com.team44.runwayredeclarationapp.model;
 /**
  * The class refers to a runway in real world
  */
-public class Runway {
+public class Runway implements Cloneable {
+
     /**
      * ID identifying the physical runway
      */
@@ -17,13 +18,13 @@ public class Runway {
      */
     private double runwayW;
     /**
-     * The physical distance between the end of the runway and the edge of strip
-     * Identical on both ends
+     * The physical distance between the end of the runway and the edge of strip Identical on both
+     * ends
      */
     private double stripL;
     /**
-     * The physical distance between the centerline of the runway and the edge of strip
-     * Identical on both sides
+     * The physical distance between the centerline of the runway and the edge of strip Identical on
+     * both sides
      */
     private double stripW;
     /**
@@ -40,8 +41,8 @@ public class Runway {
     private double resaL;
 
     /**
-     * ID identifying one logical runways, with its corresponding TORA, TODA, ASDA, LDA,
-     * Displaced Threshold, horizontal stopway length & clearway length
+     * ID identifying one logical runways, with its corresponding TORA, TODA, ASDA, LDA, Displaced
+     * Threshold, horizontal stopway length & clearway length
      */
     protected String logicId1;
     protected int degree1;
@@ -120,8 +121,9 @@ public class Runway {
 
         if (degree < 10) {
             newDegree = "0" + degree;
+        } else {
+            newDegree = String.valueOf(degree);
         }
-        else newDegree = String.valueOf(degree);
 
         return newDegree;
     }
@@ -155,64 +157,123 @@ public class Runway {
         this.clearwayL2 = toda2 - tora2;
     }
 
-    public String getPhyId() {return phyId;}
-    public double getRunwayL() {return runwayL;}
-    public double getRunwayW() {return runwayW;}
-    public double getStripL() {return stripL;}
-    public double getStripW() {return stripW;}
+    public String getPhyId() {
+        return phyId;
+    }
+
+    public double getRunwayL() {
+        return runwayL;
+    }
+
+    public double getRunwayW() {
+        return runwayW;
+    }
+
+    public double getStripL() {
+        return stripL;
+    }
+
+    public double getStripW() {
+        return stripW;
+    }
+
     public double getStopwayL(String logicId) {
         if (logicId.equals(logicId1)) {
             return stopwayL1;
+        } else {
+            return stopwayL2;
         }
-        else return stopwayL2;
     }
-    public double getStopwayW() {return stopwayW;}
+
+    public double getStopwayW() {
+        return stopwayW;
+    }
 
     public double getTora(String logicId) {
         if (logicId.equals(logicId1)) {
             return tora1;
-        } else return tora2;
+        } else {
+            return tora2;
+        }
     }
 
     public double getToda(String logicId) {
         if (logicId.equals(logicId1)) {
             return toda1;
-        } else return toda2;
+        } else {
+            return toda2;
+        }
     }
 
     public double getAsda(String logicId) {
         if (logicId.equals(logicId1)) {
             return asda1;
-        } else return asda2;
+        } else {
+            return asda2;
+        }
     }
 
     public double getLda(String logicId) {
         if (logicId.equals(logicId1)) {
             return lda1;
-        } else return lda2;
+        } else {
+            return lda2;
+        }
     }
 
     public double getDisThresh(String logicId) {
         if (logicId.equals(logicId1)) {
             return disThresh1;
-        } else return disThresh2;
+        } else {
+            return disThresh2;
+        }
     }
 
     public double getClearwayL(String logicId) {
         if (logicId.equals(logicId1)) {
             return clearwayL1;
-        } else return clearwayL2;
+        } else {
+            return clearwayL2;
+        }
     }
 
-    public double getClearwayW() {return clearwayW;}
-    public String getLogicId1() {return logicId1;}
-    public String getLogicId2() {return logicId2;}
+    public double getClearwayW() {
+        return clearwayW;
+    }
+
+    public String getLogicId1() {
+        return logicId1;
+    }
+
+    public String getLogicId2() {
+        return logicId2;
+    }
 
 
-    public int getDegree1() {return degree1;}
+    public int getDegree1() {
+        return degree1;
+    }
 
 
-    public int getDegree2() {return degree2;}
+    public int getDegree2() {
+        return degree2;
+    }
 
-    public double getResaL() {return resaL;}
+    public double getResaL() {
+        return resaL;
+    }
+
+    /**
+     * Clone the runway object
+     *
+     * @return the cloned runway object
+     */
+    @Override
+    public Runway clone() {
+        try {
+            return (Runway) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

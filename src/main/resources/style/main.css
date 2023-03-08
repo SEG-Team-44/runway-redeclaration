@@ -1,12 +1,45 @@
+/* Main */
+.title-text {
+  -fx-font-size: 13pt;
+  -fx-font-family: "Helvetica";
+  -fx-font-weight: bold;
+}
+
 .info-pane {
-  -fx-padding: 12px;
+  -fx-padding: 20px;
 }
 
+/* Buttons */
+.recalculate-btn Text {
+}
+
+.recalculate-btn {
+}
+
+.recalculate-btn:hover {
+}
+
+.recalculate-btn:pressed {
+}
+
+/* Tabs */
 .visual-tab-pane {
-  -fx-tab-min-width: 100;
-  -fx-font-size: 12;
+  -fx-tab-min-width: 10em;
 }
 
+.visual-tab-pane .tab-header-area .tab-header-background {
+  /*-fx-opacity: 0;*/
+}
+
+.visual-tab-pane .tab {
+}
+
+.visual-tab-pane .tab:selected {
+
+}
+
+
+/* Grid */
 .values-grid {
   -fx-font-size: 9pt;
   -fx-font-family: "Arial";
