@@ -1,5 +1,8 @@
 package com.team44.runwayredeclarationapp.model;
 
+/**
+ * The class refers to a runway in real world
+ */
 public class Runway implements Cloneable {
 
     /**
@@ -65,29 +68,54 @@ public class Runway implements Cloneable {
     private double clearwayL2;
     private double stopwayL2;
 
-    public Runway(int d1, int d2, double[] parameters) {
-        degree1 = d1;
-        degree2 = d2;
+    /**
+     * Constructor for single (non-parallel) runways
+     * @param degree1 degree of one logical runway
+     * @param degree2 degree of the other logical runway
+     * @param parameters all numerical inputs (parameters)
+     */
+    public Runway(int degree1, int degree2, double[] parameters) {
+        this.degree1 = degree1;
+        this.degree2 = degree2;
 
         updateParameters(parameters);
     }
 
-    public Runway(int d1, int d2, char pos1, char pos2, double[] parameters) {
-        degree1 = d1;
-        degree2 = d2;
+    /**
+     * Constructor for parallel runways
+     * @param degree1 degree of one logical runway
+     * @param degree2 degree of the other logical runway
+     * @param pos1 position character of one logical runway
+     * @param pos2 position character of the other logical runway
+     * @param parameters all numerical inputs (parameters)
+     */
+    public Runway(int degree1, int degree2, char pos1, char pos2, double[] parameters) {
+        this.degree1 = degree1;
+        this.degree2 = degree2;
 
         updateParameters(parameters);
     }
 
+    /**
+     * Set a physical id for the runway
+     */
     protected void setPhyId() {
         phyId = getDegreeInString(degree1) + "/" + getDegreeInString(degree2);
     }
 
+    /**
+     * Set logical id for the 2 logical runways based on their degrees (positions)
+     */
     protected void setLogicId() {
         logicId1 = getDegreeInString(degree1);
         logicId2 = getDegreeInString(degree2);
     }
 
+    /**
+     * Base on the degree given, return the degree in string and in the correct format (01-36)
+     * @param degree degree of a runway
+     * @return degree in string and in correct format
+     */
     private String getDegreeInString(int degree) {
         String newDegree;
 
@@ -100,6 +128,10 @@ public class Runway implements Cloneable {
         return newDegree;
     }
 
+    /**
+     * Update all parameters of the runway based on the given values
+     * @param parameters new parameters to be updated
+     */
     public void updateParameters(double[] parameters) {
         runwayL = parameters[0];
         runwayW = parameters[1];
