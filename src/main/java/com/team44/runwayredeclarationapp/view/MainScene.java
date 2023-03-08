@@ -261,12 +261,8 @@ public class MainScene extends BaseScene {
         newValuesGrid.setRunway(runway);
 
         // Update both canvas
-        topDownCanvas.setRecalculatedParameters(runway, selectedObstacle,
-            selectedObstacle.getSlope(),
-            300, selectedObstacle.getPositionL(), selectedObstacle.getPositionR());
-        sideOnCanvas.setRecalculatedParameters(runway, selectedObstacle,
-            selectedObstacle.getSlope(),
-            300, selectedObstacle.getPositionL(), selectedObstacle.getPositionR());
+        topDownCanvas.setRecalculatedParameters(runway, selectedObstacle, 300);
+        sideOnCanvas.setRecalculatedParameters(runway, selectedObstacle, 300);
     }
 
     /**

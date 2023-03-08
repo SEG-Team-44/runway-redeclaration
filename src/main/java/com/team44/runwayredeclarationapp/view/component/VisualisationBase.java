@@ -791,15 +791,11 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Set the new re-calculated parameters
      *
-     * @param runway                 the runway object
-     * @param obstacle               the obstacle
-     * @param slope                  the slope angle
-     * @param blast                  the blast protection
-     * @param obstacleFromThresholdL the obstacles distance from the left threshold
-     * @param obstacleFromThresholdR the obstacles distance from the right threshold
+     * @param runway   the runway object
+     * @param obstacle the obstacle
+     * @param blast    the blast protection
      */
-    public void setRecalculatedParameters(Runway runway, Obstacle obstacle, double slope,
-        double blast, double obstacleFromThresholdL, double obstacleFromThresholdR) {
+    public void setRecalculatedParameters(Runway runway, Obstacle obstacle, double blast) {
         // Get the 2 logical runway ID's
         var runway1ID = runway.getLogicId1();
         var runway2ID = runway.getLogicId2();
@@ -814,13 +810,13 @@ public abstract class VisualisationBase extends Canvas {
             runway.getToda(runway2ID),
             runway.getAsda(runway2ID),
             runway.getLda(runway2ID),
-            slope,
+            obstacle.getSlope(),
             runway.getStripL(),
             runway.getResaL(),
             blast,
-            runway.getDisThresh(runway2ID) + obstacleFromThresholdL,
+            runway.getDisThresh(runway2ID) + obstacle.getPositionL(),
             obstacle.getHeight(),
-            obstacleFromThresholdL < obstacleFromThresholdR
+            obstacle.getPositionL() < obstacle.getPositionR()
         );
     }
 
