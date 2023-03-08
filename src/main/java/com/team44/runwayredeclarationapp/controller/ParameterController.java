@@ -114,9 +114,9 @@ public abstract class ParameterController {
             return false;
         }
 
-        //return false if any of the TODAs/ASDAs smaller or equal to their corresponding TORAs
-        if (parameters.get(7) <= parameters.get(6) || parameters.get(8) <= parameters.get(6) ||
-            parameters.get(11) <= parameters.get(10) || parameters.get(12) <= parameters.get(10)) {
+        //return false if any of the TODAs/ASDAs smaller than their corresponding TORAs
+        if (parameters.get(7) < parameters.get(6) || parameters.get(8) < parameters.get(6) ||
+            parameters.get(11) < parameters.get(10) || parameters.get(12) < parameters.get(10)) {
             return false;
         }
 
