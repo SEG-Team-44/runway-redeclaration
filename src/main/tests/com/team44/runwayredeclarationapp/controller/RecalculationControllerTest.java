@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
+import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
@@ -71,19 +72,23 @@ class RecalculationControllerTest {
     /**
      * Obstacle object representing the obstacle specified in Scenario 1 in the spec
      */
-    Obstacle obstacle1 = new Obstacle("Scenario 1 Obs", 12, -50, 3646);
+    Obstacle obstacle1 = new Obstacle("Obstacle Name", 12);
+    RunwayObstacle runwayObstacle1 = new RunwayObstacle(obstacle1, runway09L27R, -50.0, 3646.0, 0.0);
     /**
      * Obstacle object representing the obstacle specified in Scenario 2 in the spec
      */
-    Obstacle obstacle2 = new Obstacle("Scenario 2 Obs", 25, 2853, 500);
+    Obstacle obstacle2 = new Obstacle("Obstacle Name", 25);
+    RunwayObstacle runwayObstacle2 = new RunwayObstacle(obstacle2, runway09R27L, 2853.0, 500.0, -20.0);
     /**
-     * Obstacle object representing the obstacle specified in Scenario 2 in the spec
+     * Obstacle object representing the obstacle specified in Scenario 3 in the spec
      */
-    Obstacle obstacle3 = new Obstacle("Scenario 3 Obs", 15, 150, 3203);
+    Obstacle obstacle3 = new Obstacle("Obstacle Name", 15);
+    RunwayObstacle runwayObstacle3 = new RunwayObstacle(obstacle3, runway09R27L, 150.0, 3203.0, 60.0);
     /**
-     * Obstacle object representing the obstacle specified in Scenario 2 in the spec
+     * Obstacle object representing the obstacle specified in Scenario 4 in the spec
      */
-    Obstacle obstacle4 = new Obstacle("Scenario 4 Obs", 20, 3546, 50);
+    Obstacle obstacle4 = new Obstacle("Obstacle Name", 20);
+    RunwayObstacle runwayObstacle4 = new RunwayObstacle(obstacle4, runway09L27R, 3546.0, 50.0, 20.0);
 
     /**
      * Set up a new recalculation controller before each test
@@ -102,7 +107,7 @@ class RecalculationControllerTest {
     @Test
     @DisplayName("Recalculate scenario 1")
     void recalculateRunwayScenario1() {
-        testPRunway(runway09L27R, obstacle1,
+        testPRunway(runway09L27R, runwayObstacle1,
             3346, 3346, 3346, 2985,
             2986, 2986, 2986, 3346);
     }
@@ -110,7 +115,7 @@ class RecalculationControllerTest {
     @Test
     @DisplayName("Recalculate scenario 2")
     void recalculateRunwayScenario2() {
-        testPRunway(runway09R27L, obstacle2,
+        testPRunway(runway09R27L, runwayObstacle2,
             1850, 1850, 1850, 2553,
             2860, 2860, 2860, 1850);
     }
@@ -118,7 +123,7 @@ class RecalculationControllerTest {
     @Test
     @DisplayName("Recalculate scenario 3")
     void recalculateRunwayScenario3() {
-        testPRunway(runway09R27L, obstacle3,
+        testPRunway(runway09R27L, runwayObstacle3,
             2903, 2903, 2903, 2393,
             2393, 2393, 2393, 2903);
     }
@@ -126,7 +131,7 @@ class RecalculationControllerTest {
     @Test
     @DisplayName("Recalculate scenario 4")
     void recalculateRunwayScenario4() {
-        testPRunway(runway09L27R, obstacle4,
+        testPRunway(runway09L27R, runwayObstacle4,
             2792, 2792, 2792, 3246,
             3534, 3612, 3534, 2774);
     }
@@ -135,7 +140,7 @@ class RecalculationControllerTest {
      * Test that the recalculated parameters of a parallel runway is correct
      *
      * @param ogRunway the original runway (before recalculating)
-     * @param obstacle the obstacle on the runway
+     * @param rwObs    the obstacle on the runway
      * @param newTora1 the expected recalculated TORA value for logical runway 1
      * @param newToda1 the expected recalculated TODA value for logical runway 1
      * @param newAsda1 the expected recalculated ASDA value for logical runway 1
@@ -145,7 +150,7 @@ class RecalculationControllerTest {
      * @param newAsda2 the expected recalculated ASDA value for logical runway 2
      * @param newLda2  the expected recalculated LDA value for logical runway 2
      */
-    private void testPRunway(PRunway ogRunway, Obstacle obstacle,
+    private void testPRunway(PRunway ogRunway, RunwayObstacle rwObs,
         double newTora1, double newToda1, double newAsda1, double newLda1,
         double newTora2, double newToda2, double newAsda2, double newLda2) {
         // Get the IDs of both logical runways
@@ -153,7 +158,7 @@ class RecalculationControllerTest {
         var runway2ID = ogRunway.getLogicId2();
 
         // Recalculate with the class method
-        var actualRunway = recalculationController.recalculateRunway(ogRunway, obstacle,
+        var actualRunway = recalculationController.recalculateRunway(ogRunway, rwObs,
             300);
 
         // Specify the expected recalculated runway object
