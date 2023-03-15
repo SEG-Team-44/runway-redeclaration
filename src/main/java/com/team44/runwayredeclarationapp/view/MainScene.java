@@ -9,6 +9,7 @@ import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
+import com.team44.runwayredeclarationapp.ui.SelectWindow;
 import com.team44.runwayredeclarationapp.view.component.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.Title;
 import com.team44.runwayredeclarationapp.view.component.TopDownView;
@@ -168,7 +169,8 @@ public class MainScene extends BaseScene {
 
         // Input runway pane
         var inputRunwayPane = new TitledPane();
-        inputRunwayPane.setText("Select Runway");
+        inputRunwayPane.setText("Add Runway");
+        inputRunwayPane.setExpanded(false);
         var inputRunwayPaneBox = new VBox();
 
         // Input runway pane (button layout)
@@ -177,13 +179,42 @@ public class MainScene extends BaseScene {
         inputRunwayPane.setContent(inputRunwayPaneBox);
         inputRunwayPaneBox.getChildren().add(inputRunwayPaneButtonBox);
 
+        // Select current runway pane
+        var selectRunwayPane = new TitledPane();
+        selectRunwayPane.setText("Select Current Runway");
+        selectRunwayPane.setExpanded(false);
+        var selectRunwayPaneBox = new VBox();
+
+        // Select current runway pane (button layout)
+        var selectRunwayPaneButtonBox = new HBox();
+        selectRunwayPaneButtonBox.setSpacing(10);
+        selectRunwayPane.setContent(selectRunwayPaneBox);
+        selectRunwayPaneBox.getChildren().add(selectRunwayPaneButtonBox);
+
+        Button selectBtn = new Button("Select current Runway");
+
+        selectBtn.setOnAction(ActionEvent -> {
+            if (airport.getRunways().isEmpty()) {
+                Alert a = new Alert(Alert.AlertType.INFORMATION);
+                a.setContentText("There are no runways recorded on the system.");
+                a.show();
+            } else {
+                SelectWindow selectPage = new SelectWindow(mainWindow.getStage(), airport);
+
+                // Set the runway listener to update
+                selectPage.setNewRunwayListener(this::updateInitialRunway);
+            }
+        });
+
+        selectRunwayPaneButtonBox.getChildren().add(selectBtn);
+
         // Input Obstacle titledPane
         var inputObstaclePane = new TitledPane();
         inputObstaclePane.setText("Input Obstacle");
         inputObstaclePane.setExpanded(false);
-        var nameLabel = new Label("Obstacle name ");
+        var nameLabel = new Label("Obstacle name");
         ComboBox<String> nameField = new ComboBox<String>();
-        nameField.getItems().addAll("Aircraft","Other");
+        nameField.getItems().addAll("A319ceo", "A320ceo", "A321ceo", "Boeing 737-700", "Boeing 737-800", "E-175", "Other Aircraft", "Other Obstacle");
         nameField.setEditable(true);
         var heightLabel = new Label("Height of obstacle (m) ");
         var heightField = new TextField();
@@ -223,7 +254,7 @@ public class MainScene extends BaseScene {
         obstPane.addRow(5, distLabel, distField, obstButton);
         inputObstaclePane.setContent(obstPane);
 
-        infoPane.getChildren().addAll(inputSectionTitle, inputRunwayPane, inputObstaclePane);
+        infoPane.getChildren().addAll(inputSectionTitle, inputRunwayPane,selectRunwayPane, inputObstaclePane);
 
         //Add runway button
         Button addRunwayBtn = new Button("Add New Runway");
