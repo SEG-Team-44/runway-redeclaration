@@ -81,7 +81,7 @@ public class SelectWindow<T> extends Stage {
             (observableValue, s, t1) -> selectBtn.setDisable(false));
 
         // Create a title
-        Label lbl = new Label("Select a " + title + ":");
+        Label lbl = new Label("Select " + title.toLowerCase() + ":");
         lbl.setFont(new Font(18));
 
         //combine the scroll pane & button

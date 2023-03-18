@@ -21,11 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -33,11 +29,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -217,57 +209,8 @@ public class MainScene extends BaseScene {
                 runwayObservableList.setAll(airport.get().getRunways());
             });
 
-        // Input Obstacle titledPane
-        var inputObstaclePaneOld = new TitledPane();
-        inputObstaclePaneOld.setText("Input Obstacle (Legacy)");
-        inputObstaclePaneOld.setExpanded(false);
-        var nameLabel = new Label("Obstacle name");
-        ComboBox<String> nameField = new ComboBox<String>();
-        nameField.getItems()
-            .addAll("A319ceo", "A320ceo", "A321ceo", "Boeing 737-700", "Boeing 737-800", "E-175",
-                "Other Aircraft", "Other Obstacle");
-        nameField.setEditable(true);
-        var heightLabel = new Label("Height of obstacle (m) ");
-        var heightField = new TextField();
-        var posLLabel = new Label("Position from left end of the runway (m)");
-        var posLField = new TextField();
-        var posRLabel = new Label("Position from right end of the runway (m)");
-        var posRField = new TextField();
-        var distLabel = new Label("Distance from centre line (m)");
-        var distField = new TextField();
-
-        var obstButton = new Button("Set obstacle");
-        obstButton.setOnAction(ActionEvent -> {
-
-            if (selectedRunway == null) {
-                var alert = new Alert(AlertType.ERROR);
-                alert.setContentText("Please select a runway.");
-                alert.show();
-            } else {
-                Obstacle obst = new Obstacle(nameField.getValue(),
-                    Double.parseDouble(heightField.getText()));
-                selectedObstacle = new RunwayObstacle(obst, selectedRunway,
-                    Double.parseDouble(posLField.getText()),
-                    Double.parseDouble(posRField.getText()),
-                    Double.parseDouble(distField.getText()));
-            }
-        });
-
-        var obstPane = new GridPane();
-        obstPane.setHgap(5);
-        obstPane.setVgap(5);
-        obstPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60),
-            new ColumnConstraints(), new ColumnConstraints(60));
-        obstPane.addRow(1, nameLabel, nameField);
-        obstPane.addRow(2, heightLabel, heightField);
-        obstPane.addRow(3, posLLabel, posLField);
-        obstPane.addRow(4, posRLabel, posRField);
-        obstPane.addRow(5, distLabel, distField, obstButton);
-        inputObstaclePaneOld.setContent(obstPane);
-
         infoPane.getChildren()
-            .addAll(inputSectionTitle, airportTitlePane, runwayTitlePane, obstacleTitlePane,
-                inputObstaclePaneOld);
+            .addAll(inputSectionTitle, airportTitlePane, runwayTitlePane, obstacleTitlePane);
 
         // Recalculate button
         var recalculateBtn = new Button("Recalculate");
