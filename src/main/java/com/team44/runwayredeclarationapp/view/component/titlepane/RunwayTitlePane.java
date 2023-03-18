@@ -1,9 +1,11 @@
 package com.team44.runwayredeclarationapp.view.component.titlepane;
 
+import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.InitialiseWindow;
 import com.team44.runwayredeclarationapp.ui.ModifyWindow;
-import com.team44.runwayredeclarationapp.ui.SelectWindow;
+import com.team44.runwayredeclarationapp.ui.RunwaySelectWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
+import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
@@ -16,6 +18,11 @@ import javafx.scene.layout.GridPane;
 public class RunwayTitlePane extends TitledPane {
 
     /**
+     * The combobox to select the runway
+     */
+    private final SelectComboBox<Runway> runwaySelectComboBox;
+
+    /**
      * Create the titled pane
      *
      * @param mainScene the main scene
@@ -24,7 +31,7 @@ public class RunwayTitlePane extends TitledPane {
         // Create titled pane for selecting the runway
         this.setText("Step 2: Select Runway");
         this.setExpanded(true);
-        this.setCollapsible(false);
+        this.setCollapsible(true);
 
         // Create the horizontal box for selecting runway
         var buttonSelectGridPane = new GridPane();
@@ -34,6 +41,15 @@ public class RunwayTitlePane extends TitledPane {
             .addAll(new ColumnConstraints(180), new ColumnConstraints(100),
                 new ColumnConstraints(100));
         this.setContent(buttonSelectGridPane);
+
+        // Create the combobox to select the obstacle
+        runwaySelectComboBox = new SelectComboBox<>(mainScene.getRunwayObservableList());
+        runwaySelectComboBox.setStringMethod(Runway::getPhyId);
+        runwaySelectComboBox.setPromptText("Select Runway (new)");
+        runwaySelectComboBox.setMaxWidth(Double.MAX_VALUE);
+        runwaySelectComboBox.setOnAction((e) -> {
+            System.out.println(runwaySelectComboBox.getValue().getResaL());
+        });
 
         //Add runway button
         Button addRunwayBtn = new Button("Add Runway");
@@ -72,7 +88,8 @@ public class RunwayTitlePane extends TitledPane {
                 a.setContentText("There are no runways recorded on the system.");
                 a.show();
             } else {
-                SelectWindow selectPage = new SelectWindow(mainScene.getMainWindow().getStage(),
+                RunwaySelectWindow selectPage = new RunwaySelectWindow(
+                    mainScene.getMainWindow().getStage(),
                     mainScene.getAirport());
 
                 // Set the runway listener to update
@@ -82,5 +99,13 @@ public class RunwayTitlePane extends TitledPane {
 
         // Add rows
         buttonSelectGridPane.addRow(0, selectBtn, addRunwayBtn, modifyBtn);
+        buttonSelectGridPane.addRow(1, runwaySelectComboBox);
+    }
+
+    /**
+     * Clear all the inputs
+     */
+    public void clearInputs() {
+        runwaySelectComboBox.setValue(null);
     }
 }

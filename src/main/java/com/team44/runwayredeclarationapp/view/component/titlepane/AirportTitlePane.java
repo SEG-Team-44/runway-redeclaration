@@ -19,7 +19,7 @@ public class AirportTitlePane extends TitledPane {
         // Create titled pane for selecting the airport
         this.setText("Step 1: Select Airport");
         this.setExpanded(true);
-        this.setCollapsible(false);
+        this.setCollapsible(true);
 
         // Create the horizontal box for selecting airport
         var buttonSelectGridPane = new GridPane();

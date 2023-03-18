@@ -16,7 +16,9 @@ import com.team44.runwayredeclarationapp.view.component.visualisation.SideOnView
 import com.team44.runwayredeclarationapp.view.component.visualisation.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationPane;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -48,7 +50,7 @@ public class MainScene extends BaseScene {
     /**
      * The selected airport
      */
-    private Airport airport = new Airport();
+    private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>(new Airport());
 
     /**
      * The selected runway
@@ -75,6 +77,16 @@ public class MainScene extends BaseScene {
      */
     private VisualisationBase topDownCanvas, sideOnCanvas;
 
+    /**
+     * Titled Panes
+     */
+    private AirportTitlePane airportTitlePane;
+    private RunwayTitlePane runwayTitlePane;
+    private ObstacleTitlePane obstacleTitlePane;
+
+    /**
+     * Observable list of obstacles
+     */
     private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList(
         new Obstacle("Airbus A319", 12),
         new Obstacle("Airbus A330", 16),
@@ -90,6 +102,11 @@ public class MainScene extends BaseScene {
         new Obstacle("Gulfstream G650", 7),
         new Obstacle("Embraer E145", 6)
     );
+
+    /**
+     * Observable list of runways
+     */
+    private ObservableList<Runway> runwayObservableList = FXCollections.observableArrayList();
 
     /**
      * Create scene within the main window
@@ -186,9 +203,19 @@ public class MainScene extends BaseScene {
         var inputSectionTitle = new Title("Input:");
 
         // Create the titled panes
-        var airportTitlePane = new AirportTitlePane(this);
-        var runwayTitlePane = new RunwayTitlePane(this);
-        var obstacleTitlePane = new ObstacleTitlePane(this);
+        airportTitlePane = new AirportTitlePane(this);
+        runwayTitlePane = new RunwayTitlePane(this);
+        obstacleTitlePane = new ObstacleTitlePane(this);
+
+        // Update the list of runways whenever the airport changes
+        airport.addListener((event) -> {
+            runwayObservableList.setAll(airport.get().getRunways());
+        });
+        // Update the list whenever one of the runway changes
+        airport.get().getRunwayObservableList().addListener(
+            (ListChangeListener<Runway>) observable -> {
+                runwayObservableList.setAll(airport.get().getRunways());
+            });
 
         // Input Obstacle titledPane
         var inputObstaclePaneOld = new TitledPane();
@@ -247,13 +274,22 @@ public class MainScene extends BaseScene {
         recalculateBtn.getStyleClass().add("recalculate-btn");
         recalculateBtn.setOnAction(event -> {
             // Check if the user has already selected the runway and obstacle to recalculate
-            if (selectedRunway == null || selectedObstacle == null) {
-                var alert = new Alert(AlertType.ERROR);
-                alert.setContentText("Please select a runway and an obstacle.");
-                alert.show();
+            if (obstacleTitlePane.checkInputsValid() && selectedRunway != null) {
+                // Create the obstacle-runway pairing
+                selectedObstacle = new RunwayObstacle(
+                    obstacleTitlePane.getSelectedObstacle(),
+                    selectedRunway, // todo
+                    obstacleTitlePane.getObstacleLeftThreshold(),
+                    obstacleTitlePane.getObstacleRightThreshold(),
+                    obstacleTitlePane.getObstacleFromCentrelineThreshold());
 
-            } else {
+                // Recalculate
                 recalculationController.recalculateRunway(selectedRunway, selectedObstacle, 300);
+            } else {
+                // todo, remove this once "checkInputsValid" for runway and airport
+                // var alert = new Alert(AlertType.ERROR);
+                // alert.setContentText("Please select a runway and an obstacle.");
+                // alert.show();
             }
         });
         infoPane.getChildren().add(recalculateBtn);
@@ -363,23 +399,28 @@ public class MainScene extends BaseScene {
 
         // Create the specified obstacle
         if (scenario == 1) {
-            obstacle = new Obstacle("Obstacle Name", 12);
+            obstacle = new Obstacle("Scenario 1 Obs", 12);
             runwayObstacle = new RunwayObstacle(obstacle, runway, -50.0, 3646.0, 0.0);
         } else if (scenario == 2) {
-            obstacle = new Obstacle("Obstacle Name", 25);
+            obstacle = new Obstacle("Scenario 2 Obs", 25);
             runwayObstacle = new RunwayObstacle(obstacle, runway, 2853.0, 500.0, -20.0);
         } else if (scenario == 3) {
-            obstacle = new Obstacle("Obstacle Name", 15);
+            obstacle = new Obstacle("Scenario 3 Obs", 15);
             runwayObstacle = new RunwayObstacle(obstacle, runway, 150.0, 3203.0, 60.0);
         } else {
-            obstacle = new Obstacle("Obstacle Name", 20);
+            obstacle = new Obstacle("Scenario 4 Obs", 20);
             runwayObstacle = new RunwayObstacle(obstacle, runway, 3546.0, 50.0, 20.0);
         }
 
         // Select the runway and obstacle to show on the program
         selectedRunway = runway;
         updateInitialRunway(runway);
-        selectedObstacle = runwayObstacle;
+        obstacleTitlePane.setSelectedObstacle(obstacle);
+        obstacleTitlePane.setInputText(
+            runwayObstacle.getPositionL(),
+            runwayObstacle.getPositionR(),
+            runwayObstacle.getDistCR()
+        );
     }
 
     /**
@@ -392,11 +433,47 @@ public class MainScene extends BaseScene {
     }
 
     /**
+     * Set the selected airport
+     *
+     * @param airport the airport
+     */
+    public void setAirport(Airport airport) {
+        this.airport.set(airport);
+    }
+
+    /**
      * Get the current airport object
      *
      * @return the airport object
      */
     public Airport getAirport() {
+        return airport.get();
+    }
+
+    /**
+     * Get the simple object property for the airport
+     *
+     * @return airport object property
+     */
+    public SimpleObjectProperty<Airport> getAirportProperty() {
         return airport;
+    }
+
+    /**
+     * Get the observable list containing the runways
+     *
+     * @return the runways
+     */
+    public ObservableList<Runway> getRunwayObservableList() {
+        return runwayObservableList;
+    }
+
+    /**
+     * Get the current selected runway
+     *
+     * @return the runway
+     */
+    public Runway getSelectedRunway() {
+        return selectedRunway;
     }
 }

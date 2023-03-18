@@ -2,7 +2,9 @@ package com.team44.runwayredeclarationapp.view.component.titlepane;
 
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.ui.AddObstacleWindow;
+import com.team44.runwayredeclarationapp.ui.ModifyObstacleWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import javafx.scene.control.Button;
@@ -18,6 +20,8 @@ import javafx.util.Duration;
  */
 public class ObstacleTitlePane extends TitledPane {
 
+    MainScene mainScene;
+
     /**
      * The input fields
      */
@@ -32,10 +36,12 @@ public class ObstacleTitlePane extends TitledPane {
      * @param mainScene the main scene
      */
     public ObstacleTitlePane(MainScene mainScene) {
+        this.mainScene = mainScene;
+
         // Create titled pane for selecting the obstacle
         this.setText("Step 3: Select Obstacle");
         this.setExpanded(true);
-        this.setCollapsible(false);
+        this.setCollapsible(true);
 
         // Create the horizontal box for selecting obstacle
         var buttonSelectGridPane = new GridPane();
@@ -56,8 +62,11 @@ public class ObstacleTitlePane extends TitledPane {
 
         // Obstacle inputs
         obstacleLeftThresholdInput = new DoubleField();
+        obstacleLeftThresholdInput.setAllowNegative(true);
         obstacleRightThresholdInput = new DoubleField();
+        obstacleRightThresholdInput.setAllowNegative(true);
         obstacleFromCentrelineThresholdInput = new DoubleField();
+        obstacleFromCentrelineThresholdInput.setAllowNegative(true);
 
         // Obstacle tooltips
         var obstacleFromCentrelineTooltip = new Tooltip("Positive for North, negative for South");
@@ -71,6 +80,12 @@ public class ObstacleTitlePane extends TitledPane {
         editObstacleBtn.setMaxWidth(Double.MAX_VALUE);
 
         // Button events
+        editObstacleBtn.setOnAction(event -> {
+            ModifyObstacleWindow modifyObstacleWindow = new ModifyObstacleWindow(
+                mainScene.getMainWindow().getStage(),
+                mainScene.getObstacleObservableList());
+            obstacleSelectComboBox.setValue(null);
+        });
         addObstacleBtn.setOnAction(event -> {
             AddObstacleWindow addObstacleWindow = new AddObstacleWindow(
                 mainScene.getMainWindow().getStage(),
@@ -98,6 +113,28 @@ public class ObstacleTitlePane extends TitledPane {
     }
 
     /**
+     * Set an obstacle to be selected in the combobox
+     *
+     * @param obstacle the obstacle
+     */
+    public void setSelectedObstacle(Obstacle obstacle) {
+        obstacleSelectComboBox.setValue(obstacle);
+    }
+
+    /**
+     * Set the value of the user inputs
+     *
+     * @param leftThreshold  the distance from the left threshold
+     * @param rightThreshold the distance from the right threshold
+     * @param centreline     the distance from the centreline
+     */
+    public void setInputText(double leftThreshold, double rightThreshold, double centreline) {
+        this.obstacleLeftThresholdInput.setText(String.valueOf(leftThreshold));
+        this.obstacleRightThresholdInput.setText(String.valueOf(rightThreshold));
+        this.obstacleFromCentrelineThresholdInput.setText(String.valueOf(centreline));
+    }
+
+    /**
      * Get the distance of the object from the left threshold
      *
      * @return the distance from the left threshold
@@ -122,6 +159,41 @@ public class ObstacleTitlePane extends TitledPane {
      */
     public double getObstacleFromCentrelineThreshold() {
         return obstacleFromCentrelineThresholdInput.getValue();
+    }
+
+    /**
+     * Check if inputs are valid and show necessary errors
+     *
+     * @return whether the inputs are valid
+     */
+    public boolean checkInputsValid() {
+        // Create an alert
+        ErrorAlert errorAlert = new ErrorAlert();
+
+        // Add the corresponding error messages
+        if (obstacleSelectComboBox.getValue() == null) {
+            errorAlert.addError("Select an obstacle.");
+        }
+        if (!obstacleLeftThresholdInput.isInputValid()) {
+            errorAlert.addError(
+                "Left Threshold input cannot be empty and must be a numerical value.");
+        }
+        if (!obstacleRightThresholdInput.isInputValid()) {
+            errorAlert.addError(
+                "Right Threshold input cannot be empty and must be a numerical value.");
+        }
+        if (!obstacleFromCentrelineThresholdInput.isInputValid()) {
+            errorAlert.addError(
+                "Left Threshold input cannot be empty and must be a numerical value.");
+        }
+        // todo:: check if threshL and threshR add up to runway length
+
+        // Show the error
+        var numberOfErrors = errorAlert.getErrors().size();
+        errorAlert.show();
+
+        // Return whether the inputs are valid or not
+        return numberOfErrors == 0;
     }
 
     /**

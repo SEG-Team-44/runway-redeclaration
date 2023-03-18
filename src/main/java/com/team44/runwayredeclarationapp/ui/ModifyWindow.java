@@ -14,7 +14,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,10 +27,12 @@ import javafx.stage.Window;
  * The class responsible for generate & display the UI for modify initial parameters of runways
  */
 public class ModifyWindow extends ParameterController {
+
     Stage stage;
 
     /**
      * Initialising the stage
+     *
      * @param parent
      * @param airport current airport
      */
@@ -44,6 +49,7 @@ public class ModifyWindow extends ParameterController {
 
     /**
      * Setup & display the option window
+     *
      * @param airport current airport
      */
     private void showOptionScene(Airport airport) {
@@ -85,8 +91,9 @@ public class ModifyWindow extends ParameterController {
 
     /**
      * Setup & display the UI for user to update the parameters for the selected runway
+     *
      * @param airport current airport
-     * @param id physical id of the selected runway
+     * @param id      physical id of the selected runway
      */
     private void showModifyScene(Airport airport, String id) {
         Runway runway = airport.getRunway(id);

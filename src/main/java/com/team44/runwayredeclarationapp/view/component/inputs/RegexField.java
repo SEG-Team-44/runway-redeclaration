@@ -70,7 +70,7 @@ public class RegexField extends TextField {
      *
      * @return whether the input is valid or not
      */
-    protected Boolean isInputValid() {
+    public Boolean isInputValid() {
         // Check the regex and text empty
         return isRegexMatch() && !isEmpty();
     }

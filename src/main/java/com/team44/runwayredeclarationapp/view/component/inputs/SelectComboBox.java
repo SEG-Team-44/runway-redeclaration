@@ -15,7 +15,14 @@ public class SelectComboBox<T> extends ComboBox<T> {
     /**
      * The observable list that is bound to the combobox
      */
-    private final ObservableList<T> observableList;
+    private ObservableList<T> observableList;
+
+    /**
+     * Create a combobox
+     */
+    public SelectComboBox() {
+        super();
+    }
 
     /**
      * Create a combobox attached to an observable list
@@ -61,5 +68,14 @@ public class SelectComboBox<T> extends ComboBox<T> {
      */
     public ObservableList<T> getObservableList() {
         return observableList;
+    }
+
+    /**
+     * Set the observable list that will be bound the combobox
+     *
+     * @param observableList the observable list
+     */
+    public void setObservableList(ObservableList<T> observableList) {
+        this.observableList = observableList;
     }
 }

@@ -1,7 +1,6 @@
 package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.event.SetRunwayListener;
-import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import java.util.HashMap;
@@ -96,10 +95,10 @@ public class RecalculationController {
     /**
      * Recalculate the ASDA parameter
      *
-     * @param runway   the runway
-     * @param logicID  the id of the logical runway
-     * @param rwObst   the obstacle on the runway
-     * @param tora     the recalculated tora value
+     * @param runway  the runway
+     * @param logicID the id of the logical runway
+     * @param rwObst  the obstacle on the runway
+     * @param tora    the recalculated tora value
      * @return the new ASDA value
      */
     private double recalculateASDA(Runway runway, String logicID, RunwayObstacle rwObst,
@@ -140,13 +139,14 @@ public class RecalculationController {
     /**
      * Recalculate the TODA parameter
      *
-     * @param runway   the runway
-     * @param logicID  the id of the logical runway
-     * @param rwObst   the obstacle on the runway
-     * @param tora     the recalculated tora value
+     * @param runway  the runway
+     * @param logicID the id of the logical runway
+     * @param rwObst  the obstacle on the runway
+     * @param tora    the recalculated tora value
      * @return the new TODA value
      */
-    private double recalculateTODA(Runway runway, String logicID, RunwayObstacle rwObst, double tora) {
+    private double recalculateTODA(Runway runway, String logicID, RunwayObstacle rwObst,
+        double tora) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
 
@@ -182,9 +182,9 @@ public class RecalculationController {
     /**
      * Recalculate the LDA parameter
      *
-     * @param runway   the runway
-     * @param logicID  the id of the logical runway
-     * @param rwObst   the obstacle on the runway
+     * @param runway  the runway
+     * @param logicID the id of the logical runway
+     * @param rwObst  the obstacle on the runway
      * @return the new LDA value
      */
     private double recalculateLDA(Runway runway, String logicID, RunwayObstacle rwObst) {
