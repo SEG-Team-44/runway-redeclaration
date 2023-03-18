@@ -83,7 +83,7 @@ public class InitialiseWindow extends ParameterController {
         TextField disThreshTf2 = new TextField();
 
         //'Add runway' button
-        Button addBtn = new Button("Log in");
+        Button addBtn = new Button("Add");
         addBtn.setFont(new Font(17));
         addBtn.setOnAction(ActionEvent -> {
             TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf,
@@ -132,7 +132,7 @@ public class InitialiseWindow extends ParameterController {
             mainPane.requestFocus();
         });
 
-        stage.setTitle("Log In New Runway");
+        stage.setTitle("Add new runway");
         stage.setScene(scene);
         stage.initOwner(parent);
         stage.initModality(Modality.WINDOW_MODAL);
@@ -143,15 +143,16 @@ public class InitialiseWindow extends ParameterController {
 
     /**
      * Generate the UI containing given components that ask for inputs for logical runways
+     *
      * @param lblContent section title
-     * @param degree TextField for degree
-     * @param posCb checkbox of whether to input a position character
-     * @param pos TextField for position character
-     * @param tora TextField for TORA
-     * @param toda TextField for TODA
-     * @param asda TextField for ASDA
-     * @param lda TextField for LDA
-     * @param disThresh TextField for displaced threshold
+     * @param degree     TextField for degree
+     * @param posCb      checkbox of whether to input a position character
+     * @param pos        TextField for position character
+     * @param tora       TextField for TORA
+     * @param toda       TextField for TODA
+     * @param asda       TextField for ASDA
+     * @param lda        TextField for LDA
+     * @param disThresh  TextField for displaced threshold
      * @return a gridPane includes all components
      */
     private GridPane getLayout(String lblContent, TextField degree, CheckBox posCb, TextField pos,
@@ -200,6 +201,7 @@ public class InitialiseWindow extends ParameterController {
 
     /**
      * Print an alert correspond to the boolean
+     *
      * @param success if tasks have been successfully performed
      */
     @Override
