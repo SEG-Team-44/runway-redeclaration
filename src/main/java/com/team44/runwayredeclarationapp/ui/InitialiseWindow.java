@@ -83,7 +83,7 @@ public class InitialiseWindow extends ParameterController {
         TextField disThreshTf2 = new TextField();
 
         //'Add runway' button
-        Button addBtn = new Button("Log in");
+        Button addBtn = new Button("Add");
         addBtn.setFont(new Font(17));
         addBtn.setOnAction(ActionEvent -> {
             TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf,
@@ -132,7 +132,7 @@ public class InitialiseWindow extends ParameterController {
             mainPane.requestFocus();
         });
 
-        stage.setTitle("Log In New Runway");
+        stage.setTitle("Add New Runway");
         stage.setScene(scene);
         stage.initOwner(parent);
         stage.initModality(Modality.WINDOW_MODAL);
