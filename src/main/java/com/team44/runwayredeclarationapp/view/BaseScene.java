@@ -52,4 +52,13 @@ public abstract class BaseScene {
     protected void loadStyleSheet(String fileName) {
         scene.getStylesheets().add(getClass().getResource("/style/" + fileName).toExternalForm());
     }
+
+    /**
+     * Get the main window
+     *
+     * @return the main window
+     */
+    public MainWindow getMainWindow() {
+        return mainWindow;
+    }
 }

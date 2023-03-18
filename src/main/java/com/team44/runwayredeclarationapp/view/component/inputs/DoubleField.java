@@ -60,7 +60,7 @@ public class DoubleField extends RegexField {
     }
 
     /**
-     * Get the value in the field
+     * Get the value in the field as a double type
      *
      * @return the value as a double
      */
