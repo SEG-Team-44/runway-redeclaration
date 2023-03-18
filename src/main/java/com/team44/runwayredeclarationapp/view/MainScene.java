@@ -1,21 +1,24 @@
 package com.team44.runwayredeclarationapp.view;
 
-import com.team44.runwayredeclarationapp.ui.InitialiseWindow;
-import com.team44.runwayredeclarationapp.ui.ModifyWindow;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
+import com.team44.runwayredeclarationapp.ui.InitialiseWindow;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
+import com.team44.runwayredeclarationapp.ui.ModifyWindow;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
-import com.team44.runwayredeclarationapp.view.component.SideOnView;
-import com.team44.runwayredeclarationapp.view.component.Title;
-import com.team44.runwayredeclarationapp.view.component.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
-import com.team44.runwayredeclarationapp.view.component.VisualisationBase;
-import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
+import com.team44.runwayredeclarationapp.view.component.text.Title;
+import com.team44.runwayredeclarationapp.view.component.titlepane.ObstacleTitlePane;
+import com.team44.runwayredeclarationapp.view.component.visualisation.SideOnView;
+import com.team44.runwayredeclarationapp.view.component.visualisation.TopDownView;
+import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationBase;
+import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationPane;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -72,6 +75,22 @@ public class MainScene extends BaseScene {
      * The canvas displaying the top down and side on view
      */
     private VisualisationBase topDownCanvas, sideOnCanvas;
+
+    private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList(
+        new Obstacle("Airbus A319", 12),
+        new Obstacle("Airbus A330", 16),
+        new Obstacle("Airbus A340", 17),
+        new Obstacle("Airbus A380", 24),
+        new Obstacle("Boeing 737 MAX", 13),
+        new Obstacle("Boeing 747", 19),
+        new Obstacle("Boeing 757", 14),
+        new Obstacle("Boeing 767", 17),
+        new Obstacle("Boeing 777", 18),
+        new Obstacle("Boeing 787 Dreamliner", 17),
+        new Obstacle("Cessna 172", 2),
+        new Obstacle("Gulfstream G650", 7),
+        new Obstacle("Embraer E145", 6)
+    );
 
     /**
      * Create scene within the main window
@@ -214,7 +233,9 @@ public class MainScene extends BaseScene {
         inputObstaclePane.setExpanded(false);
         var nameLabel = new Label("Obstacle name");
         ComboBox<String> nameField = new ComboBox<String>();
-        nameField.getItems().addAll("A319ceo", "A320ceo", "A321ceo", "Boeing 737-700", "Boeing 737-800", "E-175", "Other Aircraft", "Other Obstacle");
+        nameField.getItems()
+            .addAll("A319ceo", "A320ceo", "A321ceo", "Boeing 737-700", "Boeing 737-800", "E-175",
+                "Other Aircraft", "Other Obstacle");
         nameField.setEditable(true);
         var heightLabel = new Label("Height of obstacle (m) ");
         var heightField = new TextField();
@@ -228,7 +249,7 @@ public class MainScene extends BaseScene {
         var obstButton = new Button("Set obstacle");
         obstButton.setOnAction(ActionEvent -> {
 
-            if (selectedRunway == null){
+            if (selectedRunway == null) {
                 var alert = new Alert(AlertType.ERROR);
                 alert.setContentText("Please select a runway.");
                 alert.show();
@@ -254,7 +275,12 @@ public class MainScene extends BaseScene {
         obstPane.addRow(5, distLabel, distField, obstButton);
         inputObstaclePane.setContent(obstPane);
 
-        infoPane.getChildren().addAll(inputSectionTitle, inputRunwayPane,selectRunwayPane, inputObstaclePane);
+        infoPane.getChildren()
+            .addAll(inputSectionTitle, inputRunwayPane, selectRunwayPane, inputObstaclePane);
+
+        // todo: replace the old obstacle pane with this
+        var inputObstaclePaneNew = new ObstacleTitlePane(mainWindow, obstacleObservableList);
+        infoPane.getChildren().add(inputObstaclePaneNew);
 
         //Add runway button
         Button addRunwayBtn = new Button("Add New Runway");
