@@ -667,6 +667,7 @@ public abstract class VisualisationBase extends Canvas {
         // Send the data to the other overloaded method
         setInitialParameters(
             runway.getRunwayL(),
+            runway.getRunwayW(),
             runway.getTora(runway1ID),
             runway.getToda(runway1ID),
             runway.getAsda(runway1ID),
@@ -688,6 +689,7 @@ public abstract class VisualisationBase extends Canvas {
      * Set the initial runway parameters (without the obstacle)
      *
      * @param actualRunwayLength  the actual length of the runway
+     * @param actualRunwayWidth   the actual width of the runway
      * @param toraDistance1       the Take-Off Run Available for logical runway 1
      * @param todaDistance1       the Take-Off Distance Available for logical runway 1
      * @param asdaDistance1       the Accelerate-Stop Distance Available for logical runway 1
@@ -705,6 +707,7 @@ public abstract class VisualisationBase extends Canvas {
      */
     public void setInitialParameters(
         double actualRunwayLength,
+        double actualRunwayWidth,
         double toraDistance1,
         double todaDistance1,
         double asdaDistance1,
@@ -721,6 +724,7 @@ public abstract class VisualisationBase extends Canvas {
         double rightClearwayLength) {
         // Set the actual runway length
         this.actualRunwayLength = actualRunwayLength;
+        this.actualRunwayWidth = actualRunwayWidth;
 
         // Set the runway parameter distances
         // Logical Runway 1
@@ -776,7 +780,7 @@ public abstract class VisualisationBase extends Canvas {
 
         // Update obstacle distance
         this.obstacleDistanceFromStart = calculateRatioValueLength(obstacleDistanceFromStartActual);
-        this.obstacleDistanceFromCentreLine = calculateRatioValueLength(
+        this.obstacleDistanceFromCentreLine = calculateRatioValueWidth(
             obstacleDistanceFromCentreLineActual);
         this.obstacleHeight = calculateRatioValueLength(obstacleHeightActual) + 10;
 
@@ -815,6 +819,7 @@ public abstract class VisualisationBase extends Canvas {
             runway.getResaL(),
             blast,
             runway.getDisThresh(runway2ID) + obstacle.getPositionL(),
+            obstacle.getDistCR(),
             obstacle.getObst().getHeight(),
             obstacle.getPositionL() < obstacle.getPositionR()
         );
@@ -823,23 +828,27 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Set the new re-calculated parameters
      *
-     * @param toraDistance1             the Take-Off Run Available for logical runway 1
-     * @param todaDistance1             the Take-Off Distance Available for logical runway 1
-     * @param asdaDistance1             the Accelerate-Stop Distance Available for logical runway 1
-     * @param ldaDistance1              the Landing Distance Available for logical runway 1
-     * @param toraDistance2             the Take-Off Run Available for logical runway 2
-     * @param todaDistance2             the Take-Off Distance Available for logical runway 2
-     * @param asdaDistance2             the Accelerate-Stop Distance Available for logical runway 2
-     * @param ldaDistance2              the Landing Distance Available for logical runway 2
-     * @param slope                     the slope calculation
-     * @param stripEnd                  the strip end value
-     * @param resa                      the RESA value
-     * @param blast                     the blast protection value
-     * @param obstacleDistanceFromStart the distance of the obstacle from the start of the runway
-     *                                  strip
-     * @param obstacleHeight            the height of the obstacle
-     * @param isObstacleOnLeftSide      indicates whether the obstacle is on the left of the runway
-     *                                  (True) or on the right (False)
+     * @param toraDistance1                  the Take-Off Run Available for logical runway 1
+     * @param todaDistance1                  the Take-Off Distance Available for logical runway 1
+     * @param asdaDistance1                  the Accelerate-Stop Distance Available for logical
+     *                                       runway 1
+     * @param ldaDistance1                   the Landing Distance Available for logical runway 1
+     * @param toraDistance2                  the Take-Off Run Available for logical runway 2
+     * @param todaDistance2                  the Take-Off Distance Available for logical runway 2
+     * @param asdaDistance2                  the Accelerate-Stop Distance Available for logical
+     *                                       runway 2
+     * @param ldaDistance2                   the Landing Distance Available for logical runway 2
+     * @param slope                          the slope calculation
+     * @param stripEnd                       the strip end value
+     * @param resa                           the RESA value
+     * @param blast                          the blast protection value
+     * @param obstacleDistanceFromStart      the distance of the obstacle from the start of the
+     *                                       runway strip
+     * @param obstacleDistanceFromCentreLine the obstacle distance from the centreline (+ for
+     *                                       north)
+     * @param obstacleHeight                 the height of the obstacle
+     * @param isObstacleOnLeftSide           indicates whether the obstacle is on the left of the
+     *                                       runway (True) or on the right (False)
      */
     public void setRecalculatedParameters(
         double toraDistance1,
@@ -855,6 +864,7 @@ public abstract class VisualisationBase extends Canvas {
         double resa,
         double blast,
         double obstacleDistanceFromStart,
+        double obstacleDistanceFromCentreLine,
         double obstacleHeight,
         boolean isObstacleOnLeftSide
     ) {
@@ -878,6 +888,7 @@ public abstract class VisualisationBase extends Canvas {
 
         // Set the obstacle information
         this.obstacleDistanceFromStartActual = obstacleDistanceFromStart;
+        this.obstacleDistanceFromCentreLineActual = obstacleDistanceFromCentreLine;
         this.obstacleHeightActual = obstacleHeight;
         this.isObstacleOnLeftSide = isObstacleOnLeftSide;
 
@@ -908,7 +919,6 @@ public abstract class VisualisationBase extends Canvas {
      * @return the new value respective to the canvas runway width
      */
     protected double calculateRatioValueWidth(double value) {
-        //todo now add the actual runway width to the rest of the parameters
         // todo:: blast protect > resa + se
 
         // The ratio is  actual runway width:canvas runway width

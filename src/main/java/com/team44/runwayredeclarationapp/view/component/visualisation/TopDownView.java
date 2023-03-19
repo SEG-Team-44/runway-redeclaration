@@ -134,7 +134,10 @@ public class TopDownView extends VisualisationBase {
         gc.setFill(Color.RED);
 
         // Draw circle
-        gc.fillOval(runwayX1 + obstacleDistanceFromStart - radius, centreLineY1, radius * 2,
+        gc.fillOval(
+            runwayX1 + obstacleDistanceFromStart - radius,
+            centreLineY1 - radius - obstacleDistanceFromCentreLine,
+            radius * 2,
             radius * 2);
     }
 }
