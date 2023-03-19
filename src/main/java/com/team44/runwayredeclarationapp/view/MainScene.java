@@ -45,16 +45,6 @@ public class MainScene extends BaseScene {
     private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>(new Airport());
 
     /**
-     * The selected runway
-     */
-    private Runway selectedRunway;
-
-    /**
-     * The selected obstacle
-     */
-    private RunwayObstacle selectedObstacle;
-
-    /**
      * The controller responsible for setting the recalculated values
      */
     private final RecalculationController recalculationController = new RecalculationController();
@@ -114,6 +104,44 @@ public class MainScene extends BaseScene {
      */
     @Override
     public void initialise() {
+        // todo remove these runways once airport selection has been added
+        airport.get().addRunway(new PRunway(9, 27, 'L', 'R', new double[]{
+            3902,//runwayL
+            100,//runwayW
+            60,//stripL
+            100,//stripW
+            100,//clearwayW
+            240, //resaL
+            3902,//tora1
+            3902,//toda1
+            3902,//asda1
+            3595,//lda1
+            3884,//tora2
+            3962,//toda2
+            3884,//asda2
+            3884,//lda2
+            0,//disThresh1
+            306//disThresh2
+        }));
+        airport.get().addRunway(new PRunway(9, 27, 'R', 'L', new double[]{
+            3660,//runwayL
+            100,//runwayW
+            60,//stripL
+            100,//stripW
+            100,//clearwayW
+            240, //resaL
+            3660,//tora1
+            3660,//toda1
+            3660,//asda1
+            3353,//lda1
+            3660,//tora2
+            3660,//toda2
+            3660,//asda2
+            3660,//lda2
+            0,//disThresh1
+            307//disThresh2
+        }));
+
     }
 
     /**
@@ -217,28 +245,23 @@ public class MainScene extends BaseScene {
         recalculateBtn.getStyleClass().add("recalculate-btn");
         recalculateBtn.setOnAction(event -> {
             // Check if the user has already selected the runway and obstacle to recalculate
-            if (obstacleTitlePane.checkInputsValid() && selectedRunway != null) {
+            if (runwayTitlePane.checkInputsValid() && obstacleTitlePane.checkInputsValid()) {
                 // Create the obstacle-runway pairing
-                selectedObstacle = new RunwayObstacle(
+                var selectedRunwayObstacle = new RunwayObstacle(
                     obstacleTitlePane.getSelectedObstacle(),
-                    selectedRunway, // todo
+                    runwayTitlePane.getSelectedRunway(),
                     obstacleTitlePane.getObstacleLeftThreshold(),
                     obstacleTitlePane.getObstacleRightThreshold(),
                     obstacleTitlePane.getObstacleFromCentrelineThreshold());
 
                 // Recalculate
-                recalculationController.recalculateRunway(selectedRunway, selectedObstacle, 300);
-            } else {
-                // todo, remove this once "checkInputsValid" for runway and airport
-                // var alert = new Alert(AlertType.ERROR);
-                // alert.setContentText("Please select a runway and an obstacle.");
-                // alert.show();
+                recalculationController.recalculateRunway(selectedRunwayObstacle, 300);
             }
         });
         infoPane.getChildren().add(recalculateBtn);
 
         // Set the listener to handle when parameters have been recalculated
-        recalculationController.setSetRunwayListener(this::updateRecalculatedRunway);
+        recalculationController.setRecalculatedRunwayListener(this::updateRecalculatedRunway);
 
         // Input section
         var outputSectionTitle = new Title("Output:");
@@ -276,15 +299,17 @@ public class MainScene extends BaseScene {
     /**
      * Set the recalculated runway to the gui
      *
-     * @param runway the recalculated runway object
+     * @param runwayObstacle the runway-obstacle pairing
      */
-    public void updateRecalculatedRunway(Runway runway) {
+    public void updateRecalculatedRunway(RunwayObstacle runwayObstacle) {
+        var runway = runwayObstacle.getRw();
+
         // Set the recalculated runway parameters to the recalculated values grid
         newValuesGrid.setRunway(runway);
 
         // Update both canvas
-        topDownCanvas.setRecalculatedParameters(runway, selectedObstacle, 300);
-        sideOnCanvas.setRecalculatedParameters(runway, selectedObstacle, 300);
+        topDownCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);
+        sideOnCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);
     }
 
     /**
@@ -356,7 +381,7 @@ public class MainScene extends BaseScene {
         }
 
         // Select the runway and obstacle to show on the program
-        selectedRunway = runway;
+        runwayTitlePane.setSelectedRunway(runway);
         updateInitialRunway(runway);
         obstacleTitlePane.setSelectedObstacle(obstacle);
         obstacleTitlePane.setInputText(
@@ -409,14 +434,5 @@ public class MainScene extends BaseScene {
      */
     public ObservableList<Runway> getRunwayObservableList() {
         return runwayObservableList;
-    }
-
-    /**
-     * Get the current selected runway
-     *
-     * @return the runway
-     */
-    public Runway getSelectedRunway() {
-        return selectedRunway;
     }
 }

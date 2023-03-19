@@ -32,7 +32,19 @@ public class DoubleField extends RegexField {
      * @param numberOfDecimals the max number of decimals allowed
      */
     public DoubleField(Integer numberOfDigits, Integer numberOfDecimals) {
-        super(createRegex(numberOfDigits, numberOfDecimals, false));
+        this(null, numberOfDigits, numberOfDecimals);
+    }
+
+    /**
+     * Create a text field that accepts doubles
+     *
+     * @param value            the value to go in the field
+     * @param numberOfDigits   the max number of digits allowed
+     * @param numberOfDecimals the max number of decimals allowed
+     */
+    public DoubleField(Double value, Integer numberOfDigits, Integer numberOfDecimals) {
+        super(createRegex(numberOfDigits, numberOfDecimals, false),
+            String.valueOf(value == null ? "" : value));
 
         setDigitsDecimals(numberOfDigits, numberOfDecimals);
     }

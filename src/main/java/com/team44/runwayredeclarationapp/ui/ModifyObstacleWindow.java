@@ -36,7 +36,8 @@ public class ModifyObstacleWindow {
      */
     private void showOptionScene() {
         // Create the select window
-        var selectWindow = new SelectWindow<Obstacle>(parent, "Obstacle", obstacleObservableList);
+        var selectWindow = new SelectWindow<Obstacle>(parent, "Obstacle To Edit",
+            obstacleObservableList);
         selectWindow.setStringMethod(Obstacle::getObstName);
 
         // On select event

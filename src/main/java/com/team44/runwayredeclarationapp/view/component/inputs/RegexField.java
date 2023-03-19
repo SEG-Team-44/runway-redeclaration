@@ -19,7 +19,17 @@ public class RegexField extends TextField {
      * @param regex the regex
      */
     public RegexField(String regex) {
-        super();
+        this(regex, "");
+    }
+
+    /**
+     * Create text field that accepts values that match a regex
+     *
+     * @param regex the regex
+     * @param text  the text to go into the field
+     */
+    public RegexField(String regex, String text) {
+        super(text);
 
         this.regex = regex;
         setRegexFormat(regex);
