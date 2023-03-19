@@ -10,12 +10,7 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
-import com.team44.runwayredeclarationapp.view.component.SideOnView;
-import com.team44.runwayredeclarationapp.view.component.Title;
-import com.team44.runwayredeclarationapp.view.component.TopDownView;
-import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
-import com.team44.runwayredeclarationapp.view.component.VisualisationBase;
-import com.team44.runwayredeclarationapp.view.component.VisualisationPane;
+import com.team44.runwayredeclarationapp.view.component.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -67,6 +62,8 @@ public class MainScene extends BaseScene {
      * The grid displaying the original and recalculated values
      */
     private ValuesGrid ogValuesGrid, newValuesGrid;
+
+    private CalculationBreakdown breakdown = new CalculationBreakdown();
 
     /**
      * The canvas displaying the top down and side on view
@@ -319,6 +316,7 @@ public class MainScene extends BaseScene {
         valueGridsBox.getChildren().addAll(ogValuesGrid, newValuesGrid);
         valueGridsBox.setAlignment(Pos.CENTER);
         infoPane.getChildren().add(valueGridsBox);
+        infoPane.getChildren().add(breakdown);
     }
 
     /**
@@ -330,6 +328,7 @@ public class MainScene extends BaseScene {
         // Set the initial runway to the original values grid
         ogValuesGrid.setRunway(runway);
         newValuesGrid.reset();
+        breakdown.reset();
 
         // Update both canvas
         topDownCanvas.setInitialParameters(runway);
@@ -344,6 +343,7 @@ public class MainScene extends BaseScene {
     private void updateRecalculatedRunway(Runway runway) {
         // Set the recalculated runway parameters to the recalculated values grid
         newValuesGrid.setRunway(runway);
+        breakdown.displayCalculations(runway, selectedObstacle, 300);
 
         // Update both canvas
         topDownCanvas.setRecalculatedParameters(runway, selectedObstacle, 300);

@@ -8,8 +8,6 @@ public class RunwayObstacle {
 
   private final Obstacle obst;
   private final Runway rw;
-
-  private Runway reclaculatedRunway;
   private final double posL;
   private final double posR;
   private final double distCR;
