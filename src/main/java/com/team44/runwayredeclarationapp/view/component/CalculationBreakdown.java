@@ -38,6 +38,10 @@ public class CalculationBreakdown extends VBox {
      * TabPane included all calculations
      */
     TabPane tabPane;
+    /**
+     * boolean indicating whether a new runway is selected
+     */
+    boolean newRunway;
 
     /**
      * Initialise calculation breakdown component
@@ -250,29 +254,34 @@ public class CalculationBreakdown extends VBox {
      * @param blastProtection blast protection
      */
     public void displayCalculations(Runway originRunway, RunwayObstacle rwObst, int blastProtection) {
-        //initialise the tabPane
-        tabPane = new TabPane();
-        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        tabPane.setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
+        //if a new runway is selected
+        if (newRunway) {
+            //initialise the tabPane
+            tabPane = new TabPane();
+            tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+            tabPane.setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
 
-        //reset the logical IDs
-        setRunways(originRunway, rwObst);
+            //reset the logical IDs
+            setRunways(originRunway, rwObst);
 
-        //store the recalculated runway
-        recalRunway = controller.recalculateRunway(rwObst, blastProtection);
+            //store the recalculated runway
+            recalRunway = controller.recalculateRunway(rwObst, blastProtection);
 
-        //initialise the tabs displaying the calculations
-        Tab tora = new Tab("TORA");
-        tora.setContent(initTORA(originRunway, rwObst, blastProtection));
-        Tab toda = new Tab("TODA");
-        toda.setContent(initTODA(originRunway, rwObst));
-        Tab asda = new Tab("ASDA");
-        asda.setContent(initASDA(originRunway, rwObst));
-        Tab lda = new Tab("LDA");
-        lda.setContent(initLDA(originRunway, rwObst));
+            //initialise the tabs displaying the calculations
+            Tab tora = new Tab("TORA");
+            tora.setContent(initTORA(originRunway, rwObst, blastProtection));
+            Tab toda = new Tab("TODA");
+            toda.setContent(initTODA(originRunway, rwObst));
+            Tab asda = new Tab("ASDA");
+            asda.setContent(initASDA(originRunway, rwObst));
+            Tab lda = new Tab("LDA");
+            lda.setContent(initLDA(originRunway, rwObst));
 
-        tabPane.getTabs().addAll(tora, toda, asda, lda);
-        getChildren().add(tabPane);
+            tabPane.getTabs().addAll(tora, toda, asda, lda);
+            getChildren().add(tabPane);
+            newRunway = false;
+        }
+
     }
 
     /**
@@ -280,5 +289,6 @@ public class CalculationBreakdown extends VBox {
      */
     public void reset() {
         getChildren().remove(tabPane);
+        newRunway = true;
     }
 }
