@@ -266,7 +266,7 @@ public class RecalculationController {
      */
     public Runway recalculateRunway(RunwayObstacle rwObst, double blastProtection) {
         // Clone the current runway to edit
-        var runway = rwObst.getRw();
+        var runway = rwObst.getOriginalRw();
         var recalculatedRunway = runway.clone();
 
         var runway1ID = runway.getLogicId1();

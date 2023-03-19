@@ -6,7 +6,7 @@ package com.team44.runwayredeclarationapp.model;
  */
 public class RunwayObstacle {
 
-    private Runway rw;
+    private Runway recalRw;
     private final Obstacle obst;
     private final double posL;
     private final double posR;
@@ -16,14 +16,14 @@ public class RunwayObstacle {
      * Create a runway obstacle
      *
      * @param obst   the obstacle
-     * @param rw     the runway
+     * @param recalRw     the runway
      * @param posL   the distance from the left threshold
      * @param posR   the distance from the right threshold
      * @param distCR the distance from the centreline
      */
-    public RunwayObstacle(Obstacle obst, Runway rw, double posL, double posR, double distCR) {
+    public RunwayObstacle(Obstacle obst, Runway recalRw, double posL, double posR, double distCR) {
         this.obst = obst;
-        this.rw = rw;
+        this.recalRw = recalRw;
         this.posL = posL;
         this.posR = posR;
         this.distCR = distCR;
@@ -33,9 +33,11 @@ public class RunwayObstacle {
         return obst;
     }
 
-    public Runway getRw() {
-        return rw;
+    public Runway getRecalculatedRw() {
+        return recalRw;
     }
+
+    public Runway getOriginalRw() {return recalRw;}
 
     public double getPositionL() {
         return posL;

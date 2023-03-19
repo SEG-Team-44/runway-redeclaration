@@ -309,11 +309,11 @@ public class MainScene extends BaseScene {
      * @param runwayObstacle the runway-obstacle pairing
      */
     public void updateRecalculatedRunway(RunwayObstacle runwayObstacle) {
-        var runway = runwayObstacle.getRw();
+        var runway = runwayObstacle.getRecalculatedRw();
 
         // Set the recalculated runway parameters to the recalculated values grid
         newValuesGrid.setRunway(runway);
-        breakdown.displayCalculations(runway, runwayObstacle, 300);
+        breakdown.displayCalculations(runwayTitlePane.getSelectedRunway(), runwayObstacle, 300);
 
         // Update both canvas
         topDownCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);
