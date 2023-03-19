@@ -19,7 +19,7 @@ public class SideOnView extends VisualisationBase {
      */
     public SideOnView(double width, double height) {
         super(width, height);
-        runwayHeight = 20;
+        runwayWidth = 20;
     }
 
 
@@ -54,8 +54,8 @@ public class SideOnView extends VisualisationBase {
         gc.setStroke(Color.WHITE);
         gc.setLineDashes();
         gc.strokeRect(leftClearwayStartX, runwayY1, leftClearwayLength,
-            runwayHeight);
-        gc.strokeRect(runwayX2, runwayY1, rightClearwayLength, runwayHeight);
+            runwayWidth);
+        gc.strokeRect(runwayX2, runwayY1, rightClearwayLength, runwayWidth);
 
         // Threshold designators
         addText("09L", 14, leftClearwayStartX - 35, runwayY1 + 15);
