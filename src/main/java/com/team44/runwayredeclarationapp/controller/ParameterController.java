@@ -17,14 +17,22 @@ public abstract class ParameterController {
     protected SetRunwayListener setRunwayListener;
 
     /**
+     * Array list of error messages
+     */
+    List<String> errors = new ArrayList<>();
+
+    /**
      * Check whether the inputs are valid when a user add a new runway to the system
-     * @param pos1Selected boolean indicates whether the user has selected to input a position char for a logical runway
-     * @param pos2Selected boolean indicates whether the user has selected to input a position char for the other logical runway
-     * @param pos1 position character input by the user
-     * @param pos2 the other position character input by the user
-     * @param degree1 degree of one logical runway
-     * @param degree2 degree of the other logical runway
-     * @param textFields contains all numerical inputs
+     *
+     * @param pos1Selected boolean indicates whether the user has selected to input a position char
+     *                     for a logical runway
+     * @param pos2Selected boolean indicates whether the user has selected to input a position char
+     *                     for the other logical runway
+     * @param pos1         position character input by the user
+     * @param pos2         the other position character input by the user
+     * @param degree1      degree of one logical runway
+     * @param degree2      degree of the other logical runway
+     * @param textFields   contains all numerical inputs
      * @return boolean indicating whether the input values are all valid
      */
     protected boolean validInitInput(boolean pos1Selected, boolean pos2Selected, String pos1,
@@ -36,9 +44,12 @@ public abstract class ParameterController {
 
             //return false if degree1 or degree2 are <01, >36 or their difference is not equal to 18
             if (d1 < 1 || d1 > 36 || d2 < 1 || d2 > 36 || Math.abs(d1 - d2) != 18) {
+                errors.add("Degrees 1 and 2 must be in the range 0-36, "
+                    + "and have a difference of 18 between them.");
                 return false;
             }
         } catch (Exception e) {
+            errors.add("Degrees 1 and 2 must be Integer values.");
             return false;
         }
 
@@ -47,6 +58,7 @@ public abstract class ParameterController {
 
         //return false if position checkboxes are not selected/deselected the same time
         if ((!pos1Selected && pos2Selected) || (pos1Selected && !pos2Selected)) {
+            errors.add("You cannot set a position to just 1 logical runway.");
             return false;
         }
         //when user selected to input position characters
@@ -56,17 +68,20 @@ public abstract class ParameterController {
 
             //return false if both position TextFields contains more than 1 character
             if (p1.length != 1 || p2.length != 1) {
+                errors.add("Positions can only be either 'L','C' or 'R'.");
                 return false;
             }
 
             //return false if position chars input are not either L/C/R
             if ((p1[0] != 'L' && p1[0] != 'C' && p1[0] != 'R') || (p2[0] != 'L' && p2[0] != 'C'
                 && p2[0] != 'R')) {
+                errors.add("Positions can only be either 'L','C' or 'R'.");
                 return false;
             }
             //return false if the pair of position chars is not L&R or C&C
             else if (!((p1[0] == 'C' && p2[0] == 'C') || (p1[0] == 'L' && p2[0] == 'R') || (
                 p1[0] == 'R' || p2[0] == 'L'))) {
+                errors.add("Positions must either be L&R, C&C or R&L.");
                 return false;
             }
 
@@ -77,6 +92,7 @@ public abstract class ParameterController {
         //loop through current runways logged in the airport, return false if the runway already exist in the system
         for (Runway runway : airport.getRunways()) {
             if (runway.getPhyId().equals(phyId)) {
+                errors.add("This runway already exists.");
                 return false;
             }
         }
@@ -86,6 +102,7 @@ public abstract class ParameterController {
 
     /**
      * Check if all numerical inputs are within the correct boundaries
+     *
      * @param textFields containing the numerical parameters
      * @return boolean idicates whether inputs are valid
      */
@@ -99,35 +116,43 @@ public abstract class ParameterController {
             }
 
         } catch (Exception e) {
+            errors.add("Parameter values must be numerical.");
             return false;
         }
 
         //return false if any of the physical parameters is 0
         for (int i = 0; i < 6; i++) {
             if (parameters.get(i) < 1) {
+                errors.add("Physical parameters cannot be 0.");
                 return false;
             }
         }
 
         //return false if any of the 2 TORA > runway length
         if (parameters.get(6) > parameters.get(0) || parameters.get(10) > parameters.get(0)) {
+            errors.add("TORA values must be less than the runway length.");
             return false;
         }
 
         //return false if any of the TODAs/ASDAs smaller than their corresponding TORAs
         if (parameters.get(7) < parameters.get(6) || parameters.get(8) < parameters.get(6) ||
             parameters.get(11) < parameters.get(10) || parameters.get(12) < parameters.get(10)) {
+            errors.add(
+                "TODA and ASDA values must be greater than or equal to the corresponding TORA values.");
             return false;
         }
 
         //return false if any of the LDAs > TORAs
         if (parameters.get(9) > parameters.get(6) || parameters.get(13) > parameters.get(10)) {
+            errors.add("LDA cannot be greater than the corresponding TORA value.");
             return false;
         }
 
         //return false if any of the displaced threshold either smaller than 0 or larger than their corresponding TORA
         if (parameters.get(14) < 0 || parameters.get(14) > parameters.get(6) ||
             parameters.get(15) < 0 || parameters.get(15) > parameters.get(10)) {
+            errors.add(
+                "Displaced threshold must be in the range 0 to its corresponding TORA value.");
             return false;
         }
 
@@ -135,15 +160,19 @@ public abstract class ParameterController {
     }
 
     /**
-     * Call validInitInput function, if all inputs are valid, create a new runway and add it to the Airport
-     * @param posCb1 boolean indicates whether the user has selected to input a position char for a logical runway
-     * @param posCb2 boolean indicates whether the user has selected to input a position char for the other logical runway
-     * @param pos1 position characters
-     * @param pos2 the other position characters
-     * @param degree1 degree of one logical runway
-     * @param degree2 degree of the other logical runway
+     * Call validInitInput function, if all inputs are valid, create a new runway and add it to the
+     * Airport
+     *
+     * @param posCb1     boolean indicates whether the user has selected to input a position char
+     *                   for a logical runway
+     * @param posCb2     boolean indicates whether the user has selected to input a position char
+     *                   for the other logical runway
+     * @param pos1       position characters
+     * @param pos2       the other position characters
+     * @param degree1    degree of one logical runway
+     * @param degree2    degree of the other logical runway
      * @param textFields containing all parameter inputs
-     * @param airport the Airport where the user is adding runway to
+     * @param airport    the Airport where the user is adding runway to
      * @return true if a runway has been successfully added, otherwise return false
      */
     protected boolean addNewRunway(boolean posCb1, boolean posCb2, String pos1, String pos2,
@@ -180,6 +209,7 @@ public abstract class ParameterController {
 
     /**
      * Given a list of TextFields, convert the contents into list of double values
+     *
      * @param textFields containing inputs that required to be double values
      * @return list of doubles
      */
@@ -196,9 +226,11 @@ public abstract class ParameterController {
 
     /**
      * Print an alert according to the boolean
+     *
      * @param success if tasks have been successfully performed
      */
-    protected void printAlert(boolean success) {}
+    protected void printAlert(boolean success) {
+    }
 
     /**
      * Set the listener to be called when a runway has been selected or updated
@@ -207,5 +239,16 @@ public abstract class ParameterController {
      */
     public void setNewRunwayListener(SetRunwayListener setRunwayListener) {
         this.setRunwayListener = setRunwayListener;
+    }
+
+    /**
+     * Get the list of errors and reset the list
+     *
+     * @return the list of errors
+     */
+    public List<String> getErrors() {
+        var tempErrors = new ArrayList<String>(errors);
+        errors.clear();
+        return tempErrors;
     }
 }

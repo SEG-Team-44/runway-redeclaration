@@ -1,7 +1,6 @@
 package com.team44.runwayredeclarationapp.controller;
 
-import com.team44.runwayredeclarationapp.event.SetRunwayListener;
-import com.team44.runwayredeclarationapp.model.Obstacle;
+import com.team44.runwayredeclarationapp.event.RecalculatedRunwayListener;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import java.util.HashMap;
@@ -15,7 +14,7 @@ public class RecalculationController {
     /**
      * The listener to call after the runway has been recalculated
      */
-    private SetRunwayListener setRunwayListener;
+    private RecalculatedRunwayListener recalculatedRunwayListener;
 
     /**
      * Recalculate the TORA parameter
@@ -97,10 +96,10 @@ public class RecalculationController {
     /**
      * Recalculate the ASDA parameter
      *
-     * @param runway   the runway
-     * @param logicID  the id of the logical runway
-     * @param rwObst   the obstacle on the runway
-     * @param tora     the recalculated tora value
+     * @param runway  the runway
+     * @param logicID the id of the logical runway
+     * @param rwObst  the obstacle on the runway
+     * @param tora    the recalculated tora value
      * @return the new ASDA value
      */
     public HashMap<String, Double> recalculateASDA(Runway runway, String logicID, RunwayObstacle rwObst,
@@ -142,13 +141,15 @@ public class RecalculationController {
     /**
      * Recalculate the TODA parameter
      *
-     * @param runway   the runway
-     * @param logicID  the id of the logical runway
-     * @param rwObst   the obstacle on the runway
-     * @param tora     the recalculated tora value
+     * @param runway  the runway
+     * @param logicID the id of the logical runway
+     * @param rwObst  the obstacle on the runway
+     * @param tora    the recalculated tora value
      * @return the new TODA value
      */
+
     public HashMap<String, Double> recalculateTODA(Runway runway, String logicID, RunwayObstacle rwObst, double tora) {
+
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
 
@@ -185,9 +186,9 @@ public class RecalculationController {
     /**
      * Recalculate the LDA parameter
      *
-     * @param runway   the runway
-     * @param logicID  the id of the logical runway
-     * @param rwObst   the obstacle on the runway
+     * @param runway  the runway
+     * @param logicID the id of the logical runway
+     * @param rwObst  the obstacle on the runway
      * @return the new LDA value
      */
     public HashMap<String, Double> recalculateLDA(Runway runway, String logicID, RunwayObstacle rwObst) {
@@ -249,22 +250,23 @@ public class RecalculationController {
     /**
      * Set the listener to send the recalculated runway back to the view
      *
-     * @param setRunwayListener the listener
+     * @param recalculatedRunwayListener the listener
      */
-    public void setSetRunwayListener(SetRunwayListener setRunwayListener) {
-        this.setRunwayListener = setRunwayListener;
+    public void setRecalculatedRunwayListener(
+        RecalculatedRunwayListener recalculatedRunwayListener) {
+        this.recalculatedRunwayListener = recalculatedRunwayListener;
     }
 
     /**
      * Recalculate a given runway
      *
-     * @param runway          the runway
-     * @param rwObst          the obstacle on the runway
+     * @param rwObst          the runway-obstacle pairing
      * @param blastProtection the blast protection value
      * @return the updated runway
      */
-    public Runway recalculateRunway(Runway runway, RunwayObstacle rwObst, double blastProtection) {
+    public Runway recalculateRunway(RunwayObstacle rwObst, double blastProtection) {
         // Clone the current runway to edit
+        var runway = rwObst.getRw();
         var recalculatedRunway = runway.clone();
 
         var runway1ID = runway.getLogicId1();
@@ -307,8 +309,12 @@ public class RecalculationController {
         });
 
         // Call the listener to update the GUI
-        if (setRunwayListener != null) {
-            setRunwayListener.updateRunway(recalculatedRunway);
+        if (recalculatedRunwayListener != null) {
+            var newRunwayObstacle = new RunwayObstacle(rwObst.getObst(), recalculatedRunway,
+                rwObst.getPositionL(), rwObst.getPositionR(), rwObst.getDistCR());
+
+            // Update the runway on gui
+            recalculatedRunwayListener.updateRunway(newRunwayObstacle);
         }
 
         return recalculatedRunway;

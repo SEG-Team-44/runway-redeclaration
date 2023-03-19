@@ -1,98 +1,135 @@
 package com.team44.runwayredeclarationapp.ui;
 
-import com.team44.runwayredeclarationapp.controller.ParameterController;
-import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.model.Runway;
+import com.team44.runwayredeclarationapp.event.OnSelectListener;
+import java.util.function.Function;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-public class SelectWindow extends ParameterController{
-    Stage stage;
+/**
+ * A selection window with a list view
+ *
+ * @param <T> the type of objects in the list view
+ */
+public class SelectWindow<T> extends Stage {
 
     /**
-     * Initialising the stage
-     * @param parent
-     * @param airport current airport
+     * The list view
      */
-    public SelectWindow(Window parent, Airport airport) {
-      stage = new Stage();
-      stage.setTitle("Runway Selection");
-      stage.initOwner(parent);
-      stage.initModality(Modality.WINDOW_MODAL);
-      stage.setResizable(false);
+    private final ListView<T> options;
+    /**
+     * The listener called when an item has been selected
+     */
+    private OnSelectListener onSelectListener;
 
-      //Pop up option window for user to select current runway
-      showSelectScene(airport);
+    /**
+     * Create a select window with a list view
+     *
+     * @param parent         the parent window
+     * @param title          the title of the list
+     * @param observableList the observable list that will go in the list view
+     */
+    public SelectWindow(Window parent, String title, ObservableList<T> observableList) {
+        // Add the list view in the scroll pane
+        ScrollPane scroll = new ScrollPane();
+        options = new ListView<>(observableList);
+        scroll.setContent(options);
+
+        // Create the select button
+        Button selectBtn = new Button("Select");
+        selectBtn.setFont(new Font(17));
+
+        // List view properties
+        scroll.setFitToWidth(true);
+        options.setOnKeyPressed(event -> {
+            // Enter key
+            if (event.getCode() == KeyCode.ENTER) {
+                selectBtn.fire();
+            }
+        });
+        options.setOnMouseClicked(event -> {
+            // Double click
+            if (event.getClickCount() == 2) {
+                selectBtn.fire();
+            }
+        });
+
+        // Set the button event
+        selectBtn.setOnAction(ActionEvent -> {
+            var selectedItem = options.getSelectionModel().getSelectedItem();
+            if ((onSelectListener != null) && (selectedItem != null)) {
+                // Call the listener and pass the selected obstacle
+                onSelectListener.select(options.getSelectionModel().getSelectedItem());
+            }
+        });
+
+        // Enable button only when a user selected an option
+        selectBtn.setDisable(true);
+        options.getSelectionModel().selectedItemProperty().addListener(
+            (observableValue, s, t1) -> selectBtn.setDisable(false));
+
+        // Create a title
+        Label lbl = new Label("Select " + title.toLowerCase() + ":");
+        lbl.setFont(new Font(18));
+
+        //combine the scroll pane & button
+        VBox optionBox = new VBox();
+        optionBox.getChildren().addAll(lbl, scroll, selectBtn);
+        optionBox.setAlignment(Pos.CENTER);
+        optionBox.setSpacing(5);
+        optionBox.setPadding(new Insets(5));
+
+        // Create the scene
+        Scene scene = new Scene(optionBox);
+        this.setTitle("Select " + title);
+        this.initOwner(parent);
+        this.initModality(Modality.WINDOW_MODAL);
+        this.setResizable(false);
+        this.setScene(scene);
+        this.show();
+
     }
 
     /**
-     * Setup & display the option window
-     * @param airport current airport
+     * Set the listener to be called when an item has been successfully selected
+     *
+     * @param onSelectListener the listener
      */
-    private void showSelectScene(Airport airport) {
-      //listing all runways recorded in the system
-      ScrollPane scroll = new ScrollPane();
-      ListView<String> options = new ListView<>();
-
-      for (Runway runway : airport.getRunways()) {
-        options.getItems().add(runway.getPhyId());
-      }
-      scroll.setContent(options);
-
-      Button selectBtn = new Button("Select");
-      selectBtn.setFont(new Font(17));
-      //enable button only when a user selected a runway
-      selectBtn.setDisable(true);
-
-      options.getSelectionModel().selectedItemProperty().addListener(
-          (observableValue, s, t1) -> selectBtn.setDisable(false));
-
-      selectBtn.setOnAction(ActionEvent -> {
-           printAlert(true);
-           stage.close();
-      });
-
-      Label lbl = new Label("Select a Runway:");
-      lbl.setFont(new Font(18));
-
-      //combine the scroll pane & button
-      VBox optionBox = new VBox();
-      optionBox.getChildren().addAll(lbl, scroll, selectBtn);
-      optionBox.setAlignment(Pos.CENTER);
-      optionBox.setSpacing(5);
-      optionBox.setPadding(new Insets(5));
-
-      Scene scene = new Scene(optionBox);
-      stage.setScene(scene);
-      stage.show();
+    public void setOnSelect(OnSelectListener onSelectListener) {
+        this.onSelectListener = onSelectListener;
     }
 
+    /**
+     * Set the method that will return the string to display for each object
+     *
+     * @param stringMethod the method of the class
+     */
+    public void setStringMethod(Function<T, String> stringMethod) {
+        // Set the list view cell factory
+        options.setCellFactory(event -> new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
 
-    @Override
-    protected void printAlert(boolean success) {
-
-      super.printAlert(success);
-      Alert a;
-
-      if (success) {
-        a = new Alert(Alert.AlertType.INFORMATION);
-        a.setContentText("Runway has been selected successfully.");
-      } else {
-        a = new Alert(Alert.AlertType.ERROR);
-        a.setContentText("Select a runway.");
-      }
-
-      a.show();
+                // if none, leave it empty
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(stringMethod.apply(item));
+                }
+            }
+        });
     }
-  }
+}

@@ -1,4 +1,4 @@
-package com.team44.runwayredeclarationapp.view.component;
+package com.team44.runwayredeclarationapp.view.component.visualisation;
 
 import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;

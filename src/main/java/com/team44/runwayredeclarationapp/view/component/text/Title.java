@@ -1,4 +1,4 @@
-package com.team44.runwayredeclarationapp.view.component;
+package com.team44.runwayredeclarationapp.view.component.text;
 
 import javafx.scene.text.Text;
 

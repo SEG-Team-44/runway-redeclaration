@@ -2,6 +2,7 @@ package com.team44.runwayredeclarationapp.ui;
 
 import com.team44.runwayredeclarationapp.controller.ParameterController;
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -23,9 +24,9 @@ import javafx.stage.Window;
 /**
  * The class responsible for generate & display the UI for adding a new runway
  */
-public class InitialiseWindow extends ParameterController {
+public class AddRunwayWindow extends ParameterController {
 
-    public InitialiseWindow(Window parent, Airport airport) {
+    public AddRunwayWindow(Window parent, Airport airport) {
         Stage stage = new Stage();
 
         //Components for physical inputs
@@ -102,7 +103,10 @@ public class InitialiseWindow extends ParameterController {
 
             //Display alert if add runway failed
             else {
-                printAlert(false);
+                var errorAlert = new ErrorAlert();
+                errorAlert.setErrors(getErrors().toArray(new String[]{}));
+                getErrors();
+                errorAlert.show();
             }
         });
 
@@ -132,7 +136,7 @@ public class InitialiseWindow extends ParameterController {
             mainPane.requestFocus();
         });
 
-        stage.setTitle("Add New Runway");
+        stage.setTitle("Add new runway");
         stage.setScene(scene);
         stage.initOwner(parent);
         stage.initModality(Modality.WINDOW_MODAL);
@@ -143,15 +147,16 @@ public class InitialiseWindow extends ParameterController {
 
     /**
      * Generate the UI containing given components that ask for inputs for logical runways
+     *
      * @param lblContent section title
-     * @param degree TextField for degree
-     * @param posCb checkbox of whether to input a position character
-     * @param pos TextField for position character
-     * @param tora TextField for TORA
-     * @param toda TextField for TODA
-     * @param asda TextField for ASDA
-     * @param lda TextField for LDA
-     * @param disThresh TextField for displaced threshold
+     * @param degree     TextField for degree
+     * @param posCb      checkbox of whether to input a position character
+     * @param pos        TextField for position character
+     * @param tora       TextField for TORA
+     * @param toda       TextField for TODA
+     * @param asda       TextField for ASDA
+     * @param lda        TextField for LDA
+     * @param disThresh  TextField for displaced threshold
      * @return a gridPane includes all components
      */
     private GridPane getLayout(String lblContent, TextField degree, CheckBox posCb, TextField pos,
@@ -200,6 +205,7 @@ public class InitialiseWindow extends ParameterController {
 
     /**
      * Print an alert correspond to the boolean
+     *
      * @param success if tasks have been successfully performed
      */
     @Override

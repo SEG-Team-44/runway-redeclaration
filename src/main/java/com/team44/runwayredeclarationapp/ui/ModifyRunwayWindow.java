@@ -3,6 +3,7 @@ package com.team44.runwayredeclarationapp.ui;
 import com.team44.runwayredeclarationapp.controller.ParameterController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,10 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,20 +24,20 @@ import javafx.stage.Window;
 /**
  * The class responsible for generate & display the UI for modify initial parameters of runways
  */
-public class ModifyWindow extends ParameterController {
+public class ModifyRunwayWindow extends ParameterController {
+
+    Window parent;
     Stage stage;
+    private SelectWindow<Runway> selectRunwayWindow;
 
     /**
      * Initialising the stage
+     *
      * @param parent
      * @param airport current airport
      */
-    public ModifyWindow(Window parent, Airport airport) {
-        stage = new Stage();
-        stage.setTitle("Parameters Modification");
-        stage.initOwner(parent);
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setResizable(false);
+    public ModifyRunwayWindow(Window parent, Airport airport) {
+        this.parent = parent;
 
         //Pop up option window for user to choose runways
         showOptionScene(airport);
@@ -44,55 +45,30 @@ public class ModifyWindow extends ParameterController {
 
     /**
      * Setup & display the option window
+     *
      * @param airport current airport
      */
     private void showOptionScene(Airport airport) {
         //listing all runways recorded in the system
-        ScrollPane scroll = new ScrollPane();
-        ListView<String> options = new ListView<>();
+        selectRunwayWindow = new SelectWindow<Runway>(parent, "Runway To Edit",
+            airport.getRunwayObservableList());
+        selectRunwayWindow.setStringMethod(Runway::getPhyId);
 
-        for (Runway runway : airport.getRunways()) {
-            options.getItems().add(runway.getPhyId());
-        }
-        scroll.setContent(options);
-
-        Button modifyBtn = new Button("Modify");
-        modifyBtn.setFont(new Font(17));
-        //enable button only when a user selected a runway
-        modifyBtn.setDisable(true);
-
-        options.getSelectionModel().selectedItemProperty().addListener(
-            (observableValue, s, t1) -> modifyBtn.setDisable(false));
-
-        modifyBtn.setOnAction(ActionEvent ->
-            showModifyScene(airport, options.getSelectionModel().getSelectedItem())
-        );
-
-        Label lbl = new Label("Select a Runway:");
-        lbl.setFont(new Font(18));
-
-        //combine the scroll pane & button
-        VBox optionBox = new VBox();
-        optionBox.getChildren().addAll(lbl, scroll, modifyBtn);
-        optionBox.setAlignment(Pos.CENTER);
-        optionBox.setSpacing(5);
-        optionBox.setPadding(new Insets(5));
-
-        Scene scene = new Scene(optionBox);
-        stage.setScene(scene);
-        stage.show();
+        // Set on select event
+        selectRunwayWindow.setOnSelect((selectedRunway) -> {
+            showModifyScene(airport, (Runway) selectedRunway);
+        });
     }
 
     /**
      * Setup & display the UI for user to update the parameters for the selected runway
+     *
      * @param airport current airport
-     * @param id physical id of the selected runway
+     * @param runway  the selected runway
      */
-    private void showModifyScene(Airport airport, String id) {
-        Runway runway = airport.getRunway(id);
-
+    private void showModifyScene(Airport airport, Runway runway) {
         //components for physical measurements
-        Label phyParameter = new Label("Current Physical Parameters of " + id + ":");
+        Label phyParameter = new Label("Current Physical Parameters of " + runway.getPhyId() + ":");
         phyParameter.setFont(new Font(17));
 
         Label runwayL = new Label("Runway Length (m)");
@@ -163,7 +139,10 @@ public class ModifyWindow extends ParameterController {
 
             //else print alert
             else {
-                printAlert(false);
+                var errorAlert = new ErrorAlert();
+                errorAlert.setErrors(getErrors().toArray(new String[]{}));
+                getErrors();
+                errorAlert.show();
             }
         });
 
@@ -171,7 +150,7 @@ public class ModifyWindow extends ParameterController {
         Button returnBtn = new Button("Back");
         returnBtn.setFont(new Font(15));
         returnBtn.setOnAction(ActionEvent -> {
-            showOptionScene(airport);
+            stage.close();
         });
 
         HBox buttons = new HBox();
@@ -194,12 +173,18 @@ public class ModifyWindow extends ParameterController {
         GridPane.setValignment(buttons, VPos.BOTTOM);
 
         //Setup scene
+        stage = new Stage();
         Scene scene = new Scene(mainPane);
         mainPane.requestFocus();
         scene.setOnMouseClicked(mouseEvent -> {
             mainPane.requestFocus();
         });
         stage.setScene(scene);
+
+        // Stage properties
+        stage.initOwner(selectRunwayWindow);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setResizable(false);
         stage.show();
     }
 

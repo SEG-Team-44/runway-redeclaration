@@ -1,9 +1,9 @@
 package com.team44.runwayredeclarationapp.view.component;
 
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
-import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
+import com.team44.runwayredeclarationapp.view.component.text.Title;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Tab;
@@ -251,7 +251,7 @@ public class CalculationBreakdown extends VBox {
         tabPane.setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
 
         setRunways(originRunway, rwObst);
-        recalRunway = controller.recalculateRunway(originRunway, rwObst, blastProtection);
+        recalRunway = controller.recalculateRunway(rwObst, blastProtection);
 
         Tab tora = new Tab("TORA");
         tora.setContent(initTORA(originRunway, rwObst, blastProtection));

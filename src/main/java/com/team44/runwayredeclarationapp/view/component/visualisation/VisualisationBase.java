@@ -1,7 +1,6 @@
-package com.team44.runwayredeclarationapp.view.component;
+package com.team44.runwayredeclarationapp.view.component.visualisation;
 
 import com.team44.runwayredeclarationapp.model.Coord;
-import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import java.util.HashMap;
