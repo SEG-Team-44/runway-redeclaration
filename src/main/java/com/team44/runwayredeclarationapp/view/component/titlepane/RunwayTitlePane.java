@@ -4,6 +4,7 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.AddRunwayWindow;
 import com.team44.runwayredeclarationapp.ui.ModifyRunwayWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import java.util.Objects;
 import javafx.scene.control.Alert;
@@ -104,12 +105,43 @@ public class RunwayTitlePane extends TitledPane {
     }
 
     /**
+     * Check if inputs are valid and show necessary errors
+     *
+     * @return whether the inputs are valid
+     */
+    public boolean checkInputsValid() {
+        // Create an alert
+        ErrorAlert errorAlert = new ErrorAlert();
+
+        // Add the corresponding error messages
+        if (runwaySelectComboBox.getValue() == null) {
+            errorAlert.addError("Select a runway.");
+        }
+
+        // Show the error
+        var numberOfErrors = errorAlert.getErrors().size();
+        errorAlert.show();
+
+        // Return whether the inputs are valid or not
+        return numberOfErrors == 0;
+    }
+
+    /**
      * Set a runway to be selected in the combobox
      *
      * @param runway the runway
      */
     public void setSelectedRunway(Runway runway) {
         runwaySelectComboBox.setValue(runway);
+    }
+
+    /**
+     * Get the currently selected runway
+     *
+     * @return the runway
+     */
+    public Runway getSelectedRunway() {
+        return runwaySelectComboBox.getValue();
     }
 
     /**
