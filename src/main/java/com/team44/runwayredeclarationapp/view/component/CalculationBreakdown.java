@@ -38,10 +38,6 @@ public class CalculationBreakdown extends VBox {
      * TabPane included all calculations
      */
     TabPane tabPane;
-    /**
-     * boolean indicating whether a new runway is selected
-     */
-    boolean newRunway;
 
     /**
      * Initialise calculation breakdown component
@@ -57,8 +53,9 @@ public class CalculationBreakdown extends VBox {
 
     /**
      * Generate calculation breakdown for TORA
-     * @param runway current runway
-     * @param rwObst current runway and obstacle appeared
+     *
+     * @param runway          current runway
+     * @param rwObst          current runway and obstacle appeared
      * @param blastProtection current blast protection
      * @return VBox containing calculation breakdown of TORA
      */
@@ -77,8 +74,7 @@ public class CalculationBreakdown extends VBox {
         if (values1.get("blastProtection") == null) {
             f1 += "Strip End - RESA ";
             c1 += " - " + values1.get("stripEnd") + values1.get("resa");
-        }
-        else {
+        } else {
             f1 += "Blast Protection";
             c1 += " - " + values1.get("blastProtection");
         }
@@ -112,6 +108,7 @@ public class CalculationBreakdown extends VBox {
 
     /**
      * Generate calculation breakdown for TODA
+     *
      * @param runway current runway
      * @param rwObst current runway & obstacle appeared
      * @return VBox containing calculation breakdown of TODA
@@ -135,6 +132,7 @@ public class CalculationBreakdown extends VBox {
 
     /**
      * Generate calculation breakdown for ASDA
+     *
      * @param runway current runway
      * @param rwObst current runway & obstacle appeared
      * @return VBox containing calculation breakdown of ASDA
@@ -144,11 +142,11 @@ public class CalculationBreakdown extends VBox {
         HashMap values1 = controller.recalculateASDA(runway, runway1, rwObst, recalRunway.getTora(runway1));
         HashMap values2 = controller.recalculateASDA(runway, runway2, rwObst, recalRunway.getTora(runway2));
 
-        Text formula1 = new Text ("= Recalculated TORA + Stopway");
-        Text calculation1 = new Text ("= " + values1.get("tora") + " + " + values1.get("stopway"));
+        Text formula1 = new Text("= Recalculated TORA + Stopway");
+        Text calculation1 = new Text("= " + values1.get("tora") + " + " + values1.get("stopway"));
         Text result1 = new Text("= " + values1.get("recalASDA"));
 
-        Text formula2 = new Text ("= Recalculated TORA");
+        Text formula2 = new Text("= Recalculated TORA");
         Text result2 = new Text("= " + values2.get("recalASDA"));
 
         return combineComponents(new Text("ASDA "), formula1, calculation1, result1, new Text("ASDA "), formula2, result2, result2, true);
@@ -156,6 +154,7 @@ public class CalculationBreakdown extends VBox {
 
     /**
      * Generate calculation breakdown for LDA
+     *
      * @param runway current runway
      * @param rwObst current runway * obstacle appeared
      * @return VBox containing calculation breakdown of LDA
@@ -182,15 +181,16 @@ public class CalculationBreakdown extends VBox {
 
     /**
      * Generate all calculation breakdowns for the given formulas & calculations
-     * @param title1 title for runway 1
-     * @param formula1 formula for runway 1
+     *
+     * @param title1       title for runway 1
+     * @param formula1     formula for runway 1
      * @param calculation1 calculation breakdown for runway 1
-     * @param result1 recalculated parameter of runway 1
-     * @param title2 title for runway 2
-     * @param formula2 formula for runway 2
+     * @param result1      recalculated parameter of runway 1
+     * @param title2       title for runway 2
+     * @param formula2     formula for runway 2
      * @param calculation2 calculation breakdown for runway 2
-     * @param result2 recalculated parameter of runway 2
-     * @param noCalForRw2 boolean indicates whether calculation breakdown is needed for runway 2
+     * @param result2      recalculated parameter of runway 2
+     * @param noCalForRw2  boolean indicates whether calculation breakdown is needed for runway 2
      * @return VBox containing all components passed
      */
     private VBox combineComponents(Text title1, Text formula1, Text calculation1, Text result1, Text title2, Text formula2, Text calculation2, Text result2, boolean noCalForRw2) {
@@ -206,21 +206,20 @@ public class CalculationBreakdown extends VBox {
 
         //calculation title indicating the calculation's corresponding runway
         Text calTitle1 = new Text(runway1 + " (Taking Off Away/Landing Over):");
-        Text calTitle2 = new Text (runway2 + " (Taking Off Towards/Landing Towards):");
+        Text calTitle2 = new Text(runway2 + " (Taking Off Towards/Landing Towards):");
 
         //combine all components
-        runway1Grid.add(calTitle1,0,0, 2,1);
-        runway1Grid.add(title1, 0,1);
+        runway1Grid.add(calTitle1, 0, 0, 2, 1);
+        runway1Grid.add(title1, 0, 1);
         runway1Grid.addColumn(1, formula1, calculation1, result1);
 
-        runway2Grid.add(calTitle2, 0,0,2,1);
-        runway2Grid.add(title2, 0,1);
+        runway2Grid.add(calTitle2, 0, 0, 2, 1);
+        runway2Grid.add(title2, 0, 1);
 
         //print the result only if no calculation is needed for runway 2
         if (noCalForRw2) {
             runway2Grid.addColumn(1, formula2, result2);
-        }
-        else {
+        } else {
             runway2Grid.addColumn(1, formula2, calculation2, result2);
         }
 
@@ -229,7 +228,8 @@ public class CalculationBreakdown extends VBox {
     }
 
     /**
-     *  Initialise logicalID 1 & 2
+     * Initialise logicalID 1 & 2
+     *
      * @param runway current runway
      * @param rwObst current runway & obstacle appeared
      */
@@ -239,9 +239,7 @@ public class CalculationBreakdown extends VBox {
         if (controller.isTakeOffTowards(runway.getLogicId1(), runway.getLogicId1(), rwObst)) {
             runway1 = runway.getLogicId1();
             runway2 = runway.getLogicId2();
-        }
-
-        else {
+        } else {
             runway1 = runway.getLogicId2();
             runway2 = runway.getLogicId1();
         }
@@ -249,39 +247,38 @@ public class CalculationBreakdown extends VBox {
 
     /**
      * Generate the TabPane displaying the whole calculation breakdown
-     * @param originRunway original runway
-     * @param rwObst obstacle appeared on the runway
+     *
+     * @param originRunway    original runway
+     * @param rwObst          obstacle appeared on the runway
      * @param blastProtection blast protection
      */
     public void displayCalculations(Runway originRunway, RunwayObstacle rwObst, int blastProtection) {
-        //if a new runway is selected
-        if (newRunway) {
-            //initialise the tabPane
-            tabPane = new TabPane();
-            tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-            tabPane.setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
+        //remove previous calculation breakdown before generating a new one
+        reset();
 
-            //reset the logical IDs
-            setRunways(originRunway, rwObst);
+        //initialise the tabPane
+        tabPane = new TabPane();
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+        tabPane.setTabDragPolicy(TabPane.TabDragPolicy.FIXED);
 
-            //store the recalculated runway
-            recalRunway = controller.recalculateRunway(rwObst, blastProtection);
+        //reset the logical IDs
+        setRunways(originRunway, rwObst);
 
-            //initialise the tabs displaying the calculations
-            Tab tora = new Tab("TORA");
-            tora.setContent(initTORA(originRunway, rwObst, blastProtection));
-            Tab toda = new Tab("TODA");
-            toda.setContent(initTODA(originRunway, rwObst));
-            Tab asda = new Tab("ASDA");
-            asda.setContent(initASDA(originRunway, rwObst));
-            Tab lda = new Tab("LDA");
-            lda.setContent(initLDA(originRunway, rwObst));
+        //store the recalculated runway
+        recalRunway = controller.recalculateRunway(rwObst, blastProtection);
 
-            tabPane.getTabs().addAll(tora, toda, asda, lda);
-            getChildren().add(tabPane);
-            newRunway = false;
-        }
+        //initialise the tabs displaying the calculations
+        Tab tora = new Tab("TORA");
+        tora.setContent(initTORA(originRunway, rwObst, blastProtection));
+        Tab toda = new Tab("TODA");
+        toda.setContent(initTODA(originRunway, rwObst));
+        Tab asda = new Tab("ASDA");
+        asda.setContent(initASDA(originRunway, rwObst));
+        Tab lda = new Tab("LDA");
+        lda.setContent(initLDA(originRunway, rwObst));
 
+        tabPane.getTabs().addAll(tora, toda, asda, lda);
+        getChildren().add(tabPane);
     }
 
     /**
@@ -289,6 +286,6 @@ public class CalculationBreakdown extends VBox {
      */
     public void reset() {
         getChildren().remove(tabPane);
-        newRunway = true;
+
     }
 }
