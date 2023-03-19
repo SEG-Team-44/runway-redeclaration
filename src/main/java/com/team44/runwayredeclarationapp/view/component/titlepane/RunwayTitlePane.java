@@ -1,11 +1,12 @@
 package com.team44.runwayredeclarationapp.view.component.titlepane;
 
 import com.team44.runwayredeclarationapp.model.Runway;
-import com.team44.runwayredeclarationapp.ui.InitialiseWindow;
-import com.team44.runwayredeclarationapp.ui.ModifyWindow;
+import com.team44.runwayredeclarationapp.ui.AddRunwayWindow;
+import com.team44.runwayredeclarationapp.ui.ModifyRunwayWindow;
 import com.team44.runwayredeclarationapp.ui.RunwaySelectWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
+import java.util.Objects;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
@@ -45,10 +46,15 @@ public class RunwayTitlePane extends TitledPane {
         // Create the combobox to select the obstacle
         runwaySelectComboBox = new SelectComboBox<>(mainScene.getRunwayObservableList());
         runwaySelectComboBox.setStringMethod(Runway::getPhyId);
-        runwaySelectComboBox.setPromptText("Select Runway (new)");
+        runwaySelectComboBox.setPromptText("Select Runway");
         runwaySelectComboBox.setMaxWidth(Double.MAX_VALUE);
         runwaySelectComboBox.setOnAction((e) -> {
-            System.out.println(runwaySelectComboBox.getValue().getResaL());
+            // Ensure selected runway is not empty
+            var selectedVal = runwaySelectComboBox.getValue();
+            if (selectedVal != null) {
+                // Set the gui to show the selected runway
+                mainScene.updateInitialRunway(runwaySelectComboBox.getValue());
+            }
         });
 
         //Add runway button
@@ -56,11 +62,14 @@ public class RunwayTitlePane extends TitledPane {
         addRunwayBtn.setMaxWidth(Double.MAX_VALUE);
         //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
-            InitialiseWindow initPage = new InitialiseWindow(mainScene.getMainWindow().getStage(),
+            AddRunwayWindow initPage = new AddRunwayWindow(mainScene.getMainWindow().getStage(),
                 mainScene.getAirport());
 
             // Set the new runway listener
-            initPage.setNewRunwayListener(mainScene::updateInitialRunway);
+            initPage.setNewRunwayListener(runway -> {
+                mainScene.updateInitialRunway(runway);
+                runwaySelectComboBox.getSelectionModel().select(runway);
+            });
         });
 
         Button modifyBtn = new Button("Edit Runway");
@@ -72,11 +81,21 @@ public class RunwayTitlePane extends TitledPane {
                 a.setContentText("There are no runways recorded on the system.");
                 a.show();
             } else {
-                ModifyWindow modifyPage = new ModifyWindow(mainScene.getMainWindow().getStage(),
+                ModifyRunwayWindow modifyPage = new ModifyRunwayWindow(
+                    mainScene.getMainWindow().getStage(),
                     mainScene.getAirport());
 
                 // Set the runway listener to update
-                modifyPage.setNewRunwayListener(mainScene::updateInitialRunway);
+                modifyPage.setNewRunwayListener(runway -> {
+                    var selectedRunway = runwaySelectComboBox.getValue();
+                    // Only update the gui if the selected runway was the one modified
+                    if (selectedRunway != null && Objects.equals(runway.getPhyId(),
+                        selectedRunway.getPhyId())) {
+
+                        mainScene.updateInitialRunway(runway);
+                        runwaySelectComboBox.setValue(runway);
+                    }
+                });
             }
         });
 
@@ -101,6 +120,15 @@ public class RunwayTitlePane extends TitledPane {
         // todo remove the old one
         buttonSelectGridPane.addRow(0, runwaySelectComboBox, addRunwayBtn, modifyBtn);
         // buttonSelectGridPane.addRow(1, runwaySelectComboBox);
+    }
+
+    /**
+     * Set a runway to be selected in the combobox
+     *
+     * @param runway the runway
+     */
+    public void setSelectedRunway(Runway runway) {
+        runwaySelectComboBox.setValue(runway);
     }
 
     /**

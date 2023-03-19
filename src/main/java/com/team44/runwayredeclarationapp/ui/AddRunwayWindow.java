@@ -24,9 +24,9 @@ import javafx.stage.Window;
 /**
  * The class responsible for generate & display the UI for adding a new runway
  */
-public class InitialiseWindow extends ParameterController {
+public class AddRunwayWindow extends ParameterController {
 
-    public InitialiseWindow(Window parent, Airport airport) {
+    public AddRunwayWindow(Window parent, Airport airport) {
         Stage stage = new Stage();
 
         //Components for physical inputs

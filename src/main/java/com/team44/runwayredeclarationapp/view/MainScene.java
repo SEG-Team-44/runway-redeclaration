@@ -114,6 +114,44 @@ public class MainScene extends BaseScene {
      */
     @Override
     public void initialise() {
+        // todo remove these runways once airport selection has been added
+        airport.get().addRunway(new PRunway(9, 27, 'L', 'R', new double[]{
+            3902,//runwayL
+            100,//runwayW
+            60,//stripL
+            100,//stripW
+            100,//clearwayW
+            240, //resaL
+            3902,//tora1
+            3902,//toda1
+            3902,//asda1
+            3595,//lda1
+            3884,//tora2
+            3962,//toda2
+            3884,//asda2
+            3884,//lda2
+            0,//disThresh1
+            306//disThresh2
+        }));
+        airport.get().addRunway(new PRunway(9, 27, 'R', 'L', new double[]{
+            3660,//runwayL
+            100,//runwayW
+            60,//stripL
+            100,//stripW
+            100,//clearwayW
+            240, //resaL
+            3660,//tora1
+            3660,//toda1
+            3660,//asda1
+            3353,//lda1
+            3660,//tora2
+            3660,//toda2
+            3660,//asda2
+            3660,//lda2
+            0,//disThresh1
+            307//disThresh2
+        }));
+
     }
 
     /**
@@ -264,6 +302,8 @@ public class MainScene extends BaseScene {
      * @param runway the runway object
      */
     public void updateInitialRunway(Runway runway) {
+        selectedRunway = runway;
+
         // Set the initial runway to the original values grid
         ogValuesGrid.setRunway(runway);
         newValuesGrid.reset();
@@ -356,7 +396,7 @@ public class MainScene extends BaseScene {
         }
 
         // Select the runway and obstacle to show on the program
-        selectedRunway = runway;
+        runwayTitlePane.setSelectedRunway(runway);
         updateInitialRunway(runway);
         obstacleTitlePane.setSelectedObstacle(obstacle);
         obstacleTitlePane.setInputText(
