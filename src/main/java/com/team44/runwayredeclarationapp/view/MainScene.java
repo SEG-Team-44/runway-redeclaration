@@ -7,6 +7,8 @@ import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
+
+import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
 import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
 import com.team44.runwayredeclarationapp.view.component.text.Title;
 import com.team44.runwayredeclarationapp.view.component.titlepane.AirportTitlePane;
@@ -20,6 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
@@ -53,6 +56,8 @@ public class MainScene extends BaseScene {
      * The grid displaying the original and recalculated values
      */
     private ValuesGrid ogValuesGrid, newValuesGrid;
+
+    private CalculationBreakdown breakdown = new CalculationBreakdown();
 
     /**
      * The canvas displaying the top down and side on view
@@ -279,6 +284,7 @@ public class MainScene extends BaseScene {
         valueGridsBox.getChildren().addAll(ogValuesGrid, newValuesGrid);
         valueGridsBox.setAlignment(Pos.CENTER);
         infoPane.getChildren().add(valueGridsBox);
+        infoPane.getChildren().add(breakdown);
     }
 
     /**
@@ -290,6 +296,7 @@ public class MainScene extends BaseScene {
         // Set the initial runway to the original values grid
         ogValuesGrid.setRunway(runway);
         newValuesGrid.reset();
+        breakdown.reset();
 
         // Update both canvas
         topDownCanvas.setInitialParameters(runway);
@@ -302,10 +309,11 @@ public class MainScene extends BaseScene {
      * @param runwayObstacle the runway-obstacle pairing
      */
     public void updateRecalculatedRunway(RunwayObstacle runwayObstacle) {
-        var runway = runwayObstacle.getRw();
+        var runway = runwayObstacle.getRecalculatedRw();
 
         // Set the recalculated runway parameters to the recalculated values grid
         newValuesGrid.setRunway(runway);
+        breakdown.displayCalculations(runwayTitlePane.getSelectedRunway(), runwayObstacle, 300);
 
         // Update both canvas
         topDownCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);

@@ -25,7 +25,7 @@ public class RecalculationController {
      * @param blastProtection the blast protection value
      * @return the new TORA value
      */
-    private double recalculateTORA(Runway runway, String logicID, RunwayObstacle rwObst,
+    public HashMap<String, Double> recalculateTORA(Runway runway, String logicID, RunwayObstacle rwObst,
         double blastProtection) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
@@ -88,7 +88,8 @@ public class RecalculationController {
             result -= val;
         }
 
-        return result;
+        valueMap.put("recalTORA", result);
+        return valueMap;
     }
 
 
@@ -101,7 +102,7 @@ public class RecalculationController {
      * @param tora    the recalculated tora value
      * @return the new ASDA value
      */
-    private double recalculateASDA(Runway runway, String logicID, RunwayObstacle rwObst,
+    public HashMap<String, Double> recalculateASDA(Runway runway, String logicID, RunwayObstacle rwObst,
         double tora) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
@@ -132,7 +133,8 @@ public class RecalculationController {
             result = valueMap.get("tora");
         }
 
-        return result;
+        valueMap.put("recalASDA", result);
+        return valueMap;
     }
 
 
@@ -145,8 +147,9 @@ public class RecalculationController {
      * @param tora    the recalculated tora value
      * @return the new TODA value
      */
-    private double recalculateTODA(Runway runway, String logicID, RunwayObstacle rwObst,
-        double tora) {
+
+    public HashMap<String, Double> recalculateTODA(Runway runway, String logicID, RunwayObstacle rwObst, double tora) {
+
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
 
@@ -176,7 +179,8 @@ public class RecalculationController {
             result = valueMap.get("tora");
         }
 
-        return result;
+        valueMap.put("recalTODA", result);
+        return valueMap;
     }
 
     /**
@@ -187,7 +191,7 @@ public class RecalculationController {
      * @param rwObst  the obstacle on the runway
      * @return the new LDA value
      */
-    private double recalculateLDA(Runway runway, String logicID, RunwayObstacle rwObst) {
+    public HashMap<String, Double> recalculateLDA(Runway runway, String logicID, RunwayObstacle rwObst) {
         // Create hashmap to store all the parameters necessary for the calculations
         var valueMap = new HashMap<String, Double>();
 
@@ -213,7 +217,6 @@ public class RecalculationController {
             valueMap.put("stripEnd", runway.getStripL());
 
             result = valueMap.get("ogLDA") * 2;
-
         }
         // Take off away
         else {
@@ -231,7 +234,17 @@ public class RecalculationController {
             result -= val;
         }
 
-        return result;
+        valueMap.put("recalLDA", result);
+        return valueMap;
+    }
+
+    public boolean isTakeOffTowards(String currentLogicRw, String runway1, RunwayObstacle rwObst) {
+
+        // Work out the sides
+        var isRunway1Or2 = Objects.equals(currentLogicRw, runway1) ? 1 : 2;
+        var isObstacleLeftOrRight = rwObst.isObstacleOnRightOfRunway() ? 1 : 2;
+
+        return isRunway1Or2 != isObstacleLeftOrRight;
     }
 
     /**
@@ -253,7 +266,7 @@ public class RecalculationController {
      */
     public Runway recalculateRunway(RunwayObstacle rwObst, double blastProtection) {
         // Clone the current runway to edit
-        var runway = rwObst.getRw();
+        var runway = rwObst.getOriginalRw();
         var recalculatedRunway = runway.clone();
 
         var runway1ID = runway.getLogicId1();
@@ -264,16 +277,16 @@ public class RecalculationController {
 
         // Recalculate the parameters separately
         // Logical Runway 1
-        tora1 = recalculateTORA(runway, runway1ID, rwObst, blastProtection);
-        asda1 = recalculateASDA(runway, runway1ID, rwObst, tora1);
-        toda1 = recalculateTODA(runway, runway1ID, rwObst, tora1);
-        lda1 = recalculateLDA(runway, runway1ID, rwObst);
+        tora1 = recalculateTORA(runway, runway1ID, rwObst, blastProtection).get("recalTORA");
+        asda1 = recalculateASDA(runway, runway1ID, rwObst, tora1).get("recalASDA");
+        toda1 = recalculateTODA(runway, runway1ID, rwObst, tora1).get("recalTODA");
+        lda1 = recalculateLDA(runway, runway1ID, rwObst).get("recalLDA");
 
         // Logical Runway 2
-        tora2 = recalculateTORA(runway, runway2ID, rwObst, blastProtection);
-        asda2 = recalculateASDA(runway, runway2ID, rwObst, tora2);
-        toda2 = recalculateTODA(runway, runway2ID, rwObst, tora2);
-        lda2 = recalculateLDA(runway, runway2ID, rwObst);
+        tora2 = recalculateTORA(runway, runway2ID, rwObst, blastProtection).get("recalTORA");
+        asda2 = recalculateASDA(runway, runway2ID, rwObst, tora2).get("recalASDA");
+        toda2 = recalculateTODA(runway, runway2ID, rwObst, tora2).get("recalTODA");
+        lda2 = recalculateLDA(runway, runway2ID, rwObst).get("recalLDA");
 
         // Update the parameters of the cloned runway object
         recalculatedRunway.updateParameters(new double[]{
