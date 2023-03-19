@@ -98,8 +98,9 @@ public class RunwayTitlePane extends TitledPane {
         });
 
         // Add rows
-        buttonSelectGridPane.addRow(0, selectBtn, addRunwayBtn, modifyBtn);
-        buttonSelectGridPane.addRow(1, runwaySelectComboBox);
+        // todo remove the old one
+        buttonSelectGridPane.addRow(0, runwaySelectComboBox, addRunwayBtn, modifyBtn);
+        // buttonSelectGridPane.addRow(1, runwaySelectComboBox);
     }
 
     /**

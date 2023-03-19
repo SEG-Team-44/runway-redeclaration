@@ -2,6 +2,7 @@ package com.team44.runwayredeclarationapp.ui;
 
 import com.team44.runwayredeclarationapp.controller.ParameterController;
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -102,7 +103,10 @@ public class InitialiseWindow extends ParameterController {
 
             //Display alert if add runway failed
             else {
-                printAlert(false);
+                var errorAlert = new ErrorAlert();
+                errorAlert.setErrors(getErrors().toArray(new String[]{}));
+                getErrors();
+                errorAlert.show();
             }
         });
 

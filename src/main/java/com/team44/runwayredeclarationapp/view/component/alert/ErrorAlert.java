@@ -1,6 +1,7 @@
 package com.team44.runwayredeclarationapp.view.component.alert;
 
 import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
@@ -22,6 +23,11 @@ public class ErrorAlert {
      */
     public void addError(String errorText) {
         errors.add(errorText);
+    }
+
+    public void setErrors(String... errorsToSet) {
+        errors.clear();
+        errors.addAll(List.of(errorsToSet));
     }
 
     /**
