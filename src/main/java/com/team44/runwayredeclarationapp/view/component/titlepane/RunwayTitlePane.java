@@ -3,7 +3,6 @@ package com.team44.runwayredeclarationapp.view.component.titlepane;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.AddRunwayWindow;
 import com.team44.runwayredeclarationapp.ui.ModifyRunwayWindow;
-import com.team44.runwayredeclarationapp.ui.RunwaySelectWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import java.util.Objects;
@@ -72,9 +71,10 @@ public class RunwayTitlePane extends TitledPane {
             });
         });
 
+        // Edit runway button
         Button modifyBtn = new Button("Edit Runway");
         modifyBtn.setMaxWidth(Double.MAX_VALUE);
-
+        // Generate the runway selection window when button clicked
         modifyBtn.setOnAction(ActionEvent -> {
             if (mainScene.getAirport().getRunways().isEmpty()) {
                 Alert a = new Alert(Alert.AlertType.INFORMATION);
@@ -99,27 +99,8 @@ public class RunwayTitlePane extends TitledPane {
             }
         });
 
-        Button selectBtn = new Button("Select current Runway");
-
-        selectBtn.setOnAction(ActionEvent -> {
-            if (mainScene.getAirport().getRunways().isEmpty()) {
-                Alert a = new Alert(Alert.AlertType.INFORMATION);
-                a.setContentText("There are no runways recorded on the system.");
-                a.show();
-            } else {
-                RunwaySelectWindow selectPage = new RunwaySelectWindow(
-                    mainScene.getMainWindow().getStage(),
-                    mainScene.getAirport());
-
-                // Set the runway listener to update
-                selectPage.setNewRunwayListener(mainScene::updateInitialRunway);
-            }
-        });
-
         // Add rows
-        // todo remove the old one
         buttonSelectGridPane.addRow(0, runwaySelectComboBox, addRunwayBtn, modifyBtn);
-        // buttonSelectGridPane.addRow(1, runwaySelectComboBox);
     }
 
     /**
