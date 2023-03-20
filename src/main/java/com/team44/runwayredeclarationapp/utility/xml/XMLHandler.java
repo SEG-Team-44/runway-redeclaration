@@ -151,5 +151,16 @@ public class XMLHandler {
             }
         }
     }
+
+    /**
+     * Clear the state by deleting the state file
+     */
+    public void clearState() {
+        if (file.delete()) {
+            logger.info("State file was successfully deleted.");
+        } else {
+            logger.error("State file could not be deleted.");
+        }
+    }
 }
 

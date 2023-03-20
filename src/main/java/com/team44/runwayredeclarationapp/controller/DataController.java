@@ -1,5 +1,6 @@
 package com.team44.runwayredeclarationapp.controller;
 
+import com.team44.runwayredeclarationapp.event.DataLoadedListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
@@ -21,18 +22,52 @@ public class DataController {
     private XMLWrapper initialState;
 
     /**
+     * Listener to call once the data has been retrieved
+     */
+    private DataLoadedListener dataLoadedListener;
+
+    /**
      * Create a data controller to store and retrieve data
      */
     public DataController() {
+    }
+
+
+    /**
+     * Load the initial state to the gui by calling the listener
+     */
+    public void loadInitialState() {
         initialState = xmlHandler.readXML();
 
         // Write the pre-defined state if obstacle is empty
         if (initialState == null) {
-            xmlHandler.saveToXML(getPredefinedAirports(), getPredefinedObstacles());
-            initialState = xmlHandler.readXML();
+            savePredefinedValues();
+        } else {
+            callListener();
+        }
+    }
+
+    /**
+     * Save the pre-defined values into the state (overwrites)
+     */
+    private void savePredefinedValues() {
+        xmlHandler.saveToXML(getPredefinedAirports(), getPredefinedObstacles());
+        initialState = xmlHandler.readXML();
+
+        // Call the listener to update
+        callListener();
+    }
+
+    /**
+     * Call the listener to update the gui
+     */
+    private void callListener() {
+        // Don't call the listener if it hasn't been set yet
+        if (dataLoadedListener == null) {
+            return;
         }
 
-        // todo - listeners
+        dataLoadedListener.load(getInitialAirports(), getInitialObstacles());
     }
 
     /**
@@ -40,7 +75,7 @@ public class DataController {
      *
      * @return the initial list of obstacles
      */
-    public Obstacle[] getInitialObstacles() {
+    private Obstacle[] getInitialObstacles() {
         // If something went wrong reading the file, just return the predefined obstacles
         return initialState != null ? initialState.getObstacles() : getPredefinedObstacles();
     }
@@ -50,7 +85,7 @@ public class DataController {
      *
      * @return the initial list of airports
      */
-    public Airport[] getInitialAirports() {
+    private Airport[] getInitialAirports() {
         // If something went wrong reading the file, just return the predefined airports
         return initialState != null ? initialState.getAirports() : getPredefinedAirports();
     }
@@ -65,6 +100,22 @@ public class DataController {
         xmlHandler.saveToXML(airports, obstacles);
     }
 
+    /**
+     * Reset the data in the state
+     */
+    public void resetState() {
+        savePredefinedValues();
+    }
+
+    /**
+     * Set the listener to be called when the data has been retrieved
+     *
+     * @param dataLoadedListener the listener
+     */
+    public void setDataLoadedListener(
+        DataLoadedListener dataLoadedListener) {
+        this.dataLoadedListener = dataLoadedListener;
+    }
 
     /**
      * Get a list of predefined airports
