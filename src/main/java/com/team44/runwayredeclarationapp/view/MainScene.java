@@ -23,7 +23,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -31,6 +34,9 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -112,10 +118,31 @@ public class MainScene extends BaseScene {
         // Add menu bar
         MenuBar menuBar = new MenuBar();
         var fileMenu = new Menu("File");
-        var menuItemTest1 = new MenuItem("Test1");
-        var menuItemTest2 = new MenuItem("Test2");
+        var menuItemSave = new MenuItem("Save");
 
-        fileMenu.getItems().addAll(menuItemTest1, menuItemTest2);
+        // Save keyboard shortcut
+        var saveKeyShortcut = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+        menuItemSave.setAccelerator(saveKeyShortcut);
+
+        // Save event
+        menuItemSave.setOnAction(event -> {
+            dataController.setState(new Airport[]{airport.get()}, // todo- change after airport list
+                obstacleObservableList.toArray(new Obstacle[0]));
+
+            // Create alert
+            var alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Save successful");
+            alert.setHeaderText("Your data has been saved!");
+            var errorText = new Label(
+                "Data has been saved locally and will automatically load when the program is opened.");
+            errorText.setWrapText(true);
+            alert.getDialogPane().setContent(errorText);
+
+            // Show alert
+            alert.show();
+        });
+
+        fileMenu.getItems().addAll(menuItemSave);
 
         // Create a menu for selecting scenarios to test the program with
         var testDevMenu = new Menu("Test (for devs)");
