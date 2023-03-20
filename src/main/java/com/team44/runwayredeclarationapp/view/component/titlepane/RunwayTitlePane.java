@@ -31,7 +31,7 @@ public class RunwayTitlePane extends TitledPane {
     public RunwayTitlePane(MainScene mainScene) {
         // Create titled pane for selecting the runway
         this.setText("Step 2: Select Runway");
-        this.setExpanded(true);
+        this.setExpanded(false);
         this.setCollapsible(true);
 
         // Create the horizontal box for selecting runway
@@ -55,6 +55,8 @@ public class RunwayTitlePane extends TitledPane {
                 // Set the gui to show the selected runway
                 mainScene.updateInitialRunway(runwaySelectComboBox.getValue());
             }
+            this.setExpanded(false);
+            mainScene.getObstacleTitlePane().setExpanded(true);
         });
 
         //Add runway button

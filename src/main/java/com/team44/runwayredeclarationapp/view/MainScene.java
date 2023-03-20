@@ -260,6 +260,8 @@ public class MainScene extends BaseScene {
                 // Recalculate
                 recalculationController.recalculateRunway(selectedRunwayObstacle, 300);
             }
+            // automatically close obstacle Pane when recalculating
+            obstacleTitlePane.setExpanded(false);
         });
         infoPane.getChildren().add(recalculateBtn);
 
@@ -440,5 +442,32 @@ public class MainScene extends BaseScene {
      */
     public ObservableList<Runway> getRunwayObservableList() {
         return runwayObservableList;
+    }
+
+    /**
+     * Get the airportPane
+     *
+     * @return the airport Pane
+     */
+    public AirportTitlePane getAirportTitlePane() {
+        return airportTitlePane;
+    }
+
+    /**
+     * Get the runwayPane
+     *
+     * @return the runway Pane
+     */
+    public RunwayTitlePane getRunwayTitlePane() {
+        return runwayTitlePane;
+    }
+
+    /**
+     * Get the obstaclePane
+     *
+     * @return the obstacle Pane
+     */
+    public ObstacleTitlePane getObstacleTitlePane() {
+        return obstacleTitlePane;
     }
 }
