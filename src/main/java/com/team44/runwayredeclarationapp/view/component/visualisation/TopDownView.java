@@ -19,7 +19,7 @@ public class TopDownView extends VisualisationBase {
      */
     public TopDownView(double width, double height) {
         super(width, height);
-        runwayHeight = 55;
+        runwayWidth = 55;
 
         logger.info("Initialised the Top Down View");
     }
@@ -38,8 +38,8 @@ public class TopDownView extends VisualisationBase {
         gc.setStroke(Color.WHITE);
         gc.setLineDashes();
         gc.strokeRect(runwayX1 - leftClearwayLength, runwayY1 - 15, leftClearwayLength,
-            runwayHeight + 30);
-        gc.strokeRect(runwayX2, runwayY1 - 15, rightClearwayLength, runwayHeight + 30);
+            runwayWidth + 30);
+        gc.strokeRect(runwayX2, runwayY1 - 15, rightClearwayLength, runwayWidth + 30);
 
         // Draw the runway line markings (Displaced threshold)
         gc.setStroke(Color.WHITE);
@@ -47,7 +47,7 @@ public class TopDownView extends VisualisationBase {
         gc.setLineWidth(1.6);
         int numberOfMarkingLines = 10;
         double dashMarkingWidth = 30;
-        double distanceBetween = runwayHeight / (numberOfMarkingLines + 1);
+        double distanceBetween = runwayWidth / (numberOfMarkingLines + 1);
         // Left side markings
         for (int i = 1; i <= numberOfMarkingLines; i++) {
             double x1 = runwayX1 + displacedThresholdL;
@@ -78,8 +78,8 @@ public class TopDownView extends VisualisationBase {
         gc.strokeLine(centreLineX1, centreLineY1, centreLineX2, centreLineY2);
 
         // Threshold designators
-        addText("09L", 18, centreLineX1 - 20, runwayY1 + 15, 90);
-        addText("27R", 18, centreLineX2 + 20, runwayY2 - 15, -90);
+        addText(tDesignator1, 18, centreLineX1 - 20, runwayY1 + 15, 90);
+        addText(tDesignator2, 18, centreLineX2 + 20, runwayY2 - 15, -90);
     }
 
     /**
@@ -95,7 +95,7 @@ public class TopDownView extends VisualisationBase {
         gc.setFill(Color.CORNFLOWERBLUE);
         double rectangleSize = 50; // distance from top of runway to top of rectangle
         double rectangleY1 = runwayY1 - rectangleSize;
-        double rectangleHeight = runwayHeight + (rectangleSize * 2);
+        double rectangleHeight = runwayWidth + (rectangleSize * 2);
         gc.fillRect(0, rectangleY1, width, rectangleHeight);
 
         // Draw hexagon
@@ -134,7 +134,10 @@ public class TopDownView extends VisualisationBase {
         gc.setFill(Color.RED);
 
         // Draw circle
-        gc.fillOval(runwayX1 + obstacleDistanceFromStart - radius, centreLineY1, radius * 2,
+        gc.fillOval(
+            runwayX1 + obstacleDistanceFromStart - radius,
+            centreLineY1 - radius - obstacleDistanceFromCentreLine,
+            radius * 2,
             radius * 2);
     }
 }
