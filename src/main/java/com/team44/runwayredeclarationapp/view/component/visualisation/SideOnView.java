@@ -1,6 +1,7 @@
 package com.team44.runwayredeclarationapp.view.component.visualisation;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -88,6 +89,42 @@ public class SideOnView extends VisualisationBase {
         gc.setFill(Color.RED);
         gc.fillRect(runwayX1 + obstacleDistanceFromStart, runwayY1 - obstacleHeight, 20,
             obstacleHeight);
+    }
+
+    /**
+     * Draw TOCS/ALS
+     */
+    @Override
+    protected void drawTOCSandALS() {
+        var gc = getGraphicsContext2D();
+        //draw TOCS/ALS as a line
+        gc.setStroke(Color.WHITE);
+        gc.setLineWidth(3);
+        gc.strokeLine(tocsStartX, tocsStartY, tocsEndX, tocsEndY);
+
+        gc.setFill(Color.WHITE);
+        //get the angle between TOCS/ALS and the horizon in degree
+        var angle = Math.toDegrees(Math.atan(obstacleHeight/slope));
+
+        //print the label above the line pivoted at centre & rotated at the same angle with the line
+        if (isObstacleOnLeftSide) {
+            gc.translate((tocsEndX + slope/1.5), (tocsStartY + tocsEndY)/2 - 3);
+            gc.rotate(angle);
+            String text = "TOCS/ALS";
+            double textWidth = gc.getFont().getSize() * text.length() / 2.0;
+            gc.fillText(text,-textWidth,0);
+            gc.rotate(-angle);
+            gc.translate(-(tocsEndX + slope/1.5), -(tocsStartY + tocsEndY)/2 + 3);
+        }
+        else {
+            gc.translate((tocsEndX - slope/2.5), (tocsStartY + tocsEndY)/2 - 4);
+            gc.rotate(-angle);
+            String text = "TOCS/ALS";
+            double textWidth = gc.getFont().getSize() * text.length() / 2.0;
+            gc.fillText(text,-textWidth,0);
+            gc.rotate(angle);
+            gc.translate(-(tocsEndX - slope/2.5), -(tocsStartY + tocsEndY)/2 + 4);
+        }
     }
 
 }
