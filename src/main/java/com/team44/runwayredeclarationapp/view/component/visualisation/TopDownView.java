@@ -19,7 +19,7 @@ public class TopDownView extends VisualisationBase {
      */
     public TopDownView(double width, double height) {
         super(width, height);
-        runwayWidth = 55;
+        runwayWidth = 60;
 
         logger.info("Initialised the Top Down View");
     }
@@ -91,18 +91,25 @@ public class TopDownView extends VisualisationBase {
         double width = getWidth();
         var gc = getGraphicsContext2D();
 
+        // Cleared and Graded
         // Draw background rectangle to join with the hexagon
         gc.setFill(Color.CORNFLOWERBLUE);
-        double rectangleSize = 50; // distance from top of runway to top of rectangle
+        double rectangleSize = calculateRatioValueWidth(75) - (runwayWidth
+            / 2); // distance from top of runway to top of rectangle
         double rectangleY1 = runwayY1 - rectangleSize;
         double rectangleHeight = runwayWidth + (rectangleSize * 2);
-        gc.fillRect(0, rectangleY1, width, rectangleHeight);
+        double gradedAreaStripEnd = calculateRatioValueLength(60);
+        gc.fillRect(runwayX1 - gradedAreaStripEnd, rectangleY1,
+            runwayLength + (gradedAreaStripEnd * 2), rectangleHeight);
 
         // Draw hexagon
-        double gradedAreaOffset = 50; // offset from the side edges of the runway inwards
-        double hexagonOffsetHeight = 50; // offset from top/bottom of rectangle outwards
+        double gradedAreaOffset = calculateRatioValueLength(
+            150); // offset from the side edges of the runway inwards
+        double hexagonOffsetHeight = calculateRatioValueWidth(
+            30); // offset from top/bottom of rectangle outwards
         double hexagonOffsetWidth =
-            gradedAreaOffset + 60; //offset from the side edges of the runway inwards
+            gradedAreaOffset + calculateRatioValueLength(
+                150); //offset from the side edges of the runway inwards
         gc.fillPolygon(
             new double[]{runwayX1 + gradedAreaOffset,
                 runwayX1 + gradedAreaOffset,

@@ -115,7 +115,7 @@ public abstract class VisualisationBase extends Canvas {
      * The canvas distance from the runway strip to the first arrow annotation, for both logical
      * runways
      */
-    protected double arrowsFromRunwayOffset = 110;
+    protected double arrowsFromRunwayOffset = 50;
 
     /**
      * The coordinates for the guidelines for both logical runways
@@ -165,7 +165,7 @@ public abstract class VisualisationBase extends Canvas {
         gc.fillRect(0, 0, width, height);
 
         // Runway cords and info:
-        this.runwayX1 = width * 0.15;
+        this.runwayX1 = width * 0.1;
         this.runwayY1 = (height / 2) - (runwayWidth / 2);
         this.runwayLength = width - (runwayX1 * 2);
         this.runwayX2 = runwayX1 + runwayLength;
@@ -209,7 +209,8 @@ public abstract class VisualisationBase extends Canvas {
         drawTakeOffLandingDirection();
     }
 
-    protected void drawTOCSandALS(){}
+    protected void drawTOCSandALS() {
+    }
 
     /**
      * Paint custom canvas features for different visualisation views
