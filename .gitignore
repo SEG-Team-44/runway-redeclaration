@@ -10,3 +10,6 @@
 log/
 target/
 dependency-reduced-pom.xml
+
+# Other
+state.xml

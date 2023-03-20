@@ -1,5 +1,6 @@
 package com.team44.runwayredeclarationapp.view;
 
+import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
@@ -22,7 +23,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -30,6 +34,9 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -49,6 +56,11 @@ public class MainScene extends BaseScene {
      * The controller responsible for setting the recalculated values
      */
     private final RecalculationController recalculationController = new RecalculationController();
+
+    /**
+     * The controller responsible for reading/writing data in the file system
+     */
+    private final DataController dataController = new DataController();
 
     /**
      * The grid displaying the original and recalculated values
@@ -72,21 +84,7 @@ public class MainScene extends BaseScene {
     /**
      * Observable list of obstacles
      */
-    private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList(
-        new Obstacle("Airbus A319", 12),
-        new Obstacle("Airbus A330", 16),
-        new Obstacle("Airbus A340", 17),
-        new Obstacle("Airbus A380", 24),
-        new Obstacle("Boeing 737 MAX", 13),
-        new Obstacle("Boeing 747", 19),
-        new Obstacle("Boeing 757", 14),
-        new Obstacle("Boeing 767", 17),
-        new Obstacle("Boeing 777", 18),
-        new Obstacle("Boeing 787 Dreamliner", 17),
-        new Obstacle("Cessna 172", 2),
-        new Obstacle("Gulfstream G650", 7),
-        new Obstacle("Embraer E145", 6)
-    );
+    private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList();
 
     /**
      * Observable list of runways
@@ -107,44 +105,9 @@ public class MainScene extends BaseScene {
      */
     @Override
     public void initialise() {
-        // todo remove these runways once airport selection has been added
-        airport.get().addRunway(new PRunway(9, 27, 'L', 'R', new double[]{
-            3902,//runwayL
-            100,//runwayW
-            60,//stripL
-            100,//stripW
-            100,//clearwayW
-            240, //resaL
-            3902,//tora1
-            3902,//toda1
-            3902,//asda1
-            3595,//lda1
-            3884,//tora2
-            3962,//toda2
-            3884,//asda2
-            3884,//lda2
-            0,//disThresh1
-            306//disThresh2
-        }));
-        airport.get().addRunway(new PRunway(9, 27, 'R', 'L', new double[]{
-            3660,//runwayL
-            100,//runwayW
-            60,//stripL
-            100,//stripW
-            100,//clearwayW
-            240, //resaL
-            3660,//tora1
-            3660,//toda1
-            3660,//asda1
-            3353,//lda1
-            3660,//tora2
-            3660,//toda2
-            3660,//asda2
-            3660,//lda2
-            0,//disThresh1
-            307//disThresh2
-        }));
-
+        // todo - fix this once airport list added
+        airport.set(dataController.getInitialAirports()[0]);
+        obstacleObservableList.setAll(dataController.getInitialObstacles());
     }
 
     /**
@@ -155,10 +118,31 @@ public class MainScene extends BaseScene {
         // Add menu bar
         MenuBar menuBar = new MenuBar();
         var fileMenu = new Menu("File");
-        var menuItemTest1 = new MenuItem("Test1");
-        var menuItemTest2 = new MenuItem("Test2");
+        var menuItemSave = new MenuItem("Save");
 
-        fileMenu.getItems().addAll(menuItemTest1, menuItemTest2);
+        // Save keyboard shortcut
+        var saveKeyShortcut = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+        menuItemSave.setAccelerator(saveKeyShortcut);
+
+        // Save event
+        menuItemSave.setOnAction(event -> {
+            dataController.setState(new Airport[]{airport.get()}, // todo- change after airport list
+                obstacleObservableList.toArray(new Obstacle[0]));
+
+            // Create alert
+            var alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Save successful");
+            alert.setHeaderText("Your data has been saved!");
+            var errorText = new Label(
+                "Data has been saved locally and will automatically load when the program is opened.");
+            errorText.setWrapText(true);
+            alert.getDialogPane().setContent(errorText);
+
+            // Show alert
+            alert.show();
+        });
+
+        fileMenu.getItems().addAll(menuItemSave);
 
         // Create a menu for selecting scenarios to test the program with
         var testDevMenu = new Menu("Test (for devs)");
