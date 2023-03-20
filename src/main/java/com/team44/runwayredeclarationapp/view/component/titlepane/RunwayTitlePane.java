@@ -70,8 +70,6 @@ public class RunwayTitlePane extends TitledPane {
                 mainScene.updateInitialRunway(runwaySelectComboBox.getValue());
                 updateRunwayInfo(runwayBox, runwaySelectComboBox.getValue());
             }
-            this.setExpanded(false);
-            mainScene.getObstacleTitlePane().setExpanded(true);
         });
 
         //Add runway button

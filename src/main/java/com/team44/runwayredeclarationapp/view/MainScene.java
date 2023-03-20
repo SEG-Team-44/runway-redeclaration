@@ -28,6 +28,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
@@ -180,15 +181,23 @@ public class MainScene extends BaseScene {
         mainPane.setTop(menuBar);
         root.getChildren().add(mainPane);
 
-        // Create split screen panes
+        // Info pane (Left side)
+        var infoScrollPane = new ScrollPane();
+        infoScrollPane.setFitToWidth(true);
         var infoPane = new VBox();
-        var visualTabPane = new TabPane();
-        mainPane.setLeft(infoPane);
-        mainPane.setRight(visualTabPane);
-        infoPane.getStyleClass().add("info-pane");
+        infoScrollPane.setContent(infoPane);
+        // Info pane properties
         infoPane.setSpacing(10);
+        infoPane.getStyleClass().add("info-pane");
         infoPane.setAlignment(Pos.TOP_CENTER);
+
+        // Visual pane (Right side)
+        var visualTabPane = new TabPane();
         visualTabPane.getStyleClass().add("visual-tab-pane");
+
+        // Set the split screen
+        mainPane.setRight(visualTabPane);
+        mainPane.setLeft(infoScrollPane);
 
         // Set the visualisation tab size
         visualTabPane.setMinWidth(mainWindow.getWidth() / 2);
@@ -256,8 +265,6 @@ public class MainScene extends BaseScene {
                 // Recalculate
                 recalculationController.recalculateRunway(selectedRunwayObstacle, 300);
             }
-            // automatically close obstacle Pane when recalculating
-            obstacleTitlePane.setExpanded(false);
         });
         infoPane.getChildren().add(recalculateBtn);
 
