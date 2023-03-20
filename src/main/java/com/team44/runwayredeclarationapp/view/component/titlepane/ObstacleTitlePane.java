@@ -40,7 +40,7 @@ public class ObstacleTitlePane extends TitledPane {
 
         // Create titled pane for selecting the obstacle
         this.setText("Step 3: Select Obstacle");
-        this.setExpanded(true);
+        this.setExpanded(false);
         this.setCollapsible(true);
 
         // Create the horizontal box for selecting obstacle
@@ -95,11 +95,11 @@ public class ObstacleTitlePane extends TitledPane {
         // Add the rows to the grid
         buttonSelectGridPane.addRow(0, obstacleSelectComboBox, addObstacleBtn, editObstacleBtn);
         buttonSelectGridPane.addRow(1); // empty row for spacing
-        buttonSelectGridPane.addRow(2, new Text("Distnace from Left Threshold:"),
+        buttonSelectGridPane.addRow(2, new Text("Distance from Left Threshold:"),
             obstacleLeftThresholdInput);
-        buttonSelectGridPane.addRow(3, new Text("Distnace from Right Threshold:"),
+        buttonSelectGridPane.addRow(3, new Text("Distance from Right Threshold:"),
             obstacleRightThresholdInput);
-        buttonSelectGridPane.addRow(4, new Text("Distnace from Centreline:"),
+        buttonSelectGridPane.addRow(4, new Text("Distance from Centreline:"),
             obstacleFromCentrelineThresholdInput);
     }
 

@@ -30,6 +30,11 @@ public abstract class VisualisationBase extends Canvas {
     protected double runwayWidth, runwayLength;
 
     /**
+     * Runway Threshold Designators
+     */
+    protected String tDesignator1, tDesignator2;
+
+    /**
      * Runway strip coordinates
      */
     protected double runwayX1, runwayX2, runwayY1, runwayY2;
@@ -103,6 +108,8 @@ public abstract class VisualisationBase extends Canvas {
     protected double stripEnd, stripEndActual;
     protected double blastProtection, blastProtectionActual;
     protected double slope, slopeActual;
+
+    protected double tocsStartX, tocsStartY, tocsEndX, tocsEndY;
 
     /**
      * The canvas distance from the runway strip to the first arrow annotation, for both logical
@@ -188,9 +195,11 @@ public abstract class VisualisationBase extends Canvas {
         } else if (isObstacleOnLeftSide) {
             drawAllArrowsRecalculatedLeft();
             drawObstacle();
+            drawTOCSandALS();
         } else {
             drawAllArrowsRecalculatedRight();
             drawObstacle();
+            drawTOCSandALS();
         }
 
         // Draw the guidelines
@@ -199,6 +208,8 @@ public abstract class VisualisationBase extends Canvas {
         // Draw the take-off/landing direction and text
         drawTakeOffLandingDirection();
     }
+
+    protected void drawTOCSandALS(){}
 
     /**
      * Paint custom canvas features for different visualisation views
@@ -340,6 +351,12 @@ public abstract class VisualisationBase extends Canvas {
         // The x coordinate value of the obstacle
         var obstacleCoord = runwayX1 + obstacleDistanceFromStart;
 
+        //Set TOCS/ALS start and end X & Y coordinates
+        tocsStartX = runwayX1 + obstacleDistanceFromStart + slope;
+        tocsStartY = runwayY1;
+        tocsEndX = runwayX1 + obstacleDistanceFromStart;
+        tocsEndY = runwayY1 - obstacleHeight;
+
         // Landing/takeoff to the right (logical runway 1)
         var blastEndCoord = obstacleCoord + blastProtection;
         addTextArrow("Blast",
@@ -348,6 +365,7 @@ public abstract class VisualisationBase extends Canvas {
             blastEndCoord);
 
         var slopeEndCoord = obstacleCoord + slope;
+
         var stripEndCoord1 = slopeEndCoord + stripEnd;
         addTextArrow("Slope",
             obstacleCoord,
@@ -434,6 +452,12 @@ public abstract class VisualisationBase extends Canvas {
     protected void drawAllArrowsRecalculatedRight() {
         // The x coordinate value of the obstacle
         var obstacleCoord = runwayX1 + obstacleDistanceFromStart;
+
+        //Set TOCS/ALS start and end X & Y coordinates
+        tocsStartX = runwayX1 + obstacleDistanceFromStart - slope;
+        tocsStartY = runwayY1;
+        tocsEndX = runwayX1 + obstacleDistanceFromStart;
+        tocsEndY = runwayY1 - obstacleHeight;
 
         // Landing/takeoff to the right (logical runway 1)
         var toraEndCoord = runwayX1 + toraDistance1;
@@ -668,10 +692,12 @@ public abstract class VisualisationBase extends Canvas {
         setInitialParameters(
             runway.getRunwayL(),
             runway.getRunwayW(),
+            runway1ID,
             runway.getTora(runway1ID),
             runway.getToda(runway1ID),
             runway.getAsda(runway1ID),
             runway.getLda(runway1ID),
+            runway2ID,
             runway.getTora(runway2ID),
             runway.getToda(runway2ID),
             runway.getAsda(runway2ID),
@@ -708,10 +734,12 @@ public abstract class VisualisationBase extends Canvas {
     public void setInitialParameters(
         double actualRunwayLength,
         double actualRunwayWidth,
+        String tDesignator1,
         double toraDistance1,
         double todaDistance1,
         double asdaDistance1,
         double ldaDistance1,
+        String tDesignator2,
         double toraDistance2,
         double todaDistance2,
         double asdaDistance2,
@@ -728,6 +756,7 @@ public abstract class VisualisationBase extends Canvas {
 
         // Set the runway parameter distances
         // Logical Runway 1
+        this.tDesignator1 = tDesignator1;
         this.toraDistanceActual1 = toraDistance1;
         this.todaDistanceActual1 = todaDistance1;
         this.asdaDistanceActual1 = asdaDistance1;
@@ -737,6 +766,7 @@ public abstract class VisualisationBase extends Canvas {
         this.rightClearwayLengthActual = rightClearwayLength;
 
         // Logical Runway 2
+        this.tDesignator2 = tDesignator2;
         this.toraDistanceActual2 = toraDistance2;
         this.todaDistanceActual2 = todaDistance2;
         this.asdaDistanceActual2 = asdaDistance2;
