@@ -248,6 +248,14 @@ public abstract class VisualisationBase extends Canvas {
     }
 
     /**
+     * Reset the canvas back to the loading screen
+     */
+    public void reset() {
+        isLoadingScreen = true;
+        paintLoadingScreen();
+    }
+
+    /**
      * Draw guidelines on the canvas, relative to the runway and parameters
      */
     protected void drawGuidelines() {

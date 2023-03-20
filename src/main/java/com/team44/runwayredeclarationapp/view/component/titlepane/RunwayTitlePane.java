@@ -9,11 +9,9 @@ import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import java.util.Objects;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -156,8 +154,9 @@ public class RunwayTitlePane extends TitledPane {
 
     /**
      * Update the displayed runway values
+     *
      * @param runwayBox VBox containing the buttons & runway info
-     * @param runway current selected runway
+     * @param runway    current selected runway
      */
     private void updateRunwayInfo(VBox runwayBox, Runway runway) {
         //remove runway info of the previous selected runway
@@ -172,6 +171,7 @@ public class RunwayTitlePane extends TitledPane {
 
     /**
      * Generate the section displaying all runway info
+     *
      * @param runway current selected runway
      * @return GridPane containing runway info
      */
@@ -179,11 +179,12 @@ public class RunwayTitlePane extends TitledPane {
         GridPane runwayInfo = new GridPane();
         runwayInfo.setVgap(5);
         runwayInfo.setHgap(5);
-        runwayInfo.getColumnConstraints().addAll(new ColumnConstraints(100), new ColumnConstraints(80),
+        runwayInfo.getColumnConstraints()
+            .addAll(new ColumnConstraints(100), new ColumnConstraints(80),
                 new ColumnConstraints(100), new ColumnConstraints(80));
 
         Text phyRw = new Text(runway.getPhyId() + ":");
-        Text rwL= new Text("Length");
+        Text rwL = new Text("Length");
         Text rwLValue = new Text(runway.getRunwayL() + "m");
         Text resa = new Text("RESA");
         Text resaValue = new Text(runway.getResaL() + "m");
@@ -203,7 +204,7 @@ public class RunwayTitlePane extends TitledPane {
         runwayInfo.addRow(0, designator, rw1, rw2, phyRw);
         runwayInfo.addRow(1, clearway, clearway1, clearway2, rwL, rwLValue);
         runwayInfo.addRow(2, stopway, stopway1, stopway2, resa, resaValue);
-        runwayInfo.addRow(3,thresh, thresh1, thresh2);
+        runwayInfo.addRow(3, thresh, thresh1, thresh2);
 
         return runwayInfo;
     }

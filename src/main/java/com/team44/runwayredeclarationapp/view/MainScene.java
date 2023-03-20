@@ -10,6 +10,7 @@ import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
 import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
+import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
 import com.team44.runwayredeclarationapp.view.component.text.Title;
 import com.team44.runwayredeclarationapp.view.component.titlepane.AirportTitlePane;
 import com.team44.runwayredeclarationapp.view.component.titlepane.ObstacleTitlePane;
@@ -23,10 +24,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -67,6 +65,9 @@ public class MainScene extends BaseScene {
      */
     private ValuesGrid ogValuesGrid, newValuesGrid;
 
+    /**
+     * The pane showing the calculation breakdown
+     */
     private CalculationBreakdown breakdown = new CalculationBreakdown();
 
     /**
@@ -105,9 +106,15 @@ public class MainScene extends BaseScene {
      */
     @Override
     public void initialise() {
-        // todo - fix this once airport list added
-        airport.set(dataController.getInitialAirports()[0]);
-        obstacleObservableList.setAll(dataController.getInitialObstacles());
+        // Set the data loaded listener
+        dataController.setDataLoadedListener((airports, obstacles) -> {
+            // todo - fix this once airport list added
+            airport.set(airports[0]);
+            obstacleObservableList.setAll(obstacles);
+        });
+
+        // Load the initial state
+        dataController.loadInitialState();
     }
 
     /**
@@ -119,6 +126,7 @@ public class MainScene extends BaseScene {
         MenuBar menuBar = new MenuBar();
         var fileMenu = new Menu("File");
         var menuItemSave = new MenuItem("Save");
+        var menuItemResetState = new MenuItem("Reset");
 
         // Save keyboard shortcut
         var saveKeyShortcut = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
@@ -129,20 +137,24 @@ public class MainScene extends BaseScene {
             dataController.setState(new Airport[]{airport.get()}, // todo- change after airport list
                 obstacleObservableList.toArray(new Obstacle[0]));
 
-            // Create alert
-            var alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Save successful");
-            alert.setHeaderText("Your data has been saved!");
-            var errorText = new Label(
-                "Data has been saved locally and will automatically load when the program is opened.");
-            errorText.setWrapText(true);
-            alert.getDialogPane().setContent(errorText);
-
             // Show alert
+            var alert = new InfoAlert("Save successful", "Your data has been saved!",
+                "Data has been saved locally and will automatically load when the program is opened.");
             alert.show();
         });
 
-        fileMenu.getItems().addAll(menuItemSave);
+        // Reset event
+        menuItemResetState.setOnAction(event -> {
+            dataController.resetState();
+            this.reset();
+
+            // Show alert
+            var alert = new InfoAlert("Reset successful", "Your data has been reset!",
+                "Local data has been reset back to preset.");
+            alert.show();
+        });
+
+        fileMenu.getItems().addAll(menuItemSave, menuItemResetState);
 
         // Create a menu for selecting scenarios to test the program with
         var testDevMenu = new Menu("Test (for devs)");
@@ -302,6 +314,19 @@ public class MainScene extends BaseScene {
         // Update both canvas
         topDownCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);
         sideOnCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);
+    }
+
+    /**
+     * Reset the GUI back to it's initial state
+     */
+    private void reset() {
+        ogValuesGrid.reset();
+        newValuesGrid.reset();
+        breakdown.reset();
+        topDownCanvas.reset();
+        sideOnCanvas.reset();
+        runwayTitlePane.clearInputs();
+        obstacleTitlePane.clearInputs();
     }
 
     /**
