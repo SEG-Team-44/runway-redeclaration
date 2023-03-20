@@ -1,5 +1,6 @@
 package com.team44.runwayredeclarationapp.view;
 
+import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
@@ -51,6 +52,11 @@ public class MainScene extends BaseScene {
     private final RecalculationController recalculationController = new RecalculationController();
 
     /**
+     * The controller responsible for reading/writing data in the file system
+     */
+    private final DataController dataController = new DataController();
+
+    /**
      * The grid displaying the original and recalculated values
      */
     private ValuesGrid ogValuesGrid, newValuesGrid;
@@ -72,21 +78,7 @@ public class MainScene extends BaseScene {
     /**
      * Observable list of obstacles
      */
-    private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList(
-        new Obstacle("Airbus A319", 12),
-        new Obstacle("Airbus A330", 16),
-        new Obstacle("Airbus A340", 17),
-        new Obstacle("Airbus A380", 24),
-        new Obstacle("Boeing 737 MAX", 13),
-        new Obstacle("Boeing 747", 19),
-        new Obstacle("Boeing 757", 14),
-        new Obstacle("Boeing 767", 17),
-        new Obstacle("Boeing 777", 18),
-        new Obstacle("Boeing 787 Dreamliner", 17),
-        new Obstacle("Cessna 172", 2),
-        new Obstacle("Gulfstream G650", 7),
-        new Obstacle("Embraer E145", 6)
-    );
+    private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList();
 
     /**
      * Observable list of runways
@@ -107,44 +99,9 @@ public class MainScene extends BaseScene {
      */
     @Override
     public void initialise() {
-        // todo remove these runways once airport selection has been added
-        airport.get().addRunway(new PRunway(9, 27, 'L', 'R', new double[]{
-            3902,//runwayL
-            100,//runwayW
-            60,//stripL
-            100,//stripW
-            100,//clearwayW
-            240, //resaL
-            3902,//tora1
-            3902,//toda1
-            3902,//asda1
-            3595,//lda1
-            3884,//tora2
-            3962,//toda2
-            3884,//asda2
-            3884,//lda2
-            0,//disThresh1
-            306//disThresh2
-        }));
-        airport.get().addRunway(new PRunway(9, 27, 'R', 'L', new double[]{
-            3660,//runwayL
-            100,//runwayW
-            60,//stripL
-            100,//stripW
-            100,//clearwayW
-            240, //resaL
-            3660,//tora1
-            3660,//toda1
-            3660,//asda1
-            3353,//lda1
-            3660,//tora2
-            3660,//toda2
-            3660,//asda2
-            3660,//lda2
-            0,//disThresh1
-            307//disThresh2
-        }));
-
+        // todo - fix this once airport list added
+        airport.set(dataController.getInitialAirports()[0]);
+        obstacleObservableList.setAll(dataController.getInitialObstacles());
     }
 
     /**
