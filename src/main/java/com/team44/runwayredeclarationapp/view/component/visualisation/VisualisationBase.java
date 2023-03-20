@@ -104,6 +104,8 @@ public abstract class VisualisationBase extends Canvas {
     protected double blastProtection, blastProtectionActual;
     protected double slope, slopeActual;
 
+    protected double tocsStartX, tocsStartY, tocsEndX, tocsEndY;
+
     /**
      * The canvas distance from the runway strip to the first arrow annotation, for both logical
      * runways
@@ -188,9 +190,11 @@ public abstract class VisualisationBase extends Canvas {
         } else if (isObstacleOnLeftSide) {
             drawAllArrowsRecalculatedLeft();
             drawObstacle();
+            drawTOCSandALS();
         } else {
             drawAllArrowsRecalculatedRight();
             drawObstacle();
+            drawTOCSandALS();
         }
 
         // Draw the guidelines
@@ -199,6 +203,8 @@ public abstract class VisualisationBase extends Canvas {
         // Draw the take-off/landing direction and text
         drawTakeOffLandingDirection();
     }
+
+    protected void drawTOCSandALS(){}
 
     /**
      * Paint custom canvas features for different visualisation views
@@ -340,6 +346,12 @@ public abstract class VisualisationBase extends Canvas {
         // The x coordinate value of the obstacle
         var obstacleCoord = runwayX1 + obstacleDistanceFromStart;
 
+        //Set TOCS/ALS start and end X & Y coordinates
+        tocsStartX = runwayX1 + obstacleDistanceFromStart + slope;
+        tocsStartY = runwayY1;
+        tocsEndX = runwayX1 + obstacleDistanceFromStart;
+        tocsEndY = runwayY1 - obstacleHeight;
+
         // Landing/takeoff to the right (logical runway 1)
         var blastEndCoord = obstacleCoord + blastProtection;
         addTextArrow("Blast",
@@ -348,6 +360,7 @@ public abstract class VisualisationBase extends Canvas {
             blastEndCoord);
 
         var slopeEndCoord = obstacleCoord + slope;
+
         var stripEndCoord1 = slopeEndCoord + stripEnd;
         addTextArrow("Slope",
             obstacleCoord,
@@ -434,6 +447,12 @@ public abstract class VisualisationBase extends Canvas {
     protected void drawAllArrowsRecalculatedRight() {
         // The x coordinate value of the obstacle
         var obstacleCoord = runwayX1 + obstacleDistanceFromStart;
+
+        //Set TOCS/ALS start and end X & Y coordinates
+        tocsStartX = runwayX1 + obstacleDistanceFromStart - slope;
+        tocsStartY = runwayY1;
+        tocsEndX = runwayX1 + obstacleDistanceFromStart;
+        tocsEndY = runwayY1 - obstacleHeight;
 
         // Landing/takeoff to the right (logical runway 1)
         var toraEndCoord = runwayX1 + toraDistance1;
