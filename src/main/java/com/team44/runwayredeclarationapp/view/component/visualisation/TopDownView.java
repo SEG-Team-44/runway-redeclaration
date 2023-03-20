@@ -78,8 +78,8 @@ public class TopDownView extends VisualisationBase {
         gc.strokeLine(centreLineX1, centreLineY1, centreLineX2, centreLineY2);
 
         // Threshold designators
-        addText("09L", 18, centreLineX1 - 20, runwayY1 + 15, 90);
-        addText("27R", 18, centreLineX2 + 20, runwayY2 - 15, -90);
+        addText(tDesignator1, 18, centreLineX1 - 20, runwayY1 + 15, 90);
+        addText(tDesignator2, 18, centreLineX2 + 20, runwayY2 - 15, -90);
     }
 
     /**
