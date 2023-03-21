@@ -25,6 +25,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -157,6 +158,24 @@ public class MainScene extends BaseScene {
 
         fileMenu.getItems().addAll(menuItemSave, menuItemResetState);
 
+        // Menu for view
+        var viewMenu = new Menu("View");
+        var toggleShowValueMenuItem = new CheckMenuItem("Show values on visualisation");
+        toggleShowValueMenuItem.setSelected(false);
+        viewMenu.getItems().add(toggleShowValueMenuItem);
+
+        // Event handler for toggling the show value state
+        toggleShowValueMenuItem.setOnAction(event -> {
+            if (toggleShowValueMenuItem.isSelected()) {
+                topDownCanvas.setShowValues(true);
+                sideOnCanvas.setShowValues(true);
+            } else {
+                topDownCanvas.setShowValues(false);
+                sideOnCanvas.setShowValues(false);
+
+            }
+        });
+
         // Create a menu for selecting scenarios to test the program with
         var testDevMenu = new Menu("Test (for devs)");
         var scenario1MenuItem = new MenuItem("Select Scenario 1");
@@ -173,7 +192,7 @@ public class MainScene extends BaseScene {
         // Add all the scenario buttons to the menu
         testDevMenu.getItems()
             .addAll(scenario1MenuItem, scenario2MenuItem, scenario3MenuItem, scenario4MenuItem);
-        menuBar.getMenus().addAll(fileMenu, testDevMenu);
+        menuBar.getMenus().addAll(fileMenu, viewMenu, testDevMenu);
 
         // Set up the main pane
         root = new StackPane();

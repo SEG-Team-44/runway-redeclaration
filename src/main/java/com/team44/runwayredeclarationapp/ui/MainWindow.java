@@ -5,6 +5,7 @@ import com.team44.runwayredeclarationapp.view.MainScene;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -52,6 +53,10 @@ public class MainWindow {
         stage.setTitle("Runway Redeclaration");
         stage.setMinWidth(width);
         stage.setMinHeight(height);
+
+        // Set icon
+        stage.getIcons()
+            .add(new Image(String.valueOf(getClass().getResource("/images/logo.png"))));
 
         // Set max size to max screen size
         Rectangle2D screenSize = Screen.getPrimary().getVisualBounds();
