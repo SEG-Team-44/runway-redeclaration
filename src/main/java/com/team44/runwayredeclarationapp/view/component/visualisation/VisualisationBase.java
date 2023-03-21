@@ -23,6 +23,7 @@ public abstract class VisualisationBase extends Canvas {
      */
     protected boolean isLoadingScreen = true;
     protected boolean isObstacleScreen = false;
+    protected boolean isShowValues = false;
 
     /**
      * Runway width and height
@@ -109,6 +110,9 @@ public abstract class VisualisationBase extends Canvas {
     protected double blastProtection, blastProtectionActual;
     protected double slope, slopeActual;
 
+    /**
+     * The TOCS coordinates
+     */
     protected double tocsStartX, tocsStartY, tocsEndX, tocsEndY;
 
     /**
@@ -116,6 +120,11 @@ public abstract class VisualisationBase extends Canvas {
      * runways
      */
     protected double arrowsFromRunwayOffset = 50;
+
+    /**
+     * The gaps between each arrow on the visualisation
+     */
+    protected double arrowsGapBetween = 25;
 
     /**
      * The coordinates for the guidelines for both logical runways
@@ -298,53 +307,75 @@ public abstract class VisualisationBase extends Canvas {
     }
 
     /**
+     * Set whether to show the distance values on the canvas
+     *
+     * @param showValues whether to show the values
+     */
+    public void setShowValues(boolean showValues) {
+        isShowValues = showValues;
+        paint();
+    }
+
+    /**
+     * Create a string with the text and value side by side
+     *
+     * @param text  the text
+     * @param value the value
+     * @return the full string together
+     */
+    protected String createValueText(String text, double value) {
+        // return with value if necessary
+        return isShowValues ? text + " (" + value + "m)" : text;
+    }
+
+    /**
      * Draw the initial annotations (arrows) when the obstacle is not present (when the runway
      * parameters has not been recalculated)
      */
     protected void drawAllArrowsInitial() {
         // Landing/takeoff to the right (logical runway 1)
-        addTextArrow("TODA",
+        addTextArrow(createValueText("TODA", todaDistanceActual1),
             runwayX1,
-            runwayY1 - arrowsFromRunwayOffset - 60,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 4),
             runwayX2 + rightClearwayLength);
-        addTextArrow("ASDA",
+        addTextArrow(createValueText("ASDA", asdaDistanceActual1),
             runwayX1,
-            runwayY1 - arrowsFromRunwayOffset - 45,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
             runwayX2 + rightStopwayLength);
-        addTextArrow("TORA",
+        addTextArrow(createValueText("TORA", todaDistanceActual1),
             runwayX1,
-            runwayY1 - arrowsFromRunwayOffset - 30,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
             runwayX2);
-        addTextArrow("LDA",
+        addTextArrow(createValueText("LDA", ldaDistanceActual1),
             runwayX1 + displacedThresholdL,
-            runwayY1 - arrowsFromRunwayOffset - 15,
+            runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
             runwayX2);
         if (displacedThresholdL > 0) {
-            addTextArrow("DT",
+            addTextArrow(createValueText("DT", displacedThresholdLActual),
                 runwayX1,
                 runwayY1 - arrowsFromRunwayOffset,
                 runwayX1 + displacedThresholdL);
         }
 
         // Landing/takeoff to the left (logical runway 2)
-        addTextArrow("TODA",
+        addTextArrow(createValueText("TODA", todaDistanceActual2),
             runwayX2,
-            runwayY2 + arrowsFromRunwayOffset + 60,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 4),
             runwayX1 - leftClearwayLength);
-        addTextArrow("ASDA",
+        addTextArrow(createValueText("ASDA", asdaDistanceActual2),
             runwayX2,
-            runwayY2 + arrowsFromRunwayOffset + 45,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 3),
             runwayX1 - leftStopwayLength);
-        addTextArrow("TORA",
+        addTextArrow(createValueText("TORA", todaDistanceActual2),
             runwayX2,
-            runwayY2 + arrowsFromRunwayOffset + 30,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
             runwayX1);
-        addTextArrow("LDA",
+        addTextArrow(createValueText("LDA", ldaDistanceActual2),
             runwayX2 - displacedThresholdR,
-            runwayY2 + arrowsFromRunwayOffset + 15,
+            runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
             runwayX1);
         if (displacedThresholdR > 0) {
-            addTextArrow("DT",
+            addTextArrow(createValueText("DT", displacedThresholdRActual),
                 runwayX2,
                 runwayY2 + arrowsFromRunwayOffset,
                 runwayX2 - displacedThresholdR); // Displaced Right
@@ -368,41 +399,41 @@ public abstract class VisualisationBase extends Canvas {
 
         // Landing/takeoff to the right (logical runway 1)
         var blastEndCoord = obstacleCoord + blastProtection;
-        addTextArrow("Blast",
+        addTextArrow(createValueText("Blast", blastProtectionActual),
             obstacleCoord,
-            runwayY1 - arrowsFromRunwayOffset - 30,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
             blastEndCoord);
 
         var slopeEndCoord = obstacleCoord + slope;
 
         var stripEndCoord1 = slopeEndCoord + stripEnd;
-        addTextArrow("Slope",
+        addTextArrow(createValueText("Slope", slopeActual),
             obstacleCoord,
-            runwayY1 - arrowsFromRunwayOffset - 15,
+            runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
             slopeEndCoord);
-        addTextArrow("SE",
+        addTextArrow(createValueText("SE", stripEndActual),
             slopeEndCoord,
-            runwayY1 - arrowsFromRunwayOffset - 15,
+            runwayY1 - arrowsFromRunwayOffset,
             stripEndCoord1);
 
-        addTextArrow("TODA",
+        addTextArrow(createValueText("TODA", todaDistanceActual1),
             blastEndCoord,
-            runwayY1 - arrowsFromRunwayOffset - 60,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 4),
             blastEndCoord + todaDistance1);
-        addTextArrow("ASDA",
+        addTextArrow(createValueText("ASDA", asdaDistanceActual1),
             blastEndCoord,
-            runwayY1 - arrowsFromRunwayOffset - 45,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
             blastEndCoord + asdaDistance1);
-        addTextArrow("TORA",
+        addTextArrow(createValueText("TORA", toraDistanceActual1),
             blastEndCoord,
-            runwayY1 - arrowsFromRunwayOffset - 30,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
             blastEndCoord + toraDistance1);
-        addTextArrow("LDA",
+        addTextArrow(createValueText("LDA", ldaDistanceActual1),
             stripEndCoord1,
-            runwayY1 - arrowsFromRunwayOffset - 15,
+            runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
             stripEndCoord1 + ldaDistance1);
         if (displacedThresholdL > 0) {
-            addTextArrow("DT",
+            addTextArrow(createValueText("DT", displacedThresholdLActual),
                 runwayX1,
                 runwayY1 - arrowsFromRunwayOffset,
                 runwayX1 + displacedThresholdL); // Displaced Left
@@ -412,42 +443,42 @@ public abstract class VisualisationBase extends Canvas {
         var lda2EndCoord = runwayX2 - displacedThresholdR - ldaDistance2;
         var tora2EndCoord = runwayX2 - toraDistance2;
 
-        addTextArrow("SE",
+        addTextArrow(createValueText("SE", stripEndActual),
             lda2EndCoord,
-            runwayY2 + arrowsFromRunwayOffset + 15,
+            runwayY2 + arrowsFromRunwayOffset,
             lda2EndCoord - stripEnd);
-        addTextArrow("RESA",
+        addTextArrow(createValueText("RESA", resaActual),
             lda2EndCoord - stripEnd,
-            runwayY2 + arrowsFromRunwayOffset + 15,
+            runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
             lda2EndCoord - stripEnd - resa);
 
-        addTextArrow("SE",
+        addTextArrow(createValueText("SE", stripEndActual),
             tora2EndCoord,
-            runwayY2 + arrowsFromRunwayOffset + 30,
+            runwayY2 + arrowsFromRunwayOffset,
             tora2EndCoord - stripEnd);
-        addTextArrow("Slope",
+        addTextArrow(createValueText("Slope", slopeActual),
             tora2EndCoord - stripEnd,
-            runwayY2 + arrowsFromRunwayOffset + 30,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
             tora2EndCoord - stripEnd - slope);
 
-        addTextArrow("TODA",
+        addTextArrow(createValueText("TODA", todaDistanceActual2),
             runwayX2,
-            runwayY2 + arrowsFromRunwayOffset + 60,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 4),
             runwayX2 - todaDistance2);
-        addTextArrow("ASDA",
+        addTextArrow(createValueText("ASDA", asdaDistanceActual2),
             runwayX2,
-            runwayY2 + arrowsFromRunwayOffset + 45,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 3),
             runwayX2 - asdaDistance2);
-        addTextArrow("TORA",
+        addTextArrow(createValueText("TORA", toraDistanceActual2),
             runwayX2,
-            runwayY2 + arrowsFromRunwayOffset + 30,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
             tora2EndCoord);
-        addTextArrow("LDA",
+        addTextArrow(createValueText("LDA", ldaDistanceActual2),
             runwayX2 - displacedThresholdR,
-            runwayY2 + arrowsFromRunwayOffset + 15,
+            runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
             lda2EndCoord);
         if (displacedThresholdR > 0) {
-            addTextArrow("DT",
+            addTextArrow(createValueText("DT", displacedThresholdRActual),
                 runwayX2,
                 runwayY2 + arrowsFromRunwayOffset,
                 runwayX2 - displacedThresholdR); // Displaced Right
@@ -471,43 +502,43 @@ public abstract class VisualisationBase extends Canvas {
         // Landing/takeoff to the right (logical runway 1)
         var toraEndCoord = runwayX1 + toraDistance1;
         var stripEndCoord1 = toraEndCoord + stripEnd;
-        addTextArrow("SE",
+        addTextArrow(createValueText("SE", stripEndActual),
             toraEndCoord,
-            runwayY1 - arrowsFromRunwayOffset - 30,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
             stripEndCoord1);
-        addTextArrow("Slope",
+        addTextArrow(createValueText("Slope", slopeActual),
             stripEndCoord1,
-            runwayY1 - arrowsFromRunwayOffset - 30,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
             stripEndCoord1 + slope);
 
         var lda1EndCoord = runwayX1 + displacedThresholdL + ldaDistance1;
-        addTextArrow("SE",
+        addTextArrow(createValueText("SE", stripEndActual),
             lda1EndCoord,
-            runwayY1 - arrowsFromRunwayOffset - 15,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
             lda1EndCoord + stripEnd);
-        addTextArrow("RESA",
+        addTextArrow(createValueText("RESA", resaActual),
             lda1EndCoord + stripEnd,
-            runwayY1 - arrowsFromRunwayOffset - 15,
+            runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
             lda1EndCoord + stripEnd + resa);
 
-        addTextArrow("TODA",
+        addTextArrow(createValueText("TODA", todaDistanceActual1),
             runwayX1,
-            runwayY1 - arrowsFromRunwayOffset - 60,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 4),
             runwayX1 + todaDistance1);
-        addTextArrow("ASDA",
+        addTextArrow(createValueText("ASDA", asdaDistanceActual1),
             runwayX1,
-            runwayY1 - arrowsFromRunwayOffset - 45,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
             runwayX1 + asdaDistance1);
-        addTextArrow("TORA",
+        addTextArrow(createValueText("TORA", toraDistanceActual1),
             runwayX1,
-            runwayY1 - arrowsFromRunwayOffset - 30,
+            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
             toraEndCoord);
-        addTextArrow("LDA",
+        addTextArrow(createValueText("LDA", ldaDistanceActual1),
             runwayX1 + displacedThresholdL,
-            runwayY1 - arrowsFromRunwayOffset - 15,
+            runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
             lda1EndCoord);
         if (displacedThresholdL > 0) {
-            addTextArrow("DT",
+            addTextArrow(createValueText("DT", displacedThresholdLActual),
                 runwayX1,
                 runwayY1 - arrowsFromRunwayOffset,
                 runwayX1 + displacedThresholdL); // Displaced Left
@@ -515,43 +546,43 @@ public abstract class VisualisationBase extends Canvas {
 
         // Landing/takeoff to the left (logical runway 2)
         var stripEndStartCoord1 = obstacleCoord - slope - stripEnd;
-        addTextArrow("Slope",
+        addTextArrow(createValueText("Slope", slopeActual),
             obstacleCoord,
-            runwayY2 + arrowsFromRunwayOffset + 15,
+            runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
             obstacleCoord - slope);
-        addTextArrow("SE",
+        addTextArrow(createValueText("SE", stripEndActual),
             obstacleCoord - slope,
-            runwayY2 + arrowsFromRunwayOffset + 15,
+            runwayY2 + arrowsFromRunwayOffset,
             stripEndStartCoord1);
 
         var stripEndStartCoord2 = obstacleCoord - resa - stripEnd;
-        addTextArrow("RESA",
+        addTextArrow(createValueText("RESA", resaActual),
             obstacleCoord,
-            runwayY2 + arrowsFromRunwayOffset + 30,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
             obstacleCoord - resa);
-        addTextArrow("SE",
+        addTextArrow(createValueText("SE", stripEndActual),
             obstacleCoord - resa,
-            runwayY2 + arrowsFromRunwayOffset + 30,
+            runwayY2 + arrowsFromRunwayOffset,
             stripEndStartCoord2);
 
-        addTextArrow("TODA",
+        addTextArrow(createValueText("TODA", todaDistanceActual1),
             stripEndStartCoord2,
-            runwayY2 + arrowsFromRunwayOffset + 60,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 4),
             runwayX1 - leftClearwayLength);
-        addTextArrow("ASDA",
+        addTextArrow(createValueText("ASDA", asdaDistanceActual2),
             stripEndStartCoord2,
-            runwayY2 + arrowsFromRunwayOffset + 45,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 3),
             runwayX1 - leftStopwayLength);
-        addTextArrow("TORA",
+        addTextArrow(createValueText("TORA", toraDistanceActual2),
             stripEndStartCoord2,
-            runwayY2 + arrowsFromRunwayOffset + 30,
+            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
             runwayX1);
-        addTextArrow("LDA",
+        addTextArrow(createValueText("LDA", ldaDistanceActual2),
             stripEndStartCoord1,
-            runwayY2 + arrowsFromRunwayOffset + 15,
+            runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
             stripEndStartCoord1 - ldaDistance2);
         if (displacedThresholdR > 0) {
-            addTextArrow("DT",
+            addTextArrow(createValueText("DT", displacedThresholdRActual),
                 runwayX2,
                 runwayY2 + arrowsFromRunwayOffset,
                 runwayX2 - displacedThresholdR); // Displaced Right
@@ -569,7 +600,7 @@ public abstract class VisualisationBase extends Canvas {
      */
     protected void addTextArrow(String text, double x1, double y1, double x2) {
         // Set how far into the arrow the text should be
-        double textOnLinePercentage = 0.3; //x1 > x2 ? 0.9 : 0.1;
+        double textOnLinePercentage = x1 > x2 ? 0.5 : 0.1;
 
         // Draw the text and arrow separately
         addText(text, 12, Math.min(x1, x2) + (Math.abs(x1 - x2) * textOnLinePercentage), y1 - 3);

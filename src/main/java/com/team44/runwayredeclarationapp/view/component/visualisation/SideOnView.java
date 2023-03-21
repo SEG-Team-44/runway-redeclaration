@@ -75,6 +75,10 @@ public class SideOnView extends VisualisationBase {
         // Draw the background for below the runway
         gc.setFill(Color.SADDLEBROWN);
         gc.fillRect(0, runwayY1, width, height - runwayY1);
+
+        // Draw the background for above the runway
+        gc.setFill(Color.DARKSLATEBLUE);
+        gc.fillRect(0, 0, width, runwayY1);
     }
 
     /**
