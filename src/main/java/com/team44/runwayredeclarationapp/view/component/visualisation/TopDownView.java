@@ -78,8 +78,23 @@ public class TopDownView extends VisualisationBase {
         gc.strokeLine(centreLineX1, centreLineY1, centreLineX2, centreLineY2);
 
         // Threshold designators
-        addText(tDesignator1, 18, centreLineX1 - 20, runwayY1 + 15, 90);
-        addText(tDesignator2, 18, centreLineX2 + 20, runwayY2 - 15, -90);
+        addText(degree1, 18, centreLineX1 - 10, runwayY1 + 20, 90);
+        if (tDesignator1.contains("L")) {
+            addText("L", 18, centreLineX1 - 27, runwayY1 + 25, 90);
+        } else if (tDesignator1.contains("C")) {
+            addText("C", 18, centreLineX1 - 27, runwayY1 + 25, 90);
+        } else if (tDesignator1.contains("R")) {
+            addText("R", 18, centreLineX1 - 27, runwayY1 + 25, 90);
+        }
+        addText(degree2, 18, centreLineX2 + 10, runwayY2 - 20, -90);
+        if (tDesignator2.contains("L")) {
+            addText("L", 18, centreLineX2 + 27, runwayY2 - 25, -90);
+        } else if (tDesignator2.contains("C")) {
+            addText("C", 18, centreLineX2 + 27, runwayY2 - 25, -90);
+        } else if (tDesignator2.contains("R")) {
+            addText("R", 18, centreLineX2 + 27, runwayY2 - 25, -90);
+        }
+
     }
 
     /**
