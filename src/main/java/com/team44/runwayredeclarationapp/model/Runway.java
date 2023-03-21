@@ -116,7 +116,7 @@ public class Runway implements Cloneable {
      * @param degree degree of a runway
      * @return degree in string and in correct format
      */
-    private String getDegreeInString(int degree) {
+    public String getDegreeInString(int degree) {
         String newDegree;
 
         if (degree < 10) {

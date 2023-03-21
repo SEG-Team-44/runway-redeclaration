@@ -58,8 +58,22 @@ public class SideOnView extends VisualisationBase {
         gc.strokeRect(runwayX2, runwayY1, rightClearwayLength, runwayWidth);
 
         // Threshold designators
-        addText(tDesignator1, 14, runwayX1 - 35, runwayY1 - 15);
-        addText(tDesignator2, 14, runwayX2 + 20, runwayY1 - 15);
+        addText(degree1, 14, runwayX1 - 35, runwayY1 - 15);
+        if (tDesignator1.contains("L")) {
+            addText("L", 14, runwayX1 - 30, runwayY1 - 2);
+        } else if (tDesignator1.contains("C")) {
+            addText("C", 14, runwayX1 - 30, runwayY1 - 2);
+        } else if (tDesignator1.contains("R")) {
+            addText("R", 14, runwayX1 - 30, runwayY1 - 2);
+        }
+        addText(degree2, 14, runwayX2 + 20, runwayY1 - 15);
+        if (tDesignator2.contains("L")) {
+            addText("L", 14, runwayX2 + 25, runwayY1 - 2);
+        } else if (tDesignator2.contains("C")) {
+            addText("C", 14, runwayX2 + 25, runwayY1 - 2);
+        } else if (tDesignator2.contains("R")) {
+            addText("R", 14, runwayX2 + 25, runwayY1 - 2);
+        }
     }
 
     /**

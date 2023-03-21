@@ -30,9 +30,9 @@ public abstract class VisualisationBase extends Canvas {
     protected double runwayWidth, runwayLength;
 
     /**
-     * Runway Threshold Designators
+     * Runway Threshold Designators and degrees
      */
-    protected String tDesignator1, tDesignator2;
+    protected String tDesignator1, degree1, tDesignator2, degree2;
 
     /**
      * Runway strip coordinates
@@ -702,11 +702,13 @@ public abstract class VisualisationBase extends Canvas {
             runway.getRunwayL(),
             runway.getRunwayW(),
             runway1ID,
+            runway.getDegreeInString(runway.getDegree1()),
             runway.getTora(runway1ID),
             runway.getToda(runway1ID),
             runway.getAsda(runway1ID),
             runway.getLda(runway1ID),
             runway2ID,
+            runway.getDegreeInString(runway.getDegree2()),
             runway.getTora(runway2ID),
             runway.getToda(runway2ID),
             runway.getAsda(runway2ID),
@@ -744,11 +746,13 @@ public abstract class VisualisationBase extends Canvas {
         double actualRunwayLength,
         double actualRunwayWidth,
         String tDesignator1,
+        String degree1,
         double toraDistance1,
         double todaDistance1,
         double asdaDistance1,
         double ldaDistance1,
         String tDesignator2,
+        String degree2,
         double toraDistance2,
         double todaDistance2,
         double asdaDistance2,
@@ -766,6 +770,7 @@ public abstract class VisualisationBase extends Canvas {
         // Set the runway parameter distances
         // Logical Runway 1
         this.tDesignator1 = tDesignator1;
+        this.degree1 = degree1;
         this.toraDistanceActual1 = toraDistance1;
         this.todaDistanceActual1 = todaDistance1;
         this.asdaDistanceActual1 = asdaDistance1;
@@ -776,6 +781,7 @@ public abstract class VisualisationBase extends Canvas {
 
         // Logical Runway 2
         this.tDesignator2 = tDesignator2;
+        this.degree2 = degree2;
         this.toraDistanceActual2 = toraDistance2;
         this.todaDistanceActual2 = todaDistance2;
         this.asdaDistanceActual2 = asdaDistance2;
