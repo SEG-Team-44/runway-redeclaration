@@ -196,8 +196,8 @@ public class RunwayTitlePane extends TitledPane {
         Text stopway1 = new Text(runway.getStopwayL(runway.getLogicId1()) + "m");
         Text stopway2 = new Text(runway.getStopwayL(runway.getLogicId2()) + "m");
         Text thresh = new Text("Displaced \nThreshold");
-        Text thresh1 = new Text(runway.getDisThresh(runway.getLogicId1()) + "m");
-        Text thresh2 = new Text(runway.getDisThresh(runway.getLogicId2()) + "m");
+        Text thresh1 = new Text(runway.getDisThresh(runway.getLogicId2()) + "m");
+        Text thresh2 = new Text(runway.getDisThresh(runway.getLogicId1()) + "m");
 
         runwayInfo.addRow(0, designator, rw1, rw2, phyRw);
         runwayInfo.addRow(1, clearway, clearway1, clearway2, rwL, rwLValue);

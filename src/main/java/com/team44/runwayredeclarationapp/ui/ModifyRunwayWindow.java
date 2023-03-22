@@ -97,32 +97,32 @@ public class ModifyRunwayWindow extends ParameterController {
         phyPane.addRow(2, stripL, stripLTf, stripW, stripWTf);
         phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
 
-        //components for 1 logical parameters
         String runway1 = runway.getLogicId1();
+        String runway2 = runway.getLogicId2();
+
+        //components for 1 logical parameters
         TextField toraTf1 = new TextField(String.valueOf(runway.getTora(runway1)));
         TextField todaTf1 = new TextField(String.valueOf(runway.getToda(runway1)));
         TextField asdaTf1 = new TextField(String.valueOf(runway.getAsda(runway1)));
         TextField ldaTf1 = new TextField(String.valueOf(runway.getLda(runway1)));
-        TextField disThreshTf1 = new TextField(String.valueOf(runway.getDisThresh(runway1)));
-
-        //logical runway 1 input interface Layout
-        GridPane gridPane1 = getLayout(runway1, toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1);
+        TextField disThreshTf1 = new TextField(String.valueOf(runway.getDisThresh(runway2)));
 
         //components for the other logical parameters
-        String runway2 = runway.getLogicId2();
         TextField toraTf2 = new TextField(String.valueOf(runway.getTora(runway2)));
         TextField todaTf2 = new TextField(String.valueOf(runway.getToda(runway2)));
         TextField asdaTf2 = new TextField(String.valueOf(runway.getAsda(runway2)));
         TextField ldaTf2 = new TextField(String.valueOf(runway.getLda(runway2)));
-        TextField disThreshTf2 = new TextField(String.valueOf(runway.getDisThresh(runway2)));
+        TextField disThreshTf2 = new TextField(String.valueOf(runway.getDisThresh(runway1)));
 
+        //logical runway 1 input interface Layout
+        GridPane gridPane1 = getLayout(runway1, toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1);
         //logical runway 2 input interface Layout
         GridPane gridPane2 = getLayout(runway2, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2);
 
         TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf,
             toraTf1,
-            todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf1,
-            disThreshTf2};
+            todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2,
+            disThreshTf1};
 
         Button modifyBtn = new Button("Modify");
         modifyBtn.setFont(new Font(15));

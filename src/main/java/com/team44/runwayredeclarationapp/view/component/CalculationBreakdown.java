@@ -276,7 +276,7 @@ public class CalculationBreakdown extends VBox {
         setRunways(originRunway, rwObst);
 
         //store the recalculated runway
-        recalRunway = controller.recalculateRunway(rwObst, blastProtection);
+        recalRunway = rwObst.getRecalculatedRw();
 
         //initialise the tabs displaying the calculations
         Tab tora = new Tab("TORA");
@@ -297,6 +297,5 @@ public class CalculationBreakdown extends VBox {
      */
     public void reset() {
         getChildren().remove(tabPane);
-
     }
 }

@@ -68,5 +68,4 @@ public class RunwayObstacle {
     public boolean isObstacleOnRightOfRunway() {
         return posL > posR;
     }
-
 }

@@ -89,8 +89,8 @@ public class AddRunwayWindow extends ParameterController {
         addBtn.setOnAction(ActionEvent -> {
             TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf,
                 toraTf1,
-                todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf1,
-                disThreshTf2};
+                todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2,
+                disThreshTf1};
 
             //Close window if runway has been successfully added
             if (addNewRunway(posCb1.isSelected(), posCb2.isSelected(), posTf1.getText(),
