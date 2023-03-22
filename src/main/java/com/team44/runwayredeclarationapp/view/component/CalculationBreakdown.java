@@ -4,6 +4,7 @@ import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.view.component.text.Title;
+import java.util.HashMap;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Tab;
@@ -13,14 +14,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.util.HashMap;
-
 /**
  * Class responsible for displaying calculation breakdown
  */
 public class CalculationBreakdown extends VBox {
+
     /**
-     * logical ID of the logical runway where aircraft is taking off towards/landing towards the obstacle
+     * logical ID of the logical runway where aircraft is taking off towards/landing towards the
+     * obstacle
      */
     String runway1;
     /**
@@ -43,7 +44,7 @@ public class CalculationBreakdown extends VBox {
      * Initialise calculation breakdown component
      */
     public CalculationBreakdown() {
-        title = new Title("Calculation Breakdown");
+        title = new Title("Calculation Breakdown:");
         title.setFont(new Font(15));
 
         controller = new RecalculationController();
@@ -68,7 +69,7 @@ public class CalculationBreakdown extends VBox {
         String f1 = "= Original TORA - Obstacle From Threshold - ";
         //calculation breakdown of runway 1
         String c1 = "= " + values1.get("ogTORA") + " - " +
-                values1.get("distanceFromThreshold");
+            values1.get("distanceFromThreshold");
 
         //add blast protection or strip end & RESA into the formula & calculation for runway 1
         if (values1.get("blastProtection") == null) {
@@ -89,7 +90,7 @@ public class CalculationBreakdown extends VBox {
         //formula & calculation breakdown for runway 2
         String f2 = "= Obstacle From Threshold - Slope Calculation - Strip End";
         String c2 = "= " + values2.get("distanceFromThreshold") + " - " +
-                rwObst.getObst().getHeight() + "*50" + " - " + values2.get("stripEnd");
+            rwObst.getObst().getHeight() + "*50" + " - " + values2.get("stripEnd");
 
         //add displaced threshold if required
         if (values2.get("displacedThreshold") != null) {
@@ -103,7 +104,8 @@ public class CalculationBreakdown extends VBox {
         Text formula2 = new Text(f2);
         Text calculation2 = new Text(c2);
 
-        return combineComponents(new Text("TORA "), formula1, calculation1, result1, new Text("TORA "), formula2, calculation2, result2, false);
+        return combineComponents(new Text("TORA "), formula1, calculation1, result1,
+            new Text("TORA "), formula2, calculation2, result2, false);
     }
 
     /**
@@ -115,8 +117,10 @@ public class CalculationBreakdown extends VBox {
      */
     private VBox initTODA(Runway runway, RunwayObstacle rwObst) {
         // get all parameters used in recalculation for runway1 & 2
-        HashMap values1 = controller.recalculateTODA(runway, runway1, rwObst, recalRunway.getTora(runway1));
-        HashMap values2 = controller.recalculateTODA(runway, runway2, rwObst, recalRunway.getTora(runway2));
+        HashMap values1 = controller.recalculateTODA(runway, runway1, rwObst,
+            recalRunway.getTora(runway1));
+        HashMap values2 = controller.recalculateTODA(runway, runway2, rwObst,
+            recalRunway.getTora(runway2));
 
         //formula & calculation of runway 1
         Text formula1 = new Text("= Recalculated TORA + Clearway");
@@ -127,7 +131,8 @@ public class CalculationBreakdown extends VBox {
         Text formula2 = new Text("= Recalculated TORA");
         Text result2 = new Text("= " + values2.get("recalTODA"));
 
-        return combineComponents(new Text("TODA "), formula1, calculation1, result1, new Text("TODA "), formula2, result2, result2, true);
+        return combineComponents(new Text("TODA "), formula1, calculation1, result1,
+            new Text("TODA "), formula2, result2, result2, true);
     }
 
     /**
@@ -139,8 +144,10 @@ public class CalculationBreakdown extends VBox {
      */
     private VBox initASDA(Runway runway, RunwayObstacle rwObst) {
         // get all parameters used in recalculation for runway1 & 2
-        HashMap values1 = controller.recalculateASDA(runway, runway1, rwObst, recalRunway.getTora(runway1));
-        HashMap values2 = controller.recalculateASDA(runway, runway2, rwObst, recalRunway.getTora(runway2));
+        HashMap values1 = controller.recalculateASDA(runway, runway1, rwObst,
+            recalRunway.getTora(runway1));
+        HashMap values2 = controller.recalculateASDA(runway, runway2, rwObst,
+            recalRunway.getTora(runway2));
 
         Text formula1 = new Text("= Recalculated TORA + Stopway");
         Text calculation1 = new Text("= " + values1.get("tora") + " + " + values1.get("stopway"));
@@ -149,7 +156,8 @@ public class CalculationBreakdown extends VBox {
         Text formula2 = new Text("= Recalculated TORA");
         Text result2 = new Text("= " + values2.get("recalASDA"));
 
-        return combineComponents(new Text("ASDA "), formula1, calculation1, result1, new Text("ASDA "), formula2, result2, result2, true);
+        return combineComponents(new Text("ASDA "), formula1, calculation1, result1,
+            new Text("ASDA "), formula2, result2, result2, true);
     }
 
     /**
@@ -165,18 +173,19 @@ public class CalculationBreakdown extends VBox {
         HashMap values2 = controller.recalculateLDA(runway, runway2, rwObst);
 
         Text formula1 = new Text("= Original LDA - " +
-                "Obstacle From Threshold - Slope Calculation - Strip End");
+            "Obstacle From Threshold - Slope Calculation - Strip End");
         Text calculation1 = new Text("= " + values1.get("ogLDA") + " - " +
-                values1.get("distanceFromThreshold") + " - " +
-                rwObst.getObst().getHeight() + "*50" + " - " + values1.get("stripEnd"));
+            values1.get("distanceFromThreshold") + " - " +
+            rwObst.getObst().getHeight() + "*50" + " - " + values1.get("stripEnd"));
         Text result1 = new Text("= " + values1.get("recalLDA"));
 
         Text formula2 = new Text("= Obstacle From Threshold - Strip End - RESA");
         Text calculation2 = new Text("= " + values2.get("distanceFromThreshold") + " - " +
-                values2.get("stripEnd") + " - " + values2.get("resa"));
+            values2.get("stripEnd") + " - " + values2.get("resa"));
         Text result2 = new Text("= " + values2.get("recalLDA"));
 
-        return combineComponents(new Text("LDA "), formula1, calculation1, result1, new Text("LDA "), formula2, calculation2, result2, false);
+        return combineComponents(new Text("LDA "), formula1, calculation1, result1,
+            new Text("LDA "), formula2, calculation2, result2, false);
     }
 
     /**
@@ -193,7 +202,8 @@ public class CalculationBreakdown extends VBox {
      * @param noCalForRw2  boolean indicates whether calculation breakdown is needed for runway 2
      * @return VBox containing all components passed
      */
-    private VBox combineComponents(Text title1, Text formula1, Text calculation1, Text result1, Text title2, Text formula2, Text calculation2, Text result2, boolean noCalForRw2) {
+    private VBox combineComponents(Text title1, Text formula1, Text calculation1, Text result1,
+        Text title2, Text formula2, Text calculation2, Text result2, boolean noCalForRw2) {
         //initialise each subsection
         VBox vBox = new VBox();
         vBox.setSpacing(15);
@@ -252,7 +262,8 @@ public class CalculationBreakdown extends VBox {
      * @param rwObst          obstacle appeared on the runway
      * @param blastProtection blast protection
      */
-    public void displayCalculations(Runway originRunway, RunwayObstacle rwObst, int blastProtection) {
+    public void displayCalculations(Runway originRunway, RunwayObstacle rwObst,
+        int blastProtection) {
         //remove previous calculation breakdown before generating a new one
         reset();
 

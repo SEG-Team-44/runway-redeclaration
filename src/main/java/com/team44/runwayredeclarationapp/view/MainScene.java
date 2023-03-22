@@ -108,6 +108,17 @@ public class MainScene extends BaseScene {
      */
     @Override
     public void initialise() {
+        airport.addListener((event) -> {
+            // Update the list of runways whenever the airport changes
+            runwayObservableList.setAll(airport.get().getRunways());
+
+            // Update the list of runways whenever one of the runway changes
+            airport.get().getRunwayObservableList().addListener(
+                (ListChangeListener<Runway>) observable -> {
+                    runwayObservableList.setAll(airport.get().getRunways());
+                });
+        });
+
         // Set the data loaded listener
         dataController.setDataLoadedListener((airports, obstacles) -> {
             // todo - fix this once airport list added
@@ -200,15 +211,28 @@ public class MainScene extends BaseScene {
         mainPane.setTop(menuBar);
         root.getChildren().add(mainPane);
 
+        // Create the tab pane for the info section
+        var infoTabPane = new TabPane();
+        Tab inputTab = new Tab("Input");
+        Tab outputTab = new Tab("Output");
+        infoTabPane.getTabs().addAll(inputTab, outputTab);
+
         // Info pane (Left side)
         var infoScrollPane = new ScrollPane();
         infoScrollPane.setFitToWidth(true);
-        var infoPane = new VBox();
-        infoScrollPane.setContent(infoPane);
+        var inputPane = new VBox();
+        var outputPane = new VBox();
+        infoScrollPane.setContent(inputPane);
+
         // Info pane properties
-        infoPane.setSpacing(10);
-        infoPane.getStyleClass().add("info-pane");
-        infoPane.setAlignment(Pos.TOP_CENTER);
+        inputPane.setSpacing(10);
+        outputPane.setSpacing(20);
+        inputPane.getStyleClass().add("info-pane");
+        outputPane.getStyleClass().add("info-pane");
+        inputPane.setAlignment(Pos.TOP_CENTER);
+        outputPane.setAlignment(Pos.TOP_CENTER);
+        inputTab.setContent(infoScrollPane);
+        outputTab.setContent(outputPane);
 
         // Visual pane (Right side)
         var visualTabPane = new TabPane();
@@ -216,35 +240,38 @@ public class MainScene extends BaseScene {
 
         // Set the split screen
         mainPane.setRight(visualTabPane);
-        mainPane.setLeft(infoScrollPane);
+        mainPane.setLeft(infoTabPane);
 
         // Set the visualisation tab size
         visualTabPane.setMinWidth(mainWindow.getWidth() / 2);
+        infoTabPane.setMinWidth(mainWindow.getWidth() / 2);
         // Always make the visualisation tab half the size of the window
         root.widthProperty().addListener(
             (observableValue, oldWidth, newWidth) -> {
                 visualTabPane.setPrefWidth(
                     newWidth.doubleValue() / 2);
-                infoPane.setPrefWidth(
+                inputPane.setPrefWidth(
                     newWidth.doubleValue() / 2);
             });
 
         // Set tab properties
         visualTabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        infoTabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
         visualTabPane.setTabDragPolicy(TabDragPolicy.REORDER);
+        infoTabPane.setTabDragPolicy(TabDragPolicy.REORDER);
 
         // Create tabs for the runway visualisations
-        Tab tab1 = new Tab("Top-down view");
-        Tab tab2 = new Tab("Side-on view");
-        visualTabPane.getTabs().addAll(tab1, tab2);
+        Tab topDownTab = new Tab("Top-down view");
+        Tab sideOnTab = new Tab("Side-on view");
+        visualTabPane.getTabs().addAll(topDownTab, sideOnTab);
 
         // Add the visualisations to the tabs
         topDownCanvas = new TopDownView(0, 0);
         sideOnCanvas = new SideOnView(0, 0);
         var topDownPane = new VisualisationPane(topDownCanvas);
         var sideOnPane = new VisualisationPane(sideOnCanvas);
-        tab1.setContent(topDownPane);
-        tab2.setContent(sideOnPane);
+        topDownTab.setContent(topDownPane);
+        sideOnTab.setContent(sideOnPane);
 
         // Input section
         var inputSectionTitle = new Title("Input:");
@@ -254,17 +281,7 @@ public class MainScene extends BaseScene {
         runwayTitlePane = new RunwayTitlePane(this);
         obstacleTitlePane = new ObstacleTitlePane(this);
 
-        // Update the list of runways whenever the airport changes
-        airport.addListener((event) -> {
-            runwayObservableList.setAll(airport.get().getRunways());
-        });
-        // Update the list whenever one of the runway changes
-        airport.get().getRunwayObservableList().addListener(
-            (ListChangeListener<Runway>) observable -> {
-                runwayObservableList.setAll(airport.get().getRunways());
-            });
-
-        infoPane.getChildren()
+        inputPane.getChildren()
             .addAll(inputSectionTitle, airportTitlePane, runwayTitlePane, obstacleTitlePane);
 
         // Recalculate button
@@ -285,14 +302,14 @@ public class MainScene extends BaseScene {
                 recalculationController.recalculateRunway(selectedRunwayObstacle, 300);
             }
         });
-        infoPane.getChildren().add(recalculateBtn);
+        inputPane.getChildren().add(recalculateBtn);
 
         // Set the listener to handle when parameters have been recalculated
         recalculationController.setRecalculatedRunwayListener(this::updateRecalculatedRunway);
 
         // Input section
-        var outputSectionTitle = new Title("Output:");
-        infoPane.getChildren().add(outputSectionTitle);
+        var outputSectionTitle = new Title("Runway Values:");
+        outputPane.getChildren().add(outputSectionTitle);
 
         // Create horizontal box for both value grid
         var valueGridsBox = new HBox();
@@ -305,8 +322,7 @@ public class MainScene extends BaseScene {
         // Add the grids to the information pane
         valueGridsBox.getChildren().addAll(ogValuesGrid, newValuesGrid);
         valueGridsBox.setAlignment(Pos.CENTER);
-        infoPane.getChildren().add(valueGridsBox);
-        infoPane.getChildren().add(breakdown);
+        outputPane.getChildren().addAll(valueGridsBox, breakdown);
     }
 
     /**

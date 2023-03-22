@@ -40,7 +40,7 @@ public class ObstacleTitlePane extends TitledPane {
 
         // Create titled pane for selecting the obstacle
         this.setText("Step 3: Select Obstacle");
-        this.setExpanded(false);
+        this.setExpanded(true);
         this.setCollapsible(true);
 
         // Create the horizontal box for selecting obstacle

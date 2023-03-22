@@ -38,7 +38,7 @@ public class RunwayTitlePane extends TitledPane {
     public RunwayTitlePane(MainScene mainScene) {
         // Create titled pane for selecting the runway
         this.setText("Step 2: Select Runway");
-        this.setExpanded(false);
+        this.setExpanded(true);
         this.setCollapsible(true);
 
         runwayInfo = new GridPane();
@@ -221,5 +221,6 @@ public class RunwayTitlePane extends TitledPane {
      */
     public void clearInputs() {
         runwaySelectComboBox.setValue(null);
+        // todo:: remove/reset value display
     }
 }
