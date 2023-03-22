@@ -108,6 +108,17 @@ public class MainScene extends BaseScene {
      */
     @Override
     public void initialise() {
+        airport.addListener((event) -> {
+            // Update the list of runways whenever the airport changes
+            runwayObservableList.setAll(airport.get().getRunways());
+
+            // Update the list of runways whenever one of the runway changes
+            airport.get().getRunwayObservableList().addListener(
+                (ListChangeListener<Runway>) observable -> {
+                    runwayObservableList.setAll(airport.get().getRunways());
+                });
+        });
+
         // Set the data loaded listener
         dataController.setDataLoadedListener((airports, obstacles) -> {
             // todo - fix this once airport list added
@@ -253,16 +264,6 @@ public class MainScene extends BaseScene {
         airportTitlePane = new AirportTitlePane(this);
         runwayTitlePane = new RunwayTitlePane(this);
         obstacleTitlePane = new ObstacleTitlePane(this);
-
-        // Update the list of runways whenever the airport changes
-        airport.addListener((event) -> {
-            runwayObservableList.setAll(airport.get().getRunways());
-        });
-        // Update the list whenever one of the runway changes
-        airport.get().getRunwayObservableList().addListener(
-            (ListChangeListener<Runway>) observable -> {
-                runwayObservableList.setAll(airport.get().getRunways());
-            });
 
         infoPane.getChildren()
             .addAll(inputSectionTitle, airportTitlePane, runwayTitlePane, obstacleTitlePane);
@@ -504,5 +505,9 @@ public class MainScene extends BaseScene {
      */
     public ObstacleTitlePane getObstacleTitlePane() {
         return obstacleTitlePane;
+    }
+
+    public void selectAirport(Airport airport) {
+        this.airport.set(airport);
     }
 }
