@@ -2,20 +2,26 @@ package com.team44.runwayredeclarationapp.controller;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
+import java.util.HashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Test to see if the recalculated values are correct
  */
+@TestMethodOrder(OrderAnnotation.class)
 class RecalculationControllerTest {
 
     private static final Logger logger = LogManager.getLogger(RecalculationController.class);
@@ -108,6 +114,7 @@ class RecalculationControllerTest {
         logger.info("Test done");
     }
 
+    @Order(1)
     @Test
     @DisplayName("Recalculate scenario 1")
     void recalculateRunwayScenario1() {
@@ -116,6 +123,7 @@ class RecalculationControllerTest {
             2986, 2986, 2986, 3346);
     }
 
+    @Order(2)
     @Test
     @DisplayName("Recalculate scenario 2")
     void recalculateRunwayScenario2() {
@@ -124,6 +132,7 @@ class RecalculationControllerTest {
             2860, 2860, 2860, 1850);
     }
 
+    @Order(3)
     @Test
     @DisplayName("Recalculate scenario 3")
     void recalculateRunwayScenario3() {
@@ -132,12 +141,141 @@ class RecalculationControllerTest {
             2393, 2393, 2393, 2903);
     }
 
+    @Order(4)
     @Test
     @DisplayName("Recalculate scenario 4")
     void recalculateRunwayScenario4() {
         testPRunway(runway09L27R, runwayObstacle4,
             2792, 2792, 2792, 3246,
             3534, 3612, 3534, 2774);
+    }
+
+    @Order(5)
+    @Test
+    @DisplayName("Calculation breakdown TORA (Logical Runway 1)")
+    void tora1CalculationBreakdown() {
+        var expected = new HashMap<String, Double>();
+        expected.put("displacedThreshold", 306.0);
+        expected.put("distanceFromThreshold", -50.0);
+        expected.put("blastProtection", 300.0);
+        expected.put("recalTORA", 3346.0);
+        expected.put("ogTORA", 3902.0);
+
+        assertTrue(testRecalculatedHashmaps(expected,
+            recalculationController.recalculateTORA(runway09L27R, "09L", runwayObstacle1, 300)));
+    }
+
+    @Order(6)
+    @Test
+    @DisplayName("Calculation breakdown TORA (Logical Runway 2)")
+    void tora2CalculationBreakdown() {
+        var expected = new HashMap<String, Double>();
+        expected.put("distanceFromThreshold", 3646.0);
+        expected.put("slopeCalculation", 600.0);
+        expected.put("stripEnd", 60.0);
+        expected.put("recalTORA", 2986.0);
+
+        assertTrue(testRecalculatedHashmaps(expected,
+            recalculationController.recalculateTORA(runway09L27R, "27R", runwayObstacle1, 300)));
+    }
+
+    @Order(7)
+    @Test
+    @DisplayName("Calculation breakdown TODA (Logical Runway 1)")
+    void toda1CalculationBreakdown() {
+        var expected = new HashMap<String, Double>();
+        expected.put("clearway", 0.0);
+        expected.put("recalTODA", 300.0);
+        expected.put("tora", 300.0);
+
+        assertTrue(testRecalculatedHashmaps(expected,
+            recalculationController.recalculateTODA(runway09L27R, "09L", runwayObstacle1, 300)));
+    }
+
+    @Order(8)
+    @Test
+    @DisplayName("Calculation breakdown TODA (Logical Runway 2)")
+    void toda2CalculationBreakdown() {
+        var expected = new HashMap<String, Double>();
+        expected.put("recalTODA", 300.0);
+        expected.put("tora", 300.0);
+
+        assertTrue(testRecalculatedHashmaps(expected,
+            recalculationController.recalculateTODA(runway09L27R, "27R", runwayObstacle1, 300)));
+    }
+
+    @Order(9)
+    @Test
+    @DisplayName("Calculation breakdown ASDA (Logical Runway 1)")
+    void asda1CalculationBreakdown() {
+        var expected = new HashMap<String, Double>();
+        expected.put("stopway", 0.0);
+        expected.put("recalASDA", 300.0);
+        expected.put("tora", 300.0);
+
+        assertTrue(testRecalculatedHashmaps(expected,
+            recalculationController.recalculateASDA(runway09L27R, "09L", runwayObstacle1, 300)));
+    }
+
+    @Order(10)
+    @Test
+    @DisplayName("Calculation breakdown ASDA (Logical Runway 2)")
+    void asda2CalculationBreakdown() {
+        var expected = new HashMap<String, Double>();
+        expected.put("recalASDA", 300.0);
+        expected.put("tora", 300.0);
+
+        assertTrue(testRecalculatedHashmaps(expected,
+            recalculationController.recalculateASDA(runway09L27R, "27R", runwayObstacle1, 300)));
+    }
+
+    @Order(111)
+    @Test
+    @DisplayName("Calculation breakdown LDA (Logical Runway 1)")
+    void lda1CalculationBreakdown() {
+        var expected = new HashMap<String, Double>();
+        expected.put("distanceFromThreshold", -50.0);
+        expected.put("slopeCalculation", 600.0);
+        expected.put("recalLDA", 2985.0);
+        expected.put("ogLDA", 3595.0);
+        expected.put("stripEnd", 60.0);
+
+        assertTrue(testRecalculatedHashmaps(expected,
+            recalculationController.recalculateLDA(runway09L27R, "09L", runwayObstacle1)));
+    }
+
+    @Order(12)
+    @Test
+    @DisplayName("Calculation breakdown LDA (Logical Runway 2)")
+    void lda2CalculationBreakdown() {
+        var expected = new HashMap<String, Double>();
+        expected.put("distanceFromThreshold", 3646.0);
+        expected.put("resa", 240.0);
+        expected.put("recalLDA", 3346.0);
+        expected.put("stripEnd", 60.0);
+
+        assertTrue(testRecalculatedHashmaps(expected,
+            recalculationController.recalculateLDA(runway09L27R, "27R", runwayObstacle1)));
+    }
+
+    /**
+     * Compare a hashmap with another hashmap, disregarding the order
+     *
+     * @param expected the expected outcome
+     * @param actual   the actual outcome
+     * @return whether the hashmaps are equal
+     */
+    private Boolean testRecalculatedHashmaps(HashMap<String, Double> expected,
+        HashMap<String, Double> actual) {
+        // Check if they're the same size
+        if (actual.size() != expected.size()) {
+            return false;
+        }
+
+        // Iterate through each outcome and compare with expected
+        return actual.entrySet().stream().allMatch(stringDoubleEntry -> {
+            return stringDoubleEntry.getValue().equals(expected.get(stringDoubleEntry.getKey()));
+        });
     }
 
     /**
