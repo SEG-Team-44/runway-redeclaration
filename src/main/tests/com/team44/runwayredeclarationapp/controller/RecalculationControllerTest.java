@@ -234,7 +234,7 @@ class RecalculationControllerTest {
     @DisplayName("Calculation breakdown LDA (Logical Runway 1)")
     void lda1CalculationBreakdown() {
         var expected = new HashMap<String, Double>();
-        expected.put("distanceFromThreshold", -50.2);
+        expected.put("distanceFromThreshold", -50.0);
         expected.put("slopeCalculation", 600.0);
         expected.put("recalLDA", 2985.0);
         expected.put("ogLDA", 3595.0);
