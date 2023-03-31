@@ -41,8 +41,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 /**
  * The main scene that will be shown when the user opens the program
@@ -52,7 +50,8 @@ public class MainScene extends BaseScene {
     /**
      * The selected airport
      */
-    private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>(new Airport());
+    private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>(
+        new Airport("Test airport"));
 
     /**
      * The controller responsible for setting the recalculated values
@@ -92,6 +91,10 @@ public class MainScene extends BaseScene {
     private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList();
 
     /**
+     * Observable list of airports
+     */
+    private ObservableList<Airport> airportObservableList = FXCollections.observableArrayList();
+    /**
      * Observable list of runways
      */
     private ObservableList<Runway> runwayObservableList = FXCollections.observableArrayList();
@@ -125,6 +128,7 @@ public class MainScene extends BaseScene {
         dataController.setDataLoadedListener((airports, obstacles) -> {
             // todo - fix this once airport list added
             airport.set(airports[0]);
+            airportObservableList.setAll(airports);
             obstacleObservableList.setAll(obstacles);
         });
 
@@ -489,7 +493,16 @@ public class MainScene extends BaseScene {
     }
 
     /**
-     * Get the observable list containing the runways
+     * Get the observable list containing the airports
+     *
+     * @return the airports
+     */
+    public ObservableList<Airport> getAirportObservableList() {
+        return airportObservableList;
+    }
+
+    /**
+     * Get the observable list containing the runways of the specified airport
      *
      * @return the runways
      */

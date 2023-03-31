@@ -123,7 +123,7 @@ public class DataController {
      * @return the list of predefined airports
      */
     public static Airport[] getPredefinedAirports() {
-        var airports = new Airport[]{new Airport()};
+        var airports = new Airport[]{new Airport("Scenarios")};
         airports[0].addRunway(new PRunway(9, 27, 'L', 'R', new double[]{
             3902,//runwayL
             100,//runwayW

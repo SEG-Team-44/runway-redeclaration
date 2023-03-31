@@ -59,6 +59,7 @@ public class XMLHandler {
         // XML aliases
         xstream.alias("parallelrunway", PRunway.class);
         xstream.alias("singlerunway", SRunway.class);
+        xstream.alias("airports", AirportXMLObj[].class);
         xstream.alias("airport", AirportXMLObj.class);
         xstream.alias("obstacle", Obstacle.class);
         xstream.alias("root", XMLWrapper.class);
