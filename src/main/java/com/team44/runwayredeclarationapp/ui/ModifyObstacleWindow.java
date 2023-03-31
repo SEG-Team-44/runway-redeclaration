@@ -1,9 +1,15 @@
 package com.team44.runwayredeclarationapp.ui;
 
 import com.team44.runwayredeclarationapp.model.Obstacle;
+import com.team44.runwayredeclarationapp.view.component.alert.ConfirmAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+
+import java.util.Optional;
 
 /**
  * Modify Obstacle modal window
@@ -45,6 +51,11 @@ public class ModifyObstacleWindow {
             showModifyScene((Obstacle) obstacle);
         });
 
+        //On delete event
+        selectWindow.setOnDelete((obstacle) -> {
+            deleteIsPressed((Obstacle) obstacle);
+        });
+
         this.stage = selectWindow;
     }
 
@@ -55,5 +66,25 @@ public class ModifyObstacleWindow {
      */
     private void showModifyScene(Obstacle obstacle) {
         var modifyWindow = new AddObstacleWindow(stage, obstacleObservableList, obstacle);
+    }
+
+    /**
+     * Handle when an obstacle is to be deleted
+     * @param obstacle obstacle to be deleted
+     */
+    private void deleteIsPressed(Obstacle obstacle) {
+        Alert confirmAlert = new ConfirmAlert("Confirmation", "Do you want to remove " +
+                obstacle.getObstName() + " from the system?");
+
+        //delete the obstacle if OK btn pressed
+        Optional<ButtonType> btnType = confirmAlert.showAndWait();
+        if (btnType.get() == ButtonType.OK) {
+            obstacleObservableList.remove(obstacle);
+
+            //inform user that deletion is successful
+            InfoAlert infoAlert = new InfoAlert("Delete successful", "Delete successful",
+                    obstacle.getObstName() + " has been removed");
+            infoAlert.show();
+        }
     }
 }
