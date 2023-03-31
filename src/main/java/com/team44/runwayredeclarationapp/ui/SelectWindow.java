@@ -1,17 +1,16 @@
 package com.team44.runwayredeclarationapp.ui;
 
+import com.team44.runwayredeclarationapp.event.OnDeleteListener;
 import com.team44.runwayredeclarationapp.event.OnSelectListener;
+
 import java.util.function.Function;
+
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.input.KeyCode;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -34,6 +33,8 @@ public class SelectWindow<T> extends Stage {
      */
     private OnSelectListener onSelectListener;
 
+    private OnDeleteListener onDeleteListener;
+
     /**
      * Create a select window with a list view
      *
@@ -51,20 +52,27 @@ public class SelectWindow<T> extends Stage {
         Button selectBtn = new Button("Select");
         selectBtn.setFont(new Font(17));
 
+        //create the delete button
+        Button deleteBtn = new Button("Delete");
+        deleteBtn.setFont(new Font(17));
+
+        //disable delete btn when nothing is selected
+        deleteBtn.setDisable(true);
+        options.getSelectionModel().selectedItemProperty().addListener(
+                (observableValue, s, t1) -> deleteBtn.setDisable(false));
+
+
+        //call the delete listener when button pressed
+        deleteBtn.setOnAction(ActionEvent -> {
+            var selectedItem = options.getSelectionModel().getSelectedItem();
+            if ((onDeleteListener != null) && (selectedItem != null)) {
+                // Call the listener and pass the selected obstacle
+                onDeleteListener.delete(options.getSelectionModel().getSelectedItem());
+            }
+        });
+
         // List view properties
         scroll.setFitToWidth(true);
-        options.setOnKeyPressed(event -> {
-            // Enter key
-            if (event.getCode() == KeyCode.ENTER) {
-                selectBtn.fire();
-            }
-        });
-        options.setOnMouseClicked(event -> {
-            // Double click
-            if (event.getClickCount() == 2) {
-                selectBtn.fire();
-            }
-        });
 
         // Set the button event
         selectBtn.setOnAction(ActionEvent -> {
@@ -84,9 +92,15 @@ public class SelectWindow<T> extends Stage {
         Label lbl = new Label("Select " + title.toLowerCase() + ":");
         lbl.setFont(new Font(18));
 
+        //combine the 2 buttons
+        HBox buttons = new HBox();
+        buttons.setSpacing(10);
+        buttons.setAlignment(Pos.CENTER);
+        buttons.getChildren().addAll(selectBtn, deleteBtn);
+
         //combine the scroll pane & button
         VBox optionBox = new VBox();
-        optionBox.getChildren().addAll(lbl, scroll, selectBtn);
+        optionBox.getChildren().addAll(lbl, scroll, buttons);
         optionBox.setAlignment(Pos.CENTER);
         optionBox.setSpacing(5);
         optionBox.setPadding(new Insets(5));
@@ -99,7 +113,6 @@ public class SelectWindow<T> extends Stage {
         this.setResizable(false);
         this.setScene(scene);
         this.show();
-
     }
 
     /**
@@ -110,6 +123,12 @@ public class SelectWindow<T> extends Stage {
     public void setOnSelect(OnSelectListener onSelectListener) {
         this.onSelectListener = onSelectListener;
     }
+
+    /**
+     * Set the listener to be called when an item is to be deleted
+     * @param onDeleteListener the listener
+     */
+    public void setOnDelete(OnDeleteListener onDeleteListener) {this.onDeleteListener = onDeleteListener;}
 
     /**
      * Set the method that will return the string to display for each object

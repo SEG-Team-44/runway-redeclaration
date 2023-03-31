@@ -37,4 +37,8 @@ public class Airport {
 
         return null;
     }
+
+    public void removeRunway(Runway runway) {
+        runways.remove(runway);
+    }
 }
