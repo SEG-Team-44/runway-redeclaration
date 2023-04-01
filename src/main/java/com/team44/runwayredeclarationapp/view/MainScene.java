@@ -9,7 +9,7 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
-import com.team44.runwayredeclarationapp.view.component.ValuesGrid;
+import com.team44.runwayredeclarationapp.view.component.RunwayParametersGrid;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
 import com.team44.runwayredeclarationapp.view.component.text.Title;
 import com.team44.runwayredeclarationapp.view.component.titlepane.AirportTitlePane;
@@ -65,7 +65,7 @@ public class MainScene extends BaseScene {
     /**
      * The grid displaying the original and recalculated values
      */
-    private ValuesGrid ogValuesGrid, newValuesGrid;
+    private RunwayParametersGrid ogValuesGrid, newValuesGrid;
 
     /**
      * The pane showing the calculation breakdown
@@ -324,8 +324,8 @@ public class MainScene extends BaseScene {
         valueGridsBox.setSpacing(30);
 
         // Create the value grid
-        ogValuesGrid = new ValuesGrid("Original Values:");
-        newValuesGrid = new ValuesGrid("Recalculated Values:");
+        ogValuesGrid = new RunwayParametersGrid("Original Values:");
+        newValuesGrid = new RunwayParametersGrid("Recalculated Values:");
 
         // Add the grids to the information pane
         valueGridsBox.getChildren().addAll(ogValuesGrid, newValuesGrid);
@@ -367,15 +367,22 @@ public class MainScene extends BaseScene {
     }
 
     /**
-     * Reset the GUI back to it's initial state
+     * Clear all runway information from the gui
      */
-    private void reset() {
+    public void clearRunway() {
         ogValuesGrid.reset();
         newValuesGrid.reset();
         breakdown.reset();
 
         topDownCanvas.reset();
         sideOnCanvas.reset();
+    }
+
+    /**
+     * Reset the gui back to it's initial state
+     */
+    private void reset() {
+        clearRunway();
 
         airportTitlePane.clearInputs();
         runwayTitlePane.clearInputs();
