@@ -101,6 +101,12 @@ public class AirportTitlePane extends TitledPane {
     }
 
     /**
+     * Get current selected airport
+     * @return selected airport
+     */
+    public Airport getSelectedAirport() {return airportSelectComboBox.getValue();}
+
+    /**
      * Clear all the inputs
      */
     public void clearInputs() {
