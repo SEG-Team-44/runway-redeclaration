@@ -50,8 +50,7 @@ public class MainScene extends BaseScene {
     /**
      * The selected airport
      */
-    private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>(
-        new Airport("Test airport"));
+    private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>();
 
     /**
      * The controller responsible for setting the recalculated values
@@ -114,6 +113,11 @@ public class MainScene extends BaseScene {
     @Override
     public void initialise() {
         airport.addListener((event) -> {
+            // Don't do anything if airport is empty
+            if (airport.get() == null) {
+                return;
+            }
+
             // Update the list of runways whenever the airport changes
             runwayObservableList.setAll(airport.get().getRunways());
 
@@ -126,8 +130,6 @@ public class MainScene extends BaseScene {
 
         // Set the data loaded listener
         dataController.setDataLoadedListener((airports, obstacles) -> {
-            // todo - fix this once airport list added
-            airport.set(airports[0]);
             airportObservableList.setAll(airports);
             obstacleObservableList.setAll(obstacles);
         });
@@ -153,7 +155,7 @@ public class MainScene extends BaseScene {
 
         // Save event
         menuItemSave.setOnAction(event -> {
-            dataController.setState(new Airport[]{airport.get()}, // todo- change after airport list
+            dataController.setState(airportObservableList.toArray(new Airport[0]),
                 obstacleObservableList.toArray(new Obstacle[0]));
 
             // Show alert
@@ -371,8 +373,11 @@ public class MainScene extends BaseScene {
         ogValuesGrid.reset();
         newValuesGrid.reset();
         breakdown.reset();
+
         topDownCanvas.reset();
         sideOnCanvas.reset();
+
+        airportTitlePane.clearInputs();
         runwayTitlePane.clearInputs();
         obstacleTitlePane.clearInputs();
     }

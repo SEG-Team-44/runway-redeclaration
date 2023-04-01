@@ -62,6 +62,7 @@ public class RunwayTitlePane extends TitledPane {
         runwaySelectComboBox.setStringMethod(Runway::getPhyId);
         runwaySelectComboBox.setPromptText("Select Runway");
         runwaySelectComboBox.setMaxWidth(Double.MAX_VALUE);
+        runwaySelectComboBox.setDisable(true);
         runwaySelectComboBox.setOnAction((e) -> {
             // Ensure selected runway is not empty
             var selectedVal = runwaySelectComboBox.getValue();
@@ -74,6 +75,7 @@ public class RunwayTitlePane extends TitledPane {
 
         //Add runway button
         Button addRunwayBtn = new Button("Add Runway");
+        addRunwayBtn.setDisable(true);
         addRunwayBtn.setMaxWidth(Double.MAX_VALUE);
         //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
@@ -89,6 +91,7 @@ public class RunwayTitlePane extends TitledPane {
 
         // Edit runway button
         Button modifyBtn = new Button("Edit Runway");
+        modifyBtn.setDisable(true);
         modifyBtn.setMaxWidth(Double.MAX_VALUE);
         // Generate the runway selection window when button clicked
         modifyBtn.setOnAction(ActionEvent -> {
@@ -112,6 +115,19 @@ public class RunwayTitlePane extends TitledPane {
                         runwaySelectComboBox.setValue(runway);
                     }
                 });
+            }
+        });
+
+        // Only enable the button if airport selected
+        mainScene.getAirportProperty().addListener((obsValue, oldAirport, newAirport) -> {
+            if (newAirport != null) {
+                runwaySelectComboBox.setDisable(false);
+                addRunwayBtn.setDisable(false);
+                modifyBtn.setDisable(false);
+            } else {
+                runwaySelectComboBox.setDisable(true);
+                addRunwayBtn.setDisable(true);
+                modifyBtn.setDisable(true);
             }
         });
 

@@ -1,8 +1,8 @@
 package com.team44.runwayredeclarationapp.view.component.titlepane;
 
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.ui.AddRunwayWindow;
-import com.team44.runwayredeclarationapp.ui.ModifyRunwayWindow;
+import com.team44.runwayredeclarationapp.ui.AddAirportWindow;
+import com.team44.runwayredeclarationapp.ui.ModifyAirportWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import javafx.scene.control.Alert;
@@ -51,23 +51,20 @@ public class AirportTitlePane extends TitledPane {
             // Ensure selected airport is not empty
             var selectedVal = airportSelectComboBox.getValue();
             if (selectedVal != null) {
-                // mainScene.updateInitialRunway(airportSelectComboBox.getValue()); // todo
+                mainScene.getAirportProperty().set(selectedVal);
+                mainScene.getRunwayObservableList().setAll(selectedVal.getRunways());
             }
         });
+        airportSelectComboBox.valueProperty().bindBidirectional(mainScene.getAirportProperty());
 
         //Add airport button
         Button addAirportBtn = new Button("Add Airport");
         addAirportBtn.setMaxWidth(Double.MAX_VALUE);
         //Generate init window when button clicked
         addAirportBtn.setOnAction(ActionEvent -> {
-            AddRunwayWindow initPage = new AddRunwayWindow(mainScene.getMainWindow().getStage(),
-                mainScene.getAirport()); // todo
+            AddAirportWindow initPage = new AddAirportWindow(mainScene.getMainWindow().getStage(),
+                mainScene.getAirportObservableList());
 
-            // Set the new runway listener
-            // initPage.setNewRunwayListener(runway -> {
-            //     mainScene.updateInitialRunway(runway);
-            //     airportSelectComboBox.getSelectionModel().select(runway);
-            // });
         });
 
         // Edit airport button
@@ -75,30 +72,35 @@ public class AirportTitlePane extends TitledPane {
         modifyBtn.setMaxWidth(Double.MAX_VALUE);
         // Generate the airport selection window when button clicked
         modifyBtn.setOnAction(ActionEvent -> {
-            if (mainScene.getAirport().getRunways().isEmpty()) {
+            if (mainScene.getAirportObservableList().isEmpty()) {
                 Alert a = new Alert(Alert.AlertType.INFORMATION);
                 a.setContentText("There are no airports recorded on the system.");
                 a.show();
             } else {
-                ModifyRunwayWindow modifyPage = new ModifyRunwayWindow(
+                ModifyAirportWindow modifyPage = new ModifyAirportWindow(
                     mainScene.getMainWindow().getStage(),
-                    mainScene.getAirport());
-
-                // Set the runway listener to update
-                modifyPage.setNewRunwayListener(runway -> {
-                    var selectedRunway = airportSelectComboBox.getValue();
-                    // Only update the gui if the selected airport was the one modified
-                    // if (selectedRunway != null && Objects.equals(runway.getPhyId(),
-                    //     selectedRunway.getPhyId())) {
-                    //
-                    //     mainScene.updateInitialRunway(runway);
-                    //     airportSelectComboBox.setValue(runway);
-                    // }
-                });
+                    mainScene.getAirportObservableList());
+                modifyPage.setEditAirportListener(airportSelectComboBox::setValue);
             }
         });
 
         // Add rows
         buttonSelectGridPane.addRow(0, airportSelectComboBox, addAirportBtn, modifyBtn);
+    }
+
+    /**
+     * Set an airport to be selected in the combobox
+     *
+     * @param airport the airport
+     */
+    public void setSelectedAirport(Airport airport) {
+        airportSelectComboBox.setValue(airport);
+    }
+
+    /**
+     * Clear all the inputs
+     */
+    public void clearInputs() {
+        airportSelectComboBox.setValue(null);
     }
 }

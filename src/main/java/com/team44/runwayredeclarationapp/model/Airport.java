@@ -86,4 +86,13 @@ public class Airport {
 
         return null;
     }
+
+    /**
+     * Set the list of runways of the airport
+     *
+     * @param runways the list of runways
+     */
+    public void setRunways(List<Runway> runways) {
+        this.runways.setAll(runways);
+    }
 }
