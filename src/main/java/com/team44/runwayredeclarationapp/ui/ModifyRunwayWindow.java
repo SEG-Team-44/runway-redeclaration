@@ -6,12 +6,17 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.view.component.alert.ConfirmAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
+import java.util.Optional;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -19,8 +24,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import java.util.Optional;
 
 /**
  * The class responsible for generate & display the UI for modify initial parameters of runways
@@ -195,12 +198,13 @@ public class ModifyRunwayWindow extends ParameterController {
 
     /**
      * Handle when a runway is to be deleted
+     *
      * @param airport current airport
-     * @param runway runway to be removed
+     * @param runway  runway to be removed
      */
     private void deleteIsPressed(Airport airport, Runway runway) {
         Alert confirmAlert = new ConfirmAlert("Confirmation", "Do you want to remove runway " +
-                runway.getPhyId() + " from the system?");
+            runway.getPhyId() + " from the system?");
 
         Optional<ButtonType> btnType = confirmAlert.showAndWait();
         //remove the runway from the airport when OK btn pressed
@@ -209,7 +213,7 @@ public class ModifyRunwayWindow extends ParameterController {
 
             //inform user that deletion is successful
             InfoAlert infoAlert = new InfoAlert("Delete successful", "Delete successful",
-                    "Runway" + runway.getPhyId() + " has been removed");
+                "Runway" + runway.getPhyId() + " has been removed");
             infoAlert.show();
         }
     }

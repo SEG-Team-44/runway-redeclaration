@@ -3,13 +3,12 @@ package com.team44.runwayredeclarationapp.ui;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.view.component.alert.ConfirmAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
+import java.util.Optional;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import java.util.Optional;
 
 /**
  * Modify Obstacle modal window
@@ -70,11 +69,12 @@ public class ModifyObstacleWindow {
 
     /**
      * Handle when an obstacle is to be deleted
+     *
      * @param obstacle obstacle to be deleted
      */
     private void deleteIsPressed(Obstacle obstacle) {
         Alert confirmAlert = new ConfirmAlert("Confirmation", "Do you want to remove " +
-                obstacle.getObstName() + " from the system?");
+            obstacle.getObstName() + " from the system?");
 
         //delete the obstacle if OK btn pressed
         Optional<ButtonType> btnType = confirmAlert.showAndWait();
@@ -83,7 +83,7 @@ public class ModifyObstacleWindow {
 
             //inform user that deletion is successful
             InfoAlert infoAlert = new InfoAlert("Delete successful", "Delete successful",
-                    obstacle.getObstName() + " has been removed");
+                obstacle.getObstName() + " has been removed");
             infoAlert.show();
         }
     }

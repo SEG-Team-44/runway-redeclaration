@@ -9,6 +9,7 @@ import com.team44.runwayredeclarationapp.model.Runway;
  */
 public class AirportXMLObj {
 
+    private final String name;
     private final Runway[] runways;
 
     /**
@@ -17,7 +18,17 @@ public class AirportXMLObj {
      * @param airport the airport object
      */
     public AirportXMLObj(Airport airport) {
+        name = airport.getName();
         runways = airport.getRunways().toArray(Runway[]::new);
+    }
+
+    /**
+     * Get the name of the airport
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -35,7 +46,7 @@ public class AirportXMLObj {
      * @return the airport object
      */
     public Airport toAirport() {
-        var airport = new Airport();
+        var airport = new Airport(name);
         // Set the list of runways to the observable list
         airport.getRunwayObservableList().setAll(runways);
 

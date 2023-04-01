@@ -41,8 +41,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 /**
  * The main scene that will be shown when the user opens the program
@@ -52,7 +50,7 @@ public class MainScene extends BaseScene {
     /**
      * The selected airport
      */
-    private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>(new Airport());
+    private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>();
 
     /**
      * The controller responsible for setting the recalculated values
@@ -92,6 +90,10 @@ public class MainScene extends BaseScene {
     private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList();
 
     /**
+     * Observable list of airports
+     */
+    private ObservableList<Airport> airportObservableList = FXCollections.observableArrayList();
+    /**
      * Observable list of runways
      */
     private ObservableList<Runway> runwayObservableList = FXCollections.observableArrayList();
@@ -111,6 +113,11 @@ public class MainScene extends BaseScene {
     @Override
     public void initialise() {
         airport.addListener((event) -> {
+            // Don't do anything if airport is empty
+            if (airport.get() == null) {
+                return;
+            }
+
             // Update the list of runways whenever the airport changes
             runwayObservableList.setAll(airport.get().getRunways());
 
@@ -123,8 +130,7 @@ public class MainScene extends BaseScene {
 
         // Set the data loaded listener
         dataController.setDataLoadedListener((airports, obstacles) -> {
-            // todo - fix this once airport list added
-            airport.set(airports[0]);
+            airportObservableList.setAll(airports);
             obstacleObservableList.setAll(obstacles);
         });
 
@@ -149,7 +155,7 @@ public class MainScene extends BaseScene {
 
         // Save event
         menuItemSave.setOnAction(event -> {
-            dataController.setState(new Airport[]{airport.get()}, // todo- change after airport list
+            dataController.setState(airportObservableList.toArray(new Airport[0]),
                 obstacleObservableList.toArray(new Obstacle[0]));
 
             // Show alert
@@ -367,8 +373,11 @@ public class MainScene extends BaseScene {
         ogValuesGrid.reset();
         newValuesGrid.reset();
         breakdown.reset();
+
         topDownCanvas.reset();
         sideOnCanvas.reset();
+
+        airportTitlePane.clearInputs();
         runwayTitlePane.clearInputs();
         obstacleTitlePane.clearInputs();
     }
@@ -489,7 +498,16 @@ public class MainScene extends BaseScene {
     }
 
     /**
-     * Get the observable list containing the runways
+     * Get the observable list containing the airports
+     *
+     * @return the airports
+     */
+    public ObservableList<Airport> getAirportObservableList() {
+        return airportObservableList;
+    }
+
+    /**
+     * Get the observable list containing the runways of the specified airport
      *
      * @return the runways
      */
