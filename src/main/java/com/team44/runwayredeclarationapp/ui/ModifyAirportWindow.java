@@ -1,5 +1,6 @@
 package com.team44.runwayredeclarationapp.ui;
 
+import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.event.AddAirportListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import javafx.collections.ObservableList;
@@ -18,6 +19,8 @@ public class ModifyAirportWindow {
      * The observable list of airports
      */
     private final ObservableList<Airport> airportObservableList;
+
+    private DeleteController deleteController = new DeleteController();
 
     /**
      * The listener called when an airport has been successfully edited
@@ -52,6 +55,11 @@ public class ModifyAirportWindow {
             showModifyScene((Airport) airport);
         });
 
+        //on delete
+        selectWindow.setOnDelete((airport) -> {
+            deleteIsPressed((Airport) airport);
+        });
+
         this.stage = selectWindow;
     }
 
@@ -78,5 +86,13 @@ public class ModifyAirportWindow {
      */
     public void setEditAirportListener(AddAirportListener editAirportListener) {
         this.editAirportListener = editAirportListener;
+    }
+
+    /**
+     * Call the delete controller when delete button pressed
+     * @param airport airport to be deleted
+     */
+    private void deleteIsPressed(Airport airport) {
+        deleteController.deleteAirport(airport, airportObservableList);
     }
 }
