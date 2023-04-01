@@ -95,4 +95,13 @@ public class Airport {
     public void setRunways(List<Runway> runways) {
         this.runways.setAll(runways);
     }
+
+    /**
+     * Remove specified runway from the airport
+     *
+     * @param runway the runway to remove
+     */
+    public void removeRunway(Runway runway) {
+        runways.remove(runway);
+    }
 }
