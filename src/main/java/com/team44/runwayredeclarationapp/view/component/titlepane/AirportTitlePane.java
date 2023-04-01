@@ -51,6 +51,9 @@ public class AirportTitlePane extends TitledPane {
             // Ensure selected airport is not empty
             var selectedVal = airportSelectComboBox.getValue();
             if (selectedVal != null) {
+                // Clear current selected runway
+                mainScene.clearRunway();
+
                 mainScene.getAirportProperty().set(selectedVal);
                 mainScene.getRunwayObservableList().setAll(selectedVal.getRunways());
             }
@@ -65,6 +68,7 @@ public class AirportTitlePane extends TitledPane {
             AddAirportWindow initPage = new AddAirportWindow(mainScene.getMainWindow().getStage(),
                 mainScene.getAirportObservableList());
 
+            initPage.setAddAirportListener(airportSelectComboBox::setValue);
         });
 
         // Edit airport button
@@ -80,7 +84,6 @@ public class AirportTitlePane extends TitledPane {
                 ModifyAirportWindow modifyPage = new ModifyAirportWindow(
                     mainScene.getMainWindow().getStage(),
                     mainScene.getAirportObservableList());
-                modifyPage.setEditAirportListener(airportSelectComboBox::setValue);
             }
         });
 

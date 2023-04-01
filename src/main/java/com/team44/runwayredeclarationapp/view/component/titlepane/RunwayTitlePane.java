@@ -4,6 +4,7 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.AddRunwayWindow;
 import com.team44.runwayredeclarationapp.ui.ModifyRunwayWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
+import com.team44.runwayredeclarationapp.view.component.RunwayInfoGrids;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import java.util.Objects;
@@ -13,7 +14,6 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 /**
  * The Titled Pane for selecting the runway
@@ -26,9 +26,9 @@ public class RunwayTitlePane extends TitledPane {
     private final SelectComboBox<Runway> runwaySelectComboBox;
 
     /**
-     * The Gridpane displays the runway information
+     * The hbox that contains the grids displaying the runway information
      */
-    private GridPane runwayInfo;
+    private final RunwayInfoGrids runwayInfoGrids;
 
     /**
      * Create the titled pane
@@ -40,8 +40,6 @@ public class RunwayTitlePane extends TitledPane {
         this.setText("Step 2: Select Runway");
         this.setExpanded(true);
         this.setCollapsible(true);
-
-        runwayInfo = new GridPane();
 
         // Create the horizontal box for selecting runway
         var buttonSelectGridPane = new GridPane();
@@ -57,6 +55,9 @@ public class RunwayTitlePane extends TitledPane {
 
         this.setContent(runwayBox);
 
+        // Runway information grids
+        runwayInfoGrids = new RunwayInfoGrids();
+
         // Create the combobox to select the obstacle
         runwaySelectComboBox = new SelectComboBox<>(mainScene.getRunwayObservableList());
         runwaySelectComboBox.setStringMethod(Runway::getPhyId);
@@ -69,7 +70,6 @@ public class RunwayTitlePane extends TitledPane {
             if (selectedVal != null) {
                 // Set the gui to show the selected runway
                 mainScene.updateInitialRunway(runwaySelectComboBox.getValue());
-                updateRunwayInfo(runwayBox, runwaySelectComboBox.getValue());
             }
         });
 
@@ -86,6 +86,7 @@ public class RunwayTitlePane extends TitledPane {
             initPage.setNewRunwayListener(runway -> {
                 mainScene.updateInitialRunway(runway);
                 runwaySelectComboBox.getSelectionModel().select(runway);
+                runwayInfoGrids.setRunway(runway);
             });
         });
 
@@ -113,6 +114,7 @@ public class RunwayTitlePane extends TitledPane {
 
                         mainScene.updateInitialRunway(runway);
                         runwaySelectComboBox.setValue(runway);
+                        runwayInfoGrids.setRunway(runway);
                     }
                 });
             }
@@ -133,6 +135,20 @@ public class RunwayTitlePane extends TitledPane {
 
         // Add rows
         buttonSelectGridPane.addRow(0, runwaySelectComboBox, addRunwayBtn, modifyBtn);
+
+        // Only show the runway information if runway selected
+        runwaySelectComboBox.valueProperty().addListener((obsValue, oldRunway, newRunway) -> {
+            if (newRunway != null) {
+                runwayInfoGrids.setRunway(newRunway);
+
+                // Ensure that the grid hasn't already been added
+                if (!runwayBox.getChildren().contains(runwayInfoGrids)) {
+                    runwayBox.getChildren().add(runwayInfoGrids);
+                }
+            } else {
+                runwayBox.getChildren().remove(runwayInfoGrids);
+            }
+        });
     }
 
     /**
@@ -167,63 +183,6 @@ public class RunwayTitlePane extends TitledPane {
     }
 
     /**
-     * Update the displayed runway values
-     *
-     * @param runwayBox VBox containing the buttons & runway info
-     * @param runway    current selected runway
-     */
-    private void updateRunwayInfo(VBox runwayBox, Runway runway) {
-        //remove runway info of the previous selected runway
-        if (runwayInfo != null) {
-            runwayBox.getChildren().remove(runwayInfo);
-
-        }
-        //update the info section with new runway values
-        runwayInfo = getRunwayInfo(runway);
-        runwayBox.getChildren().add(runwayInfo);
-    }
-
-    /**
-     * Generate the section displaying all runway info
-     *
-     * @param runway current selected runway
-     * @return GridPane containing runway info
-     */
-    private GridPane getRunwayInfo(Runway runway) {
-        GridPane runwayInfo = new GridPane();
-        runwayInfo.setVgap(5);
-        runwayInfo.setHgap(5);
-        runwayInfo.getColumnConstraints()
-            .addAll(new ColumnConstraints(100), new ColumnConstraints(80),
-                new ColumnConstraints(100), new ColumnConstraints(80));
-
-        Text phyRw = new Text(runway.getPhyId() + ":");
-        Text rwL = new Text("Length");
-        Text rwLValue = new Text(runway.getRunwayL() + "m");
-        Text resa = new Text("RESA");
-        Text resaValue = new Text(runway.getResaL() + "m");
-        Text designator = new Text("Designator");
-        Text rw1 = new Text(runway.getLogicId1());
-        Text rw2 = new Text(runway.getLogicId2());
-        Text clearway = new Text("Clearway");
-        Text clearway1 = new Text(runway.getClearwayL(runway.getLogicId1()) + "m");
-        Text clearway2 = new Text(runway.getClearwayL(runway.getLogicId2()) + "m");
-        Text stopway = new Text("Stopway");
-        Text stopway1 = new Text(runway.getStopwayL(runway.getLogicId1()) + "m");
-        Text stopway2 = new Text(runway.getStopwayL(runway.getLogicId2()) + "m");
-        Text thresh = new Text("Displaced \nThreshold");
-        Text thresh1 = new Text(runway.getDisThresh(runway.getLogicId2()) + "m");
-        Text thresh2 = new Text(runway.getDisThresh(runway.getLogicId1()) + "m");
-
-        runwayInfo.addRow(0, designator, rw1, rw2, phyRw);
-        runwayInfo.addRow(1, clearway, clearway1, clearway2, rwL, rwLValue);
-        runwayInfo.addRow(2, stopway, stopway1, stopway2, resa, resaValue);
-        runwayInfo.addRow(3, thresh, thresh1, thresh2);
-
-        return runwayInfo;
-    }
-
-    /**
      * Get the currently selected runway
      *
      * @return the runway
@@ -237,6 +196,5 @@ public class RunwayTitlePane extends TitledPane {
      */
     public void clearInputs() {
         runwaySelectComboBox.setValue(null);
-        // todo:: remove/reset value display
     }
 }
