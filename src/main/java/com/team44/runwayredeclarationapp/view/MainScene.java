@@ -70,7 +70,7 @@ public class MainScene extends BaseScene {
     /**
      * The pane showing the calculation breakdown
      */
-    private CalculationBreakdown breakdown = new CalculationBreakdown();
+    private CalculationBreakdown calculations = new CalculationBreakdown();
 
     /**
      * The canvas displaying the top down and side on view
@@ -125,6 +125,19 @@ public class MainScene extends BaseScene {
             airport.get().getRunwayObservableList().addListener(
                 (ListChangeListener<Runway>) observable -> {
                     runwayObservableList.setAll(airport.get().getRunways());
+
+                    //reset related gui if a selected runway is removed
+                    if (runwayTitlePane.getSelectedRunway() != null &&
+                            !runwayObservableList.contains(runwayTitlePane.getSelectedRunway())) {
+                        runwayTitlePane.clearInputs();
+                        ogValuesGrid.reset();
+                        newValuesGrid.reset();
+                        
+                        topDownCanvas.reset();
+                        sideOnCanvas.reset();
+                        obstacleTitlePane.clearInputs();
+                        
+                    }
                 });
         });
 
@@ -134,6 +147,26 @@ public class MainScene extends BaseScene {
             obstacleObservableList.setAll(obstacles);
         });
 
+        //Update the obstacle gui when a selected obstacle is removed
+        obstacleObservableList.addListener(
+                (ListChangeListener<Obstacle>) observable -> {
+                    if (obstacleTitlePane.getSelectedObstacle() != null &&
+                            !obstacleObservableList.contains(obstacleTitlePane.getSelectedObstacle())) {
+                        obstacleTitlePane.clearInputs();
+                        updateInitialRunway(runwayTitlePane.getSelectedRunway());
+                        calculations.reset();
+                    }
+                });
+
+        //reset the whole main scene if current selected airport is deleted
+        airportObservableList.addListener(
+                (ListChangeListener<Airport>) observable -> {
+                    if (airportTitlePane.getSelectedAirport() != null &&
+                            !airportObservableList.contains(airportTitlePane.getSelectedAirport())) {
+                        reset();
+                    }
+                });
+        
         // Load the initial state
         dataController.loadInitialState();
     }
@@ -330,7 +363,7 @@ public class MainScene extends BaseScene {
         // Add the grids to the information pane
         valueGridsBox.getChildren().addAll(ogValuesGrid, newValuesGrid);
         valueGridsBox.setAlignment(Pos.CENTER);
-        outputPane.getChildren().addAll(valueGridsBox, breakdown);
+        outputPane.getChildren().addAll(valueGridsBox, calculations);
     }
 
     /**
@@ -342,7 +375,7 @@ public class MainScene extends BaseScene {
         // Set the initial runway to the original values grid
         ogValuesGrid.setRunway(runway);
         newValuesGrid.reset();
-        breakdown.reset();
+        calculations.reset();
 
         // Update both canvas
         topDownCanvas.setInitialParameters(runway);
@@ -359,7 +392,7 @@ public class MainScene extends BaseScene {
 
         // Set the recalculated runway parameters to the recalculated values grid
         newValuesGrid.setRunway(runway);
-        breakdown.displayCalculations(runwayTitlePane.getSelectedRunway(), runwayObstacle, 300);
+        calculations.displayCalculations(runwayTitlePane.getSelectedRunway(), runwayObstacle, 300);
 
         // Update both canvas
         topDownCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);
@@ -372,7 +405,7 @@ public class MainScene extends BaseScene {
     public void clearRunway() {
         ogValuesGrid.reset();
         newValuesGrid.reset();
-        breakdown.reset();
+        calculations.reset();
 
         topDownCanvas.reset();
         sideOnCanvas.reset();
@@ -388,6 +421,28 @@ public class MainScene extends BaseScene {
         runwayTitlePane.clearInputs();
         obstacleTitlePane.clearInputs();
     }
+
+    /*public void airportDeleted(Airport airport) {
+        if (airport == airportTitlePane.getSelectedAirport()) {
+            reset();
+        }
+    }
+
+    public void runwayDeleted(Runway runway) {
+         if (runway == runwayTitlePane.getSelectedRunway()) {
+             runwayTitlePane.clearInputs();
+             sideOnCanvas.reset();
+             topDownCanvas.reset();
+             ogValuesGrid.reset();
+             newValuesGrid.reset();
+         }
+    }
+
+    public void obstacleDeleted(Obstacle obstacle) {
+        if (obstacle == obstacleTitlePane.getSelectedObstacle()) {
+            obstacleTitlePane.clearInputs();
+        }
+    }*/
 
     /**
      * Select a specific scenario to test the program with
