@@ -337,10 +337,11 @@ public class MainScene extends BaseScene {
                     runwayTitlePane.getSelectedRunway(),
                     obstacleTitlePane.getObstacleLeftThreshold(),
                     obstacleTitlePane.getObstacleRightThreshold(),
-                    obstacleTitlePane.getObstacleFromCentrelineThreshold());
+                    obstacleTitlePane.getObstacleFromCentrelineThreshold(),
+                        obstacleTitlePane.getBlastProtection());
 
                 // Recalculate
-                recalculationController.recalculateRunway(selectedRunwayObstacle, 300);
+                recalculationController.recalculateRunway(selectedRunwayObstacle);
             }
         });
         inputPane.getChildren().add(recalculateBtn);
@@ -392,11 +393,11 @@ public class MainScene extends BaseScene {
 
         // Set the recalculated runway parameters to the recalculated values grid
         newValuesGrid.setRunway(runway);
-        calculations.displayCalculations(runwayTitlePane.getSelectedRunway(), runwayObstacle, 300);
+        calculations.displayCalculations(runwayTitlePane.getSelectedRunway(), runwayObstacle);
 
         // Update both canvas
-        topDownCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);
-        sideOnCanvas.setRecalculatedParameters(runway, runwayObstacle, 300);
+        topDownCanvas.setRecalculatedParameters(runway, runwayObstacle, runwayObstacle.getBlastPro());
+        sideOnCanvas.setRecalculatedParameters(runway, runwayObstacle, runwayObstacle.getBlastPro());
     }
 
     /**
@@ -500,16 +501,16 @@ public class MainScene extends BaseScene {
         // Create the specified obstacle
         if (scenario == 1) {
             obstacle = new Obstacle("Scenario 1 Obs", 12);
-            runwayObstacle = new RunwayObstacle(obstacle, runway, -50.0, 3646.0, 0.0);
+            runwayObstacle = new RunwayObstacle(obstacle, runway, -50.0, 3646.0, 0.0, 300);
         } else if (scenario == 2) {
             obstacle = new Obstacle("Scenario 2 Obs", 25);
-            runwayObstacle = new RunwayObstacle(obstacle, runway, 2853.0, 500.0, -20.0);
+            runwayObstacle = new RunwayObstacle(obstacle, runway, 2853.0, 500.0, -20.0, 300);
         } else if (scenario == 3) {
             obstacle = new Obstacle("Scenario 3 Obs", 15);
-            runwayObstacle = new RunwayObstacle(obstacle, runway, 150.0, 3203.0, 60.0);
+            runwayObstacle = new RunwayObstacle(obstacle, runway, 150.0, 3203.0, 60.0, 300);
         } else {
             obstacle = new Obstacle("Scenario 4 Obs", 20);
-            runwayObstacle = new RunwayObstacle(obstacle, runway, 3546.0, 50.0, 20.0);
+            runwayObstacle = new RunwayObstacle(obstacle, runway, 3546.0, 50.0, 20.0, 300);
         }
 
         // Select the runway and obstacle to show on the program
@@ -519,7 +520,8 @@ public class MainScene extends BaseScene {
         obstacleTitlePane.setInputText(
             runwayObstacle.getPositionL(),
             runwayObstacle.getPositionR(),
-            runwayObstacle.getDistCR()
+            runwayObstacle.getDistCR(),
+            runwayObstacle.getBlastPro()
         );
     }
 

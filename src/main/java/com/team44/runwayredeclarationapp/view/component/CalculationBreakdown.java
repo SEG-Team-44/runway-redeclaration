@@ -45,11 +45,12 @@ public class CalculationBreakdown extends VBox {
      */
     public CalculationBreakdown() {
         title = new Title("Calculation Breakdown:");
-        title.setFont(new Font(15));
+        title.getStyleClass().add("title");
 
         controller = new RecalculationController();
         getChildren().add(title);
         setAlignment(Pos.CENTER);
+        setSpacing(15);
     }
 
     /**
@@ -57,13 +58,12 @@ public class CalculationBreakdown extends VBox {
      *
      * @param runway          current runway
      * @param rwObst          current runway and obstacle appeared
-     * @param blastProtection current blast protection
      * @return VBox containing calculation breakdown of TORA
      */
-    private VBox initTORA(Runway runway, RunwayObstacle rwObst, int blastProtection) {
+    private VBox initTORA(Runway runway, RunwayObstacle rwObst) {
         // get all parameters used in recalculation for runway 1 & 2
-        HashMap values1 = controller.recalculateTORA(runway, runway1, rwObst, blastProtection);
-        HashMap values2 = controller.recalculateTORA(runway, runway2, rwObst, blastProtection);
+        HashMap values1 = controller.recalculateTORA(runway, runway1, rwObst, rwObst.getBlastPro());
+        HashMap values2 = controller.recalculateTORA(runway, runway2, rwObst, rwObst.getBlastPro());
 
         //calculation formula of runway 1
         String f1 = "= Original TORA - Obstacle From Threshold - ";
@@ -74,7 +74,7 @@ public class CalculationBreakdown extends VBox {
         //add blast protection or strip end & RESA into the formula & calculation for runway 1
         if (values1.get("blastProtection") == null) {
             f1 += "Strip End - RESA ";
-            c1 += " - " + values1.get("stripEnd") + values1.get("resa");
+            c1 += " - " + values1.get("stripEnd") + " - " + values1.get("resa");
         } else {
             f1 += "Blast Protection";
             c1 += " - " + values1.get("blastProtection");
@@ -260,10 +260,8 @@ public class CalculationBreakdown extends VBox {
      *
      * @param originRunway    original runway
      * @param rwObst          obstacle appeared on the runway
-     * @param blastProtection blast protection
      */
-    public void displayCalculations(Runway originRunway, RunwayObstacle rwObst,
-        int blastProtection) {
+    public void displayCalculations(Runway originRunway, RunwayObstacle rwObst) {
         //remove previous calculation breakdown before generating a new one
         reset();
 
@@ -280,7 +278,7 @@ public class CalculationBreakdown extends VBox {
 
         //initialise the tabs displaying the calculations
         Tab tora = new Tab("TORA");
-        tora.setContent(initTORA(originRunway, rwObst, blastProtection));
+        tora.setContent(initTORA(originRunway, rwObst));
         Tab toda = new Tab("TODA");
         toda.setContent(initTODA(originRunway, rwObst));
         Tab asda = new Tab("ASDA");

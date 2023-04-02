@@ -267,13 +267,13 @@ public class RecalculationController {
      * Recalculate a given runway
      *
      * @param rwObst          the runway-obstacle pairing
-     * @param blastProtection the blast protection value
      * @return the updated runway
      */
-    public Runway recalculateRunway(RunwayObstacle rwObst, double blastProtection) {
+    public Runway recalculateRunway(RunwayObstacle rwObst) {
         // Clone the current runway to edit
         var runway = rwObst.getOriginalRw();
         var recalculatedRunway = runway.clone();
+        var blastProtection = rwObst.getBlastPro();
 
         var runway1ID = runway.getLogicId1();
         var runway2ID = runway.getLogicId2();
@@ -317,7 +317,7 @@ public class RecalculationController {
         // Call the listener to update the GUI
         if (recalculatedRunwayListener != null) {
             var newRunwayObstacle = new RunwayObstacle(rwObst.getObst(), recalculatedRunway,
-                rwObst.getPositionL(), rwObst.getPositionR(), rwObst.getDistCR());
+                rwObst.getPositionL(), rwObst.getPositionR(), rwObst.getDistCR(), rwObst.getBlastPro());
 
             // Update the runway on gui
             recalculatedRunwayListener.updateRunway(newRunwayObstacle);
@@ -347,7 +347,7 @@ public class RecalculationController {
         });
         Obstacle obstacle1 = new Obstacle("Obstacle Name", 12);
         RunwayObstacle runwayObstacle1 = new RunwayObstacle(obstacle1, runway09L27R, -50.0, 3646.0,
-            0.0);
+            0.0, 300);
 
         var ok = new RecalculationController();
         System.out.println(ok.recalculateTORA(runway09L27R, "09L", runwayObstacle1, 300));

@@ -99,7 +99,9 @@ public class RunwayInfoGrids extends HBox {
         clearway2.set(runway.getClearwayL(runway2));
         stopway1.set(runway.getStopwayL(runway1));
         stopway2.set(runway.getStopwayL(runway2));
-        disThresh1.set(runway.getDisThresh(runway1));
-        disThresh2.set(runway.getDisThresh(runway2));
+
+        //todo:: solve problem on displaced thresholds
+        disThresh1.set(runway.getDisThresh(runway2));
+        disThresh2.set(runway.getDisThresh(runway1));
     }
 }
