@@ -2,7 +2,7 @@ package com.team44.runwayredeclarationapp.ui;
 
 import com.team44.runwayredeclarationapp.event.AddAirportListener;
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.RegexField;
 import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
@@ -30,7 +30,7 @@ public class AddAirportWindow {
     /**
      * The error alert
      */
-    private final ErrorAlert errorAlert = new ErrorAlert();
+    private final ErrorListAlert errorListAlert = new ErrorListAlert();
     /**
      * The listener called when an airport has been added/edited
      */
@@ -107,7 +107,7 @@ public class AddAirportWindow {
                 stage.close();
             } else {
                 // Show alert with errors if input is not valid
-                errorAlert.show();
+                errorListAlert.show();
             }
         });
 
@@ -142,10 +142,10 @@ public class AddAirportWindow {
 
         // Add error messages if needed
         if (!checkRegex) {
-            errorAlert.addError("Name must be under 60 characters.");
+            errorListAlert.addError("Name must be under 60 characters.");
         }
         if (checkEmpty) {
-            errorAlert.addError("Inputs cannot be empty.");
+            errorListAlert.addError("Inputs cannot be empty.");
         }
 
         // Return if the inputs are valid or not

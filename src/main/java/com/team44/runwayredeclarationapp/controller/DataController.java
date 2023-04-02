@@ -6,6 +6,7 @@ import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.utility.xml.XMLHandler;
 import com.team44.runwayredeclarationapp.utility.xml.XMLWrapper;
+import java.io.File;
 
 /**
  * The controller responsible for handling the storing of user data
@@ -15,21 +16,37 @@ public class DataController {
     /**
      * The XML handler to read and write with
      */
-    private XMLHandler xmlHandler = new XMLHandler(); // todo - change this to handle import/exports too
+    private XMLHandler xmlHandler = new XMLHandler();
     /**
      * The initial xml state, if any
      */
     private XMLWrapper initialState;
 
     /**
-     * Listener to call once the data has been retrieved
+     * Listener to call to set the list of airports and runways to the gui
      */
-    private DataLoadedListener dataLoadedListener;
+    private DataLoadedListener dataSetListener;
+    /**
+     * Listener to call to add the list of airports and runways to the existing lists in the gui
+     */
+    private DataLoadedListener dataAddListener;
 
     /**
      * Create a data controller to store and retrieve data
      */
     public DataController() {
+    }
+
+    /**
+     * Upload data from an XML file to the program
+     *
+     * @param file the xml file
+     */
+    public void uploadXMLFile(File file) {
+        var uploadedData = xmlHandler.readXML(file);
+
+        // Call the listener to update the GUI
+        callAddListener(uploadedData.getAirports(), uploadedData.getObstacles());
     }
 
 
@@ -43,7 +60,7 @@ public class DataController {
         if (initialState == null) {
             savePredefinedValues();
         } else {
-            callListener();
+            callSetListener();
         }
     }
 
@@ -55,19 +72,35 @@ public class DataController {
         initialState = xmlHandler.readXML();
 
         // Call the listener to update
-        callListener();
+        callSetListener();
     }
 
     /**
-     * Call the listener to update the gui
+     * Call the listener to update the gui by adding the list of airports and obstacles to the
+     * existing lists
+     *
+     * @param airports  list of airports to add
+     * @param obstacles list of obstacles to add
      */
-    private void callListener() {
+    private void callAddListener(Airport[] airports, Obstacle[] obstacles) {
         // Don't call the listener if it hasn't been set yet
-        if (dataLoadedListener == null) {
+        if (dataAddListener == null) {
             return;
         }
 
-        dataLoadedListener.load(getInitialAirports(), getInitialObstacles());
+        dataAddListener.load(airports, obstacles);
+    }
+
+    /**
+     * Call the listener to update the gui by setting the list of airports and obstacles
+     */
+    private void callSetListener() {
+        // Don't call the listener if it hasn't been set yet
+        if (dataSetListener == null) {
+            return;
+        }
+
+        dataSetListener.load(getInitialAirports(), getInitialObstacles());
     }
 
     /**
@@ -108,13 +141,24 @@ public class DataController {
     }
 
     /**
-     * Set the listener to be called when the data has been retrieved
+     * Set the listener to be called to set the list of airports and obstacles in the gui
      *
-     * @param dataLoadedListener the listener
+     * @param dataSetListener the listener
      */
-    public void setDataLoadedListener(
-        DataLoadedListener dataLoadedListener) {
-        this.dataLoadedListener = dataLoadedListener;
+    public void setDataSetListener(
+        DataLoadedListener dataSetListener) {
+        this.dataSetListener = dataSetListener;
+    }
+
+    /**
+     * Set the listener to be called to add list of airports and obstacles to the existing lists in
+     * the gui
+     *
+     * @param dataAddListener the listener
+     */
+    public void setDataAddListener(
+        DataLoadedListener dataAddListener) {
+        this.dataAddListener = dataAddListener;
     }
 
     /**

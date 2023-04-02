@@ -1,7 +1,7 @@
 package com.team44.runwayredeclarationapp.ui;
 
 import com.team44.runwayredeclarationapp.model.Obstacle;
-import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
 import com.team44.runwayredeclarationapp.view.component.inputs.RegexField;
 import javafx.collections.ObservableList;
@@ -34,7 +34,7 @@ public class AddObstacleWindow {
     /**
      * The error alert
      */
-    private final ErrorAlert errorAlert = new ErrorAlert();
+    private final ErrorListAlert errorListAlert = new ErrorListAlert();
 
     /**
      * Create a new Add Obstacle window
@@ -105,7 +105,7 @@ public class AddObstacleWindow {
                 stage.close();
             } else {
                 // Show alert with errors if input is not valid
-                errorAlert.show();
+                errorListAlert.show();
             }
         });
 
@@ -143,14 +143,14 @@ public class AddObstacleWindow {
 
         // Add error messages if needed
         if (!checkRegex) {
-            errorAlert.addError(
+            errorListAlert.addError(
                 """
                     Input cannot be validated:\s
                      - Name must be under 30 characters.
                      - Height must be under 10,000m and rounded to 2 decimal places.""");
         }
         if (checkEmpty) {
-            errorAlert.addError("Inputs cannot be empty.");
+            errorListAlert.addError("Inputs cannot be empty.");
         }
 
         // Return if the inputs are valid or not

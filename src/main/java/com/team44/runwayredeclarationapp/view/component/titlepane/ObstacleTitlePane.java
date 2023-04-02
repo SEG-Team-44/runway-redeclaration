@@ -4,7 +4,7 @@ import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.ui.AddObstacleWindow;
 import com.team44.runwayredeclarationapp.ui.ModifyObstacleWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
-import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import javafx.scene.control.Button;
@@ -168,29 +168,29 @@ public class ObstacleTitlePane extends TitledPane {
      */
     public boolean checkInputsValid() {
         // Create an alert
-        ErrorAlert errorAlert = new ErrorAlert();
+        ErrorListAlert errorListAlert = new ErrorListAlert();
 
         // Add the corresponding error messages
         if (obstacleSelectComboBox.getValue() == null) {
-            errorAlert.addError("Select an obstacle.");
+            errorListAlert.addError("Select an obstacle.");
         }
         if (!obstacleLeftThresholdInput.isInputValid()) {
-            errorAlert.addError(
+            errorListAlert.addError(
                 "Left Threshold input cannot be empty and must be a numerical value.");
         }
         if (!obstacleRightThresholdInput.isInputValid()) {
-            errorAlert.addError(
+            errorListAlert.addError(
                 "Right Threshold input cannot be empty and must be a numerical value.");
         }
         if (!obstacleFromCentrelineThresholdInput.isInputValid()) {
-            errorAlert.addError(
+            errorListAlert.addError(
                 "Left Threshold input cannot be empty and must be a numerical value.");
         }
         // todo:: check if threshL and threshR add up to runway length
 
         // Show the error
-        var numberOfErrors = errorAlert.getErrors().size();
-        errorAlert.show();
+        var numberOfErrors = errorListAlert.getErrors().size();
+        errorListAlert.show();
 
         // Return whether the inputs are valid or not
         return numberOfErrors == 0;

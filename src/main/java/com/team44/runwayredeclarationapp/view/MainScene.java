@@ -8,6 +8,7 @@ import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
+import com.team44.runwayredeclarationapp.ui.xml.ImportXMLWindow;
 import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
 import com.team44.runwayredeclarationapp.view.component.RunwayParametersGrid;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
@@ -128,45 +129,51 @@ public class MainScene extends BaseScene {
 
                     //reset related gui if a selected runway is removed
                     if (runwayTitlePane.getSelectedRunway() != null &&
-                            !runwayObservableList.contains(runwayTitlePane.getSelectedRunway())) {
+                        !runwayObservableList.contains(runwayTitlePane.getSelectedRunway())) {
                         runwayTitlePane.clearInputs();
                         ogValuesGrid.reset();
                         newValuesGrid.reset();
-                        
+
                         topDownCanvas.reset();
                         sideOnCanvas.reset();
                         obstacleTitlePane.clearInputs();
-                        
+
                     }
                 });
         });
 
-        // Set the data loaded listener
-        dataController.setDataLoadedListener((airports, obstacles) -> {
+        // Set the data loaded set listener
+        dataController.setDataSetListener((airports, obstacles) -> {
             airportObservableList.setAll(airports);
             obstacleObservableList.setAll(obstacles);
         });
 
+        // Set the data loaded add listener
+        dataController.setDataAddListener((airports, obstacles) -> {
+            airportObservableList.addAll(airports);
+            obstacleObservableList.addAll(obstacles);
+        });
+
         //Update the obstacle gui when a selected obstacle is removed
         obstacleObservableList.addListener(
-                (ListChangeListener<Obstacle>) observable -> {
-                    if (obstacleTitlePane.getSelectedObstacle() != null &&
-                            !obstacleObservableList.contains(obstacleTitlePane.getSelectedObstacle())) {
-                        obstacleTitlePane.clearInputs();
-                        updateInitialRunway(runwayTitlePane.getSelectedRunway());
-                        calculations.reset();
-                    }
-                });
+            (ListChangeListener<Obstacle>) observable -> {
+                if (obstacleTitlePane.getSelectedObstacle() != null &&
+                    !obstacleObservableList.contains(obstacleTitlePane.getSelectedObstacle())) {
+                    obstacleTitlePane.clearInputs();
+                    updateInitialRunway(runwayTitlePane.getSelectedRunway());
+                    calculations.reset();
+                }
+            });
 
         //reset the whole main scene if current selected airport is deleted
         airportObservableList.addListener(
-                (ListChangeListener<Airport>) observable -> {
-                    if (airportTitlePane.getSelectedAirport() != null &&
-                            !airportObservableList.contains(airportTitlePane.getSelectedAirport())) {
-                        reset();
-                    }
-                });
-        
+            (ListChangeListener<Airport>) observable -> {
+                if (airportTitlePane.getSelectedAirport() != null &&
+                    !airportObservableList.contains(airportTitlePane.getSelectedAirport())) {
+                    reset();
+                }
+            });
+
         // Load the initial state
         dataController.loadInitialState();
     }
@@ -199,8 +206,8 @@ public class MainScene extends BaseScene {
 
         // Reset event
         menuItemResetState.setOnAction(event -> {
-            dataController.resetState();
             this.reset();
+            dataController.resetState();
 
             // Show alert
             var alert = new InfoAlert("Reset successful", "Your data has been reset!",
@@ -228,6 +235,17 @@ public class MainScene extends BaseScene {
             }
         });
 
+        // Menu for XML
+        var xmlMenu = new Menu("XML");
+        var menuItemImportXML = new MenuItem("Import XML");
+        var menuItemExportXML = new MenuItem("Export XML");
+        xmlMenu.getItems().addAll(menuItemImportXML, menuItemExportXML);
+
+        // Event handlers for XML menu items
+        menuItemImportXML.setOnAction(event -> {
+            var importXMLWindow = new ImportXMLWindow(getMainWindow().getStage(), dataController);
+        });
+
         // Create a menu for selecting scenarios to test the program with
         var testDevMenu = new Menu("Test (for devs)");
         var scenario1MenuItem = new MenuItem("Select Scenario 1");
@@ -244,7 +262,7 @@ public class MainScene extends BaseScene {
         // Add all the scenario buttons to the menu
         testDevMenu.getItems()
             .addAll(scenario1MenuItem, scenario2MenuItem, scenario3MenuItem, scenario4MenuItem);
-        menuBar.getMenus().addAll(fileMenu, viewMenu, testDevMenu);
+        menuBar.getMenus().addAll(fileMenu, viewMenu, xmlMenu, testDevMenu);
 
         // Set up the main pane
         root = new StackPane();

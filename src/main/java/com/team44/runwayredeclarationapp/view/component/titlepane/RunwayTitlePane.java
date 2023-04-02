@@ -5,7 +5,7 @@ import com.team44.runwayredeclarationapp.ui.AddRunwayWindow;
 import com.team44.runwayredeclarationapp.ui.ModifyRunwayWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.RunwayInfoGrids;
-import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import java.util.Objects;
 import javafx.scene.control.Alert;
@@ -158,16 +158,16 @@ public class RunwayTitlePane extends TitledPane {
      */
     public boolean checkInputsValid() {
         // Create an alert
-        ErrorAlert errorAlert = new ErrorAlert();
+        ErrorListAlert errorListAlert = new ErrorListAlert();
 
         // Add the corresponding error messages
         if (runwaySelectComboBox.getValue() == null) {
-            errorAlert.addError("Select a runway.");
+            errorListAlert.addError("Select a runway.");
         }
 
         // Show the error
-        var numberOfErrors = errorAlert.getErrors().size();
-        errorAlert.show();
+        var numberOfErrors = errorListAlert.getErrors().size();
+        errorListAlert.show();
 
         // Return whether the inputs are valid or not
         return numberOfErrors == 0;
