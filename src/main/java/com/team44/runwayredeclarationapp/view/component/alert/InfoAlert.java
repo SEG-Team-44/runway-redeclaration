@@ -30,6 +30,7 @@ public class InfoAlert {
     public void show() {
         // Create alert and text
         var alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle(title);
         alert.setHeaderText(header);
         var alertText = new Label(content);
         alertText.setWrapText(true);

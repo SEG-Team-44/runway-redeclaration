@@ -90,6 +90,7 @@ public class ModifyAirportWindow {
 
     /**
      * Call the delete controller when delete button pressed
+     *
      * @param airport airport to be deleted
      */
     private void deleteIsPressed(Airport airport) {

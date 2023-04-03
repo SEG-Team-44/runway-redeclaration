@@ -84,6 +84,8 @@ public class AirportTitlePane extends TitledPane {
                 ModifyAirportWindow modifyPage = new ModifyAirportWindow(
                     mainScene.getMainWindow().getStage(),
                     mainScene.getAirportObservableList());
+
+                modifyPage.setEditAirportListener(airportSelectComboBox::setValue);
             }
         });
 
@@ -102,9 +104,12 @@ public class AirportTitlePane extends TitledPane {
 
     /**
      * Get current selected airport
+     *
      * @return selected airport
      */
-    public Airport getSelectedAirport() {return airportSelectComboBox.getValue();}
+    public Airport getSelectedAirport() {
+        return airportSelectComboBox.getValue();
+    }
 
     /**
      * Clear all the inputs

@@ -31,12 +31,12 @@ public class XMLHandler {
     /**
      * The XStream handler
      */
-    private XStream xstream = new XStream(new StaxDriver());
+    private final XStream xstream = new XStream(new StaxDriver());
 
     /**
      * The file to save to
      */
-    private File file = new File("." + File.separator + "state.xml");
+    private final File stateFile = new File("." + File.separator + "state.xml");
 
     /**
      * The output/write stream
@@ -70,12 +70,23 @@ public class XMLHandler {
     }
 
     /**
-     * Overwrite the file with the new list of airports and obstacles
+     * Write the *state* file with the new list of airports and obstacles
      *
      * @param airports  list of airports
      * @param obstacles list of obstacles
      */
     public void saveToXML(Airport[] airports, Obstacle[] obstacles) {
+        saveToXML(airports, obstacles, stateFile);
+    }
+
+    /**
+     * Write the file with the new list of airports and obstacles
+     *
+     * @param airports  list of airports
+     * @param obstacles list of obstacles
+     * @param file      the file to save XML to
+     */
+    public void saveToXML(Airport[] airports, Obstacle[] obstacles, File file) {
         logger.info("Saving to XML");
 
         // File handling
@@ -104,6 +115,7 @@ public class XMLHandler {
                 try {
                     fileInputStream.close();
                     reader.close();
+                    logger.info("I/O streams closed.");
 
                 } catch (IOException e) {
                     logger.error("I/O error in closing the write stream.");
@@ -114,11 +126,21 @@ public class XMLHandler {
     }
 
     /**
-     * Read and parse the xml from the file
+     * Read and parse the xml from the *state* file
      *
      * @return the parsed xml object
      */
     public XMLWrapper readXML() {
+        return readXML(stateFile);
+    }
+
+    /**
+     * Read and parse the xml from the file
+     *
+     * @param file the file to read from
+     * @return the parsed xml object
+     */
+    public XMLWrapper readXML(File file) {
         logger.info("Reading from XML");
 
         // File handling
@@ -144,6 +166,7 @@ public class XMLHandler {
                 try {
                     fileInputStream.close();
                     reader.close();
+                    logger.info("I/O streams closed.");
 
                 } catch (IOException e) {
                     logger.error("I/O error in closing the read stream.");
@@ -157,7 +180,7 @@ public class XMLHandler {
      * Clear the state by deleting the state file
      */
     public void clearState() {
-        if (file.delete()) {
+        if (stateFile.delete()) {
             logger.info("State file was successfully deleted.");
         } else {
             logger.error("State file could not be deleted.");

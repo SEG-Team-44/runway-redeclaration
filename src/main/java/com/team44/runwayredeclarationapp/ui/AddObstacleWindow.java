@@ -1,7 +1,8 @@
 package com.team44.runwayredeclarationapp.ui;
 
+import com.team44.runwayredeclarationapp.event.AddObstacleListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;
-import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
 import com.team44.runwayredeclarationapp.view.component.inputs.RegexField;
 import javafx.collections.ObservableList;
@@ -34,7 +35,11 @@ public class AddObstacleWindow {
     /**
      * The error alert
      */
-    private final ErrorAlert errorAlert = new ErrorAlert();
+    private final ErrorListAlert errorListAlert = new ErrorListAlert();
+    /**
+     * The listener called when an obstacle has been added/edited
+     */
+    private AddObstacleListener addObstacleListener;
 
     /**
      * Create a new Add Obstacle window
@@ -86,6 +91,8 @@ public class AddObstacleWindow {
         // Add event
         addBtn.setOnAction(event -> {
             if (isInputValid()) {
+                var newObstacle = new Obstacle(obstacleNameInput.getText(),
+                    obstacleHeightInput.getValue());
 
                 if (obstacle == null) {
                     // Create and add the obstacle to the observable list
@@ -94,18 +101,20 @@ public class AddObstacleWindow {
                     );
                 } else {
                     // Update the obstacle in the observable list
-                    var newObstacle = new Obstacle(obstacleNameInput.getText(),
-                        obstacleHeightInput.getValue());
                     var index = obstacleObservableList.indexOf(obstacle);
 
                     obstacleObservableList.set(index, newObstacle);
+                }
+                // Call the listener
+                if (addObstacleListener != null) {
+                    addObstacleListener.addObstacle(newObstacle);
                 }
 
                 // Close the window
                 stage.close();
             } else {
                 // Show alert with errors if input is not valid
-                errorAlert.show();
+                errorListAlert.show();
             }
         });
 
@@ -143,18 +152,26 @@ public class AddObstacleWindow {
 
         // Add error messages if needed
         if (!checkRegex) {
-            errorAlert.addError(
+            errorListAlert.addError(
                 """
                     Input cannot be validated:\s
                      - Name must be under 30 characters.
                      - Height must be under 10,000m and rounded to 2 decimal places.""");
         }
         if (checkEmpty) {
-            errorAlert.addError("Inputs cannot be empty.");
+            errorListAlert.addError("Inputs cannot be empty.");
         }
 
         // Return if the inputs are valid or not
         return checkRegex && !checkEmpty;
     }
 
+    /**
+     * Set the listener to be called when an obstacle is added/edited
+     *
+     * @param addObstacleListener the listener
+     */
+    public void setAddObstacleListener(AddObstacleListener addObstacleListener) {
+        this.addObstacleListener = addObstacleListener;
+    }
 }

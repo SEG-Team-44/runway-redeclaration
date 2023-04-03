@@ -4,7 +4,7 @@ import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.controller.ParameterController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
-import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -146,7 +146,7 @@ public class ModifyRunwayWindow extends ParameterController {
 
             //else print alert
             else {
-                var errorAlert = new ErrorAlert();
+                var errorAlert = new ErrorListAlert();
                 errorAlert.setErrors(getErrors().toArray(new String[]{}));
                 getErrors();
                 errorAlert.show();

@@ -1,70 +1,42 @@
 package com.team44.runwayredeclarationapp.view.component.alert;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 
 /**
- * Error alert that is able to show a list of errors
+ * Information alert that has wrapped content text
  */
 public class ErrorAlert {
 
-    /**
-     * The list of errors shown in the alert
-     */
-    private final ArrayList<String> errors = new ArrayList<>();
+    private String title, header, content;
 
     /**
-     * Add an error to the list of errors
+     * Create an error alert
      *
-     * @param errorText the error text
+     * @param title   the title text
+     * @param header  the header text
+     * @param content the content text
      */
-    public void addError(String errorText) {
-        errors.add(errorText);
-    }
-
-    public void setErrors(String... errorsToSet) {
-        errors.clear();
-        errors.addAll(List.of(errorsToSet));
-    }
-
-    /**
-     * Get the list of errors currently in the list
-     *
-     * @return the list of errors
-     */
-    public ArrayList<String> getErrors() {
-        return errors;
-    }
-
-    /**
-     * Clear the list of errors currently in the list
-     */
-    public void clearErrors() {
-        errors.clear();
+    public ErrorAlert(String title, String header, String content) {
+        this.title = title;
+        this.header = header;
+        this.content = content;
     }
 
     /**
      * Show the error alert
      */
     public void show() {
-        if (errors.isEmpty()) {
-            return;
-        }
-
         // Create alert and text
         var alert = new Alert(AlertType.ERROR);
-        alert.setHeaderText("Please fix the following errors:");
-        var errorText = new Label(String.join("\n", errors));
-        errorText.setWrapText(true);
-        alert.getDialogPane().setContent(errorText);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        var alertText = new Label(content);
+        alertText.setWrapText(true);
+        alert.getDialogPane().setContent(alertText);
 
         // Show the alert
         alert.show();
-
-        // Reset current errors
-        errors.clear();
     }
 }

@@ -4,7 +4,7 @@ import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.ui.AddObstacleWindow;
 import com.team44.runwayredeclarationapp.ui.ModifyObstacleWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
-import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import javafx.scene.control.Button;
@@ -87,12 +87,18 @@ public class ObstacleTitlePane extends TitledPane {
             ModifyObstacleWindow modifyObstacleWindow = new ModifyObstacleWindow(
                 mainScene.getMainWindow().getStage(),
                 mainScene.getObstacleObservableList());
-            obstacleSelectComboBox.setValue(null);
+
+            // Set the listener
+            modifyObstacleWindow.setEditAirportListener(obstacleSelectComboBox::setValue);
         });
         addObstacleBtn.setOnAction(event -> {
             AddObstacleWindow addObstacleWindow = new AddObstacleWindow(
                 mainScene.getMainWindow().getStage(),
                 mainScene.getObstacleObservableList());
+
+            // Set the listener
+            // todo:: only replace (setValue) if currently selected, as done in RunwayTitlePane
+            addObstacleWindow.setAddObstacleListener(obstacleSelectComboBox::setValue);
         });
 
         // Add the rows to the grid
@@ -133,7 +139,8 @@ public class ObstacleTitlePane extends TitledPane {
      * @param centreline     the distance from the centreline
      * @param blastPro       current blast protection
      */
-    public void setInputText(double leftThreshold, double rightThreshold, double centreline, double blastPro) {
+    public void setInputText(double leftThreshold, double rightThreshold, double centreline,
+        double blastPro) {
         this.obstacleLeftThresholdInput.setText(String.valueOf(leftThreshold));
         this.obstacleRightThresholdInput.setText(String.valueOf(rightThreshold));
         this.obstacleFromCentrelineThresholdInput.setText(String.valueOf(centreline));
@@ -169,9 +176,12 @@ public class ObstacleTitlePane extends TitledPane {
 
     /**
      * Get the current blast protection
+     *
      * @return blast protection value
      */
-    public double getBlastProtection() {return blastProtection.getValue();}
+    public double getBlastProtection() {
+        return blastProtection.getValue();
+    }
 
     /**
      * Check if inputs are valid and show necessary errors
@@ -180,33 +190,33 @@ public class ObstacleTitlePane extends TitledPane {
      */
     public boolean checkInputsValid() {
         // Create an alert
-        ErrorAlert errorAlert = new ErrorAlert();
+        ErrorListAlert errorListAlert = new ErrorListAlert();
 
         // Add the corresponding error messages
         if (obstacleSelectComboBox.getValue() == null) {
-            errorAlert.addError("Select an obstacle.");
+            errorListAlert.addError("Select an obstacle.");
         }
         if (!obstacleLeftThresholdInput.isInputValid()) {
-            errorAlert.addError(
+            errorListAlert.addError(
                 "Left Threshold input cannot be empty and must be a numerical value.");
         }
         if (!obstacleRightThresholdInput.isInputValid()) {
-            errorAlert.addError(
+            errorListAlert.addError(
                 "Right Threshold input cannot be empty and must be a numerical value.");
         }
         if (!obstacleFromCentrelineThresholdInput.isInputValid()) {
-            errorAlert.addError(
+            errorListAlert.addError(
                 "Left Threshold input cannot be empty and must be a numerical value.");
         }
         if (!blastProtection.isInputValid()) {
-            errorAlert.addError(
-                    "Blast protection cannot be empty and must be a non-negative numerical value.");
+            errorListAlert.addError(
+                "Blast protection cannot be empty and must be a non-negative numerical value.");
         }
         // todo:: check if threshL and threshR add up to runway length
 
         // Show the error
-        var numberOfErrors = errorAlert.getErrors().size();
-        errorAlert.show();
+        var numberOfErrors = errorListAlert.getErrors().size();
+        errorListAlert.show();
 
         // Return whether the inputs are valid or not
         return numberOfErrors == 0;
