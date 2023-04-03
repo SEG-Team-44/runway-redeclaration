@@ -8,6 +8,7 @@ import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
+import com.team44.runwayredeclarationapp.ui.xml.ExportXMLWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ImportXMLWindow;
 import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
 import com.team44.runwayredeclarationapp.view.component.RunwayParametersGrid;
@@ -51,7 +52,7 @@ public class MainScene extends BaseScene {
     /**
      * The selected airport
      */
-    private SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>();
 
     /**
      * The controller responsible for setting the recalculated values
@@ -71,7 +72,7 @@ public class MainScene extends BaseScene {
     /**
      * The pane showing the calculation breakdown
      */
-    private CalculationBreakdown calculations = new CalculationBreakdown();
+    private final CalculationBreakdown calculations = new CalculationBreakdown();
 
     /**
      * The canvas displaying the top down and side on view
@@ -93,11 +94,11 @@ public class MainScene extends BaseScene {
     /**
      * Observable list of airports
      */
-    private ObservableList<Airport> airportObservableList = FXCollections.observableArrayList();
+    private final ObservableList<Airport> airportObservableList = FXCollections.observableArrayList();
     /**
      * Observable list of runways
      */
-    private ObservableList<Runway> runwayObservableList = FXCollections.observableArrayList();
+    private final ObservableList<Runway> runwayObservableList = FXCollections.observableArrayList();
 
     /**
      * Create scene within the main window
@@ -243,7 +244,11 @@ public class MainScene extends BaseScene {
 
         // Event handlers for XML menu items
         menuItemImportXML.setOnAction(event -> {
-            var importXMLWindow = new ImportXMLWindow(getMainWindow().getStage(), dataController);
+            new ImportXMLWindow(getMainWindow().getStage(), dataController);
+        });
+        menuItemExportXML.setOnAction(event -> {
+            new ExportXMLWindow(getMainWindow().getStage(), dataController, airportObservableList,
+                obstacleObservableList);
         });
 
         // Create a menu for selecting scenarios to test the program with

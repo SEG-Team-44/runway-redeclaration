@@ -2,6 +2,7 @@ package com.team44.runwayredeclarationapp.ui.xml;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
 import java.io.File;
 import java.util.List;
 import javafx.beans.property.SimpleObjectProperty;
@@ -33,25 +34,38 @@ public class ImportXMLWindow extends Stage {
     private final SimpleObjectProperty<File> fileSimpleObjectProperty = new SimpleObjectProperty<>();
 
     /**
+     * The data controller to import/export XML files
+     */
+    private final DataController dataController;
+
+    /**
      * Create the window for importing xml file
      *
      * @param parent         the parent window
      * @param dataController the data controller
      */
     public ImportXMLWindow(Window parent, DataController dataController) {
-        Stage stage = new Stage();
+        this.dataController = dataController;
 
         //Setup main pane
         var mainPane = new VBox();
         mainPane.getStyleClass().add("drag-drop-window");
         mainPane.setSpacing(15);
-        mainPane.setAlignment(Pos.CENTER_RIGHT);
+        mainPane.setAlignment(Pos.CENTER);
         HBox.setHgrow(mainPane, Priority.ALWAYS);
         VBox.setVgrow(mainPane, Priority.ALWAYS);
 
-        // Import button
+        // Import button pane
+        var importBtnsPane = new HBox();
+        importBtnsPane.setAlignment(Pos.CENTER_RIGHT);
+        importBtnsPane.setSpacing(10);
+        // Import buttons
         var importBtn = new Button("Import");
         importBtn.setDisable(true);
+        var importResetBtn = new Button("Reset and Import");
+        importResetBtn.disableProperty().bindBidirectional(importBtn.disableProperty());
+
+        importBtnsPane.getChildren().addAll(importResetBtn, importBtn);
 
         //Set scene
         Scene scene = new Scene(mainPane);
@@ -64,7 +78,7 @@ public class ImportXMLWindow extends Stage {
         dragDropPane.setAlignment(Pos.CENTER);
         HBox.setHgrow(dragDropPane, Priority.ALWAYS);
         VBox.setVgrow(dragDropPane, Priority.ALWAYS);
-        mainPane.getChildren().addAll(dragDropPane, importBtn);
+        mainPane.getChildren().addAll(dragDropPane, importBtnsPane);
 
         // Drag and drop text
         var clickToUploadBtn = new Hyperlink("Click to upload");
@@ -175,38 +189,52 @@ public class ImportXMLWindow extends Stage {
 
         // Import event
         importBtn.setOnAction(event -> {
-            var fileToUpload = fileSimpleObjectProperty.get();
-
-            // Ensure file still exists
-            if (!fileToUpload.exists()) {
-                new ErrorAlert("File does not exist", "Uploaded file does not exist!",
-                    "Please try upload again.").show();
-
-                fileSimpleObjectProperty.set(null);
-                return;
-            }
-
-            // Upload XML file
-            dataController.uploadXMLFile(fileToUpload);
-
-            stage.close();
+            importFile(false);
+        });
+        importResetBtn.setOnAction(event -> {
+            importFile(true);
         });
 
         // Set stage properties and make it a modal window
-        stage.setTitle("Import XML File");
-        stage.setScene(scene);
-        stage.initOwner(parent);
-        stage.initModality(Modality.WINDOW_MODAL);
+        this.setTitle("Import XML File");
+        this.setScene(scene);
+        this.initOwner(parent);
+        this.initModality(Modality.WINDOW_MODAL);
 
         // Styling
         scene.getStylesheets().addAll(parent.getScene().getStylesheets());
-        stage.setResizable(false);
-        stage.setWidth(600);
-        stage.setHeight(300);
+        this.setResizable(false);
+        this.setWidth(600);
+        this.setHeight(300);
 
-        stage.show();
+        this.show();
     }
 
+    /**
+     * Import the xml file stored in the file object property
+     *
+     * @param reset whether to reset the existing data
+     */
+    private void importFile(boolean reset) {
+        var fileToUpload = fileSimpleObjectProperty.get();
+
+        // Ensure file still exists
+        if (!fileToUpload.exists()) {
+            new ErrorAlert("File does not exist", "Uploaded file does not exist!",
+                "Please try upload again.").show();
+
+            fileSimpleObjectProperty.set(null);
+            return;
+        }
+
+        // Upload XML file
+        dataController.uploadXMLFile(fileToUpload, reset);
+
+        new InfoAlert("Upload successful", "XML file has been successfully uploaded!",
+            null).show();
+
+        this.close();
+    }
 
     /**
      * Validate the file that is being dragged

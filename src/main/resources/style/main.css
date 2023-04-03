@@ -64,7 +64,7 @@
   -fx-font-size: 9.5pt;
 }
 
-/* Drag and drop window */
+/* Drag and drop import XML window */
 .drag-drop-window {
   -fx-padding: 40px 40px 20px 40px;
   -fx-background-color: white;
@@ -100,4 +100,14 @@
   -fx-background-color: aliceblue;
   -fx-border-radius: 13px;
   -fx-border-style: none !important;
+}
+
+/* Export XML window */
+.export-window {
+  -fx-padding: 40px;
+  -fx-background-color: white;
+}
+
+.export-window Text {
+  -fx-font-size: 10pt;
 }

@@ -16,7 +16,7 @@ public class DataController {
     /**
      * The XML handler to read and write with
      */
-    private XMLHandler xmlHandler = new XMLHandler();
+    private final XMLHandler xmlHandler = new XMLHandler();
     /**
      * The initial xml state, if any
      */
@@ -40,15 +40,28 @@ public class DataController {
     /**
      * Upload data from an XML file to the program
      *
-     * @param file the xml file
+     * @param file  the xml file
+     * @param reset whether the reset the existing data
      */
-    public void uploadXMLFile(File file) {
+    public void uploadXMLFile(File file, Boolean reset) {
         var uploadedData = xmlHandler.readXML(file);
 
         // Call the listener to update the GUI
+        if (reset) {
+            callSetListener(uploadedData.getAirports(), uploadedData.getObstacles());
+            return;
+        }
         callAddListener(uploadedData.getAirports(), uploadedData.getObstacles());
     }
 
+    /**
+     * Export data from program into an XML file
+     *
+     * @param file the file to save to
+     */
+    public void exportXMLFile(Airport[] airports, Obstacle[] obstacles, File file) {
+        xmlHandler.saveToXML(airports, obstacles, file);
+    }
 
     /**
      * Load the initial state to the gui by calling the listener
@@ -95,12 +108,22 @@ public class DataController {
      * Call the listener to update the gui by setting the list of airports and obstacles
      */
     private void callSetListener() {
+        callSetListener(getInitialAirports(), getInitialObstacles());
+    }
+
+    /**
+     * Call the listener to update the gui by setting the list of airports and obstacles
+     *
+     * @param airports  list of airports to set
+     * @param obstacles list of obstacles to set
+     */
+    private void callSetListener(Airport[] airports, Obstacle[] obstacles) {
         // Don't call the listener if it hasn't been set yet
         if (dataSetListener == null) {
             return;
         }
 
-        dataSetListener.load(getInitialAirports(), getInitialObstacles());
+        dataSetListener.load(airports, obstacles);
     }
 
     /**

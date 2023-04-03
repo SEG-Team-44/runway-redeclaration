@@ -31,12 +31,12 @@ public class XMLHandler {
     /**
      * The XStream handler
      */
-    private XStream xstream = new XStream(new StaxDriver());
+    private final XStream xstream = new XStream(new StaxDriver());
 
     /**
      * The file to save to
      */
-    private File stateFile = new File("." + File.separator + "state.xml");
+    private final File stateFile = new File("." + File.separator + "state.xml");
 
     /**
      * The output/write stream
@@ -115,6 +115,7 @@ public class XMLHandler {
                 try {
                     fileInputStream.close();
                     reader.close();
+                    logger.info("I/O streams closed.");
 
                 } catch (IOException e) {
                     logger.error("I/O error in closing the write stream.");
@@ -165,6 +166,7 @@ public class XMLHandler {
                 try {
                     fileInputStream.close();
                     reader.close();
+                    logger.info("I/O streams closed.");
 
                 } catch (IOException e) {
                     logger.error("I/O error in closing the read stream.");

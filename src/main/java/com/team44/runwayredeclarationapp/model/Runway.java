@@ -70,8 +70,9 @@ public class Runway implements Cloneable {
 
     /**
      * Constructor for single (non-parallel) runways
-     * @param degree1 degree of one logical runway
-     * @param degree2 degree of the other logical runway
+     *
+     * @param degree1    degree of one logical runway
+     * @param degree2    degree of the other logical runway
      * @param parameters all numerical inputs (parameters)
      */
     public Runway(int degree1, int degree2, double[] parameters) {
@@ -83,10 +84,11 @@ public class Runway implements Cloneable {
 
     /**
      * Constructor for parallel runways
-     * @param degree1 degree of one logical runway
-     * @param degree2 degree of the other logical runway
-     * @param pos1 position character of one logical runway
-     * @param pos2 position character of the other logical runway
+     *
+     * @param degree1    degree of one logical runway
+     * @param degree2    degree of the other logical runway
+     * @param pos1       position character of one logical runway
+     * @param pos2       position character of the other logical runway
      * @param parameters all numerical inputs (parameters)
      */
     public Runway(int degree1, int degree2, char pos1, char pos2, double[] parameters) {
@@ -113,6 +115,7 @@ public class Runway implements Cloneable {
 
     /**
      * Base on the degree given, return the degree in string and in the correct format (01-36)
+     *
      * @param degree degree of a runway
      * @return degree in string and in correct format
      */
@@ -130,6 +133,7 @@ public class Runway implements Cloneable {
 
     /**
      * Update all parameters of the runway based on the given values
+     *
      * @param parameters new parameters to be updated
      */
     public void updateParameters(double[] parameters) {
