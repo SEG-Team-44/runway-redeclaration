@@ -80,25 +80,25 @@ class RecalculationControllerTest {
      */
     Obstacle obstacle1 = new Obstacle("Obstacle Name", 12);
     RunwayObstacle runwayObstacle1 = new RunwayObstacle(obstacle1, runway09L27R, -50.0, 3646.0,
-        0.0);
+        0.0, 240);
     /**
      * Obstacle object representing the obstacle specified in Scenario 2 in the spec
      */
     Obstacle obstacle2 = new Obstacle("Obstacle Name", 25);
     RunwayObstacle runwayObstacle2 = new RunwayObstacle(obstacle2, runway09R27L, 2853.0, 500.0,
-        -20.0);
+        -20.0, 240);
     /**
      * Obstacle object representing the obstacle specified in Scenario 3 in the spec
      */
     Obstacle obstacle3 = new Obstacle("Obstacle Name", 15);
     RunwayObstacle runwayObstacle3 = new RunwayObstacle(obstacle3, runway09R27L, 150.0, 3203.0,
-        60.0);
+        60.0, 240);
     /**
      * Obstacle object representing the obstacle specified in Scenario 4 in the spec
      */
     Obstacle obstacle4 = new Obstacle("Obstacle Name", 20);
     RunwayObstacle runwayObstacle4 = new RunwayObstacle(obstacle4, runway09L27R, 3546.0, 50.0,
-        20.0);
+        20.0, 240);
 
     /**
      * Set up a new recalculation controller before each test
@@ -300,7 +300,7 @@ class RecalculationControllerTest {
         var runway2ID = ogRunway.getLogicId2();
 
         // Recalculate with the class method
-        var actualRunway = recalculationController.recalculateRunway(rwObs, 300);
+        var actualRunway = recalculationController.recalculateRunway(rwObs);
 
         // Specify the expected recalculated runway object
         var expectedRunway = new PRunway(

@@ -12,6 +12,8 @@ public class RunwayObstacle {
     private final double posR;
     private final double distCR;
 
+    private final double blastPro;
+
     /**
      * Create a runway obstacle
      *
@@ -20,13 +22,15 @@ public class RunwayObstacle {
      * @param posL   the distance from the left threshold
      * @param posR   the distance from the right threshold
      * @param distCR the distance from the centreline
+     * @param blastPro the current blast protection
      */
-    public RunwayObstacle(Obstacle obst, Runway recalRw, double posL, double posR, double distCR) {
+    public RunwayObstacle(Obstacle obst, Runway recalRw, double posL, double posR, double distCR, double blastPro) {
         this.obst = obst;
         this.recalRw = recalRw;
         this.posL = posL;
         this.posR = posR;
         this.distCR = distCR;
+        this.blastPro = blastPro;
     }
 
     public Obstacle getObst() {
@@ -50,6 +54,8 @@ public class RunwayObstacle {
     public double getDistCR() {
         return distCR;
     }
+
+    public double getBlastPro() {return blastPro;}
 
     /**
      * Check if the obstacle is on the left side of the runway (near start of logical runway 1)
