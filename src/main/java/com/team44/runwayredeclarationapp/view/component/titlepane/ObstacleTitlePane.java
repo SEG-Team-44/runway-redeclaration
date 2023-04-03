@@ -94,6 +94,7 @@ public class ObstacleTitlePane extends TitledPane {
                 mainScene.getObstacleObservableList());
 
             // Set the listener
+            // todo:: only replace (setValue) if currently selected, as done in RunwayTitlePane
             addObstacleWindow.setAddObstacleListener(obstacleSelectComboBox::setValue);
         });
 
