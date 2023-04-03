@@ -1,6 +1,7 @@
 package com.team44.runwayredeclarationapp.ui;
 
 import com.team44.runwayredeclarationapp.controller.DeleteController;
+import com.team44.runwayredeclarationapp.event.AddObstacleListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
@@ -18,7 +19,12 @@ public class ModifyObstacleWindow {
      */
     private final ObservableList<Obstacle> obstacleObservableList;
 
-    private DeleteController deleteController = new DeleteController();
+    private final DeleteController deleteController = new DeleteController();
+
+    /**
+     * The listener called when an obstacle has been successfully edited
+     */
+    private AddObstacleListener editObstacleListener;
 
     /**
      * Initialising the stage
@@ -63,6 +69,22 @@ public class ModifyObstacleWindow {
      */
     private void showModifyScene(Obstacle obstacle) {
         var modifyWindow = new AddObstacleWindow(stage, obstacleObservableList, obstacle);
+
+        // Call listener
+        modifyWindow.setAddObstacleListener(modifiedObstacle -> {
+            if (editObstacleListener != null) {
+                editObstacleListener.addObstacle(modifiedObstacle);
+            }
+        });
+    }
+
+    /**
+     * Set the listener to be called when an obstacle has been successfully edited
+     *
+     * @param editObstacleListener the listener
+     */
+    public void setEditAirportListener(AddObstacleListener editObstacleListener) {
+        this.editObstacleListener = editObstacleListener;
     }
 
     /**

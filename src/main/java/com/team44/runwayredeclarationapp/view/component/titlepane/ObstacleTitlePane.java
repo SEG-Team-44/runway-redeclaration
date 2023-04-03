@@ -84,12 +84,17 @@ public class ObstacleTitlePane extends TitledPane {
             ModifyObstacleWindow modifyObstacleWindow = new ModifyObstacleWindow(
                 mainScene.getMainWindow().getStage(),
                 mainScene.getObstacleObservableList());
-            obstacleSelectComboBox.setValue(null);
+
+            // Set the listener
+            modifyObstacleWindow.setEditAirportListener(obstacleSelectComboBox::setValue);
         });
         addObstacleBtn.setOnAction(event -> {
             AddObstacleWindow addObstacleWindow = new AddObstacleWindow(
                 mainScene.getMainWindow().getStage(),
                 mainScene.getObstacleObservableList());
+
+            // Set the listener
+            addObstacleWindow.setAddObstacleListener(obstacleSelectComboBox::setValue);
         });
 
         // Add the rows to the grid

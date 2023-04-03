@@ -161,7 +161,14 @@ public class MainScene extends BaseScene {
                 if (obstacleTitlePane.getSelectedObstacle() != null &&
                     !obstacleObservableList.contains(obstacleTitlePane.getSelectedObstacle())) {
                     obstacleTitlePane.clearInputs();
-                    updateInitialRunway(runwayTitlePane.getSelectedRunway());
+
+                    // Update the gui
+                    var selectedRunway = runwayTitlePane.getSelectedRunway();
+                    if (selectedRunway != null) {
+                        updateInitialRunway(selectedRunway);
+                    }
+
+                    // Reset the calculations view
                     calculations.reset();
                 }
             });

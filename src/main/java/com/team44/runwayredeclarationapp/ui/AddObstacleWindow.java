@@ -1,5 +1,6 @@
 package com.team44.runwayredeclarationapp.ui;
 
+import com.team44.runwayredeclarationapp.event.AddObstacleListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
@@ -35,6 +36,10 @@ public class AddObstacleWindow {
      * The error alert
      */
     private final ErrorListAlert errorListAlert = new ErrorListAlert();
+    /**
+     * The listener called when an obstacle has been added/edited
+     */
+    private AddObstacleListener addObstacleListener;
 
     /**
      * Create a new Add Obstacle window
@@ -86,6 +91,8 @@ public class AddObstacleWindow {
         // Add event
         addBtn.setOnAction(event -> {
             if (isInputValid()) {
+                var newObstacle = new Obstacle(obstacleNameInput.getText(),
+                    obstacleHeightInput.getValue());
 
                 if (obstacle == null) {
                     // Create and add the obstacle to the observable list
@@ -94,11 +101,13 @@ public class AddObstacleWindow {
                     );
                 } else {
                     // Update the obstacle in the observable list
-                    var newObstacle = new Obstacle(obstacleNameInput.getText(),
-                        obstacleHeightInput.getValue());
                     var index = obstacleObservableList.indexOf(obstacle);
 
                     obstacleObservableList.set(index, newObstacle);
+                }
+                // Call the listener
+                if (addObstacleListener != null) {
+                    addObstacleListener.addObstacle(newObstacle);
                 }
 
                 // Close the window
@@ -157,4 +166,12 @@ public class AddObstacleWindow {
         return checkRegex && !checkEmpty;
     }
 
+    /**
+     * Set the listener to be called when an obstacle is added/edited
+     *
+     * @param addObstacleListener the listener
+     */
+    public void setAddObstacleListener(AddObstacleListener addObstacleListener) {
+        this.addObstacleListener = addObstacleListener;
+    }
 }
