@@ -30,6 +30,8 @@ public class ObstacleTitlePane extends TitledPane {
     private final DoubleField obstacleRightThresholdInput;
     private final DoubleField obstacleFromCentrelineThresholdInput;
 
+    private final DoubleField blastProtection;
+
     /**
      * Create the titled pane
      *
@@ -67,6 +69,7 @@ public class ObstacleTitlePane extends TitledPane {
         obstacleRightThresholdInput.setAllowNegative(true);
         obstacleFromCentrelineThresholdInput = new DoubleField();
         obstacleFromCentrelineThresholdInput.setAllowNegative(true);
+        blastProtection = new DoubleField();
 
         // Obstacle tooltips
         var obstacleFromCentrelineTooltip = new Tooltip("Positive for North, negative for South");
@@ -107,6 +110,7 @@ public class ObstacleTitlePane extends TitledPane {
             obstacleRightThresholdInput);
         buttonSelectGridPane.addRow(4, new Text("Distance from Centreline:"),
             obstacleFromCentrelineThresholdInput);
+        buttonSelectGridPane.addRow(5, new Text("Blast Protection"), blastProtection);
     }
 
     /**
@@ -133,11 +137,13 @@ public class ObstacleTitlePane extends TitledPane {
      * @param leftThreshold  the distance from the left threshold
      * @param rightThreshold the distance from the right threshold
      * @param centreline     the distance from the centreline
+     * @param blastPro       current blast protection
      */
-    public void setInputText(double leftThreshold, double rightThreshold, double centreline) {
+    public void setInputText(double leftThreshold, double rightThreshold, double centreline, double blastPro) {
         this.obstacleLeftThresholdInput.setText(String.valueOf(leftThreshold));
         this.obstacleRightThresholdInput.setText(String.valueOf(rightThreshold));
         this.obstacleFromCentrelineThresholdInput.setText(String.valueOf(centreline));
+        this.blastProtection.setText(String.valueOf(blastPro));
     }
 
     /**
@@ -168,6 +174,12 @@ public class ObstacleTitlePane extends TitledPane {
     }
 
     /**
+     * Get the current blast protection
+     * @return blast protection value
+     */
+    public double getBlastProtection() {return blastProtection.getValue();}
+
+    /**
      * Check if inputs are valid and show necessary errors
      *
      * @return whether the inputs are valid
@@ -192,6 +204,10 @@ public class ObstacleTitlePane extends TitledPane {
             errorListAlert.addError(
                 "Left Threshold input cannot be empty and must be a numerical value.");
         }
+        if (!blastProtection.isInputValid()) {
+            errorAlert.addError(
+                    "Blast protection cannot be empty and must be a non-negative numerical value.");
+        }
         // todo:: check if threshL and threshR add up to runway length
 
         // Show the error
@@ -210,5 +226,6 @@ public class ObstacleTitlePane extends TitledPane {
         obstacleLeftThresholdInput.clear();
         obstacleRightThresholdInput.clear();
         obstacleFromCentrelineThresholdInput.clear();
+        blastProtection.clear();
     }
 }
