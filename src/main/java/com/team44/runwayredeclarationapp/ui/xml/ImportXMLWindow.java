@@ -5,6 +5,7 @@ import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import java.io.File;
 import java.util.List;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -43,6 +44,8 @@ public class ImportXMLWindow extends Stage {
         //Setup main pane
         var mainPane = new VBox();
         mainPane.getStyleClass().add("drag-drop-window");
+        mainPane.setSpacing(15);
+        mainPane.setAlignment(Pos.CENTER_RIGHT);
         HBox.setHgrow(mainPane, Priority.ALWAYS);
         VBox.setVgrow(mainPane, Priority.ALWAYS);
 
@@ -94,22 +97,29 @@ public class ImportXMLWindow extends Stage {
         var droppedPane = new VBox();
         droppedPane.getStyleClass().add("drag-drop-area");
         droppedPane.setAlignment(Pos.CENTER);
+        droppedPane.setSpacing(15);
         HBox.setHgrow(droppedPane, Priority.ALWAYS);
         VBox.setVgrow(droppedPane, Priority.ALWAYS);
 
         // Dropped screen text
         var uploadSuccessfulText = new Text("Upload successful!");
+        var fileNameTextProperty = new SimpleStringProperty();
+        var fileNameText = new Text();
+        fileNameText.setWrappingWidth(150);
+        fileNameText.getStyleClass().add("small-text");
+        fileNameText.textProperty().bind(fileNameTextProperty);
+        fileNameText.setTextAlignment(TextAlignment.CENTER);
         uploadSuccessfulText.setTextAlignment(TextAlignment.CENTER);
 
         // Cancel upload button
-        var cancelUploadButton = new Button("x");
+        var cancelUploadButton = new Button("Cancel");
         cancelUploadButton.setAlignment(Pos.TOP_RIGHT);
         cancelUploadButton.setOnAction(event -> {
             // Remove the uploaded file
             fileSimpleObjectProperty.set(null);
         });
 
-        droppedPane.getChildren().addAll(cancelUploadButton, uploadSuccessfulText);
+        droppedPane.getChildren().addAll(uploadSuccessfulText, fileNameText, cancelUploadButton);
 
         // Drag and drop events
         dragDropPane.setOnDragOver(dragEvent -> {
@@ -146,6 +156,9 @@ public class ImportXMLWindow extends Stage {
         // File uploaded/removed listener
         fileSimpleObjectProperty.addListener((obsVal, oldFile, newFile) -> {
             if (newFile != null) {
+                // File successfully uploaded
+                fileNameTextProperty.set(fileSimpleObjectProperty.get().getName());
+
                 importBtn.setDisable(false);
 
                 // Switch the panes
@@ -167,7 +180,9 @@ public class ImportXMLWindow extends Stage {
             // Ensure file still exists
             if (!fileToUpload.exists()) {
                 new ErrorAlert("File does not exist", "Uploaded file does not exist!",
-                    "Please try upload again.");
+                    "Please try upload again.").show();
+
+                fileSimpleObjectProperty.set(null);
                 return;
             }
 

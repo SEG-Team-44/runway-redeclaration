@@ -4,6 +4,10 @@
   /*-fx-font-family: "Helvetica";*/
 }
 
+.small-text {
+  -fx-font-size: 9pt !important;
+}
+
 /* Main */
 .title-text {
   -fx-font-size: 13pt;
@@ -62,7 +66,7 @@
 
 /* Drag and drop window */
 .drag-drop-window {
-  -fx-padding: 40px;
+  -fx-padding: 40px 40px 20px 40px;
   -fx-background-color: white;
 }
 
@@ -75,7 +79,7 @@
 }
 
 .drag-drop-area Text {
-  -fx-font-size: 13pt !important;
+  -fx-font-size: 13pt;
 }
 
 .drag-drop-area .hyperlink {
