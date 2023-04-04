@@ -3,10 +3,10 @@ package com.team44.runwayredeclarationapp.view.component.visualisation;
 import com.team44.runwayredeclarationapp.model.Coord;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
+import com.team44.runwayredeclarationapp.model.theme.ColourTheme;
 import java.util.HashMap;
 import java.util.HashSet;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -133,6 +133,11 @@ public abstract class VisualisationBase extends Canvas {
     protected HashSet<Coord> guideLineCoordsDown = new HashSet<>();
 
     /**
+     * The colour theme of the visualisation
+     */
+    protected ColourTheme colourTheme = new ColourTheme();
+
+    /**
      * Create a visualisation canvas for the runway
      *
      * @param width  the width of the canvas
@@ -170,7 +175,7 @@ public abstract class VisualisationBase extends Canvas {
         gc.clearRect(0, 0, width, height);
 
         // Draw the new canvas
-        gc.setFill(Color.DARKGREEN);
+        gc.setFill(colourTheme.getTopDownBackground());
         gc.fillRect(0, 0, width, height);
 
         // Runway cords and info:
@@ -185,11 +190,11 @@ public abstract class VisualisationBase extends Canvas {
         paintCanvasBackground();
 
         // Draw the runway strip
-        gc.setFill(Color.DIMGRAY);
+        gc.setFill(colourTheme.getRunwayStrip());
         gc.fillRect(runwayX1, runwayY1, runwayLength, runwayWidth);
 
         // Left side stopway
-        gc.setFill(Color.web("2e2e2e"));
+        gc.setFill(colourTheme.getStopway());
         gc.fillRect(runwayX1 - leftStopwayLength, runwayY1, leftStopwayLength, runwayWidth);
 
         // Right side stopway
@@ -216,6 +221,9 @@ public abstract class VisualisationBase extends Canvas {
 
         // Draw the take-off/landing direction and text
         drawTakeOffLandingDirection();
+
+        // Draw key
+        drawColourKey();
     }
 
     protected void drawTOCSandALS() {
@@ -249,7 +257,7 @@ public abstract class VisualisationBase extends Canvas {
         gc.clearRect(0, 0, width, height);
 
         // Draw the new canvas
-        gc.setFill(Color.BLACK);
+        gc.setFill(colourTheme.getLoadingScreen());
         gc.fillRect(0, 0, width, height);
 
         // Add the loading message
@@ -291,6 +299,52 @@ public abstract class VisualisationBase extends Canvas {
         // Draw the guideline for each of the coordinates
         mapUp.values().forEach((crd) -> addGuideline(crd.getX(), crd.getY(), runwayY1));
         mapDown.values().forEach((crd) -> addGuideline(crd.getX(), crd.getY(), runwayY2));
+    }
+
+    /**
+     * Draw the colour key on the visualisation
+     */
+    protected void drawColourKey() {
+        var gc = getGraphicsContext2D();
+        gc.setGlobalAlpha(0.25);
+
+        // Specify colour key box properties
+        var boxHeight = 55;
+        var boxWidth = getWidth() / 3;
+        var boxX = getHeight() - boxHeight;
+        var keyBoxOffset = 6;
+
+        // Draw the box
+        gc.setFill(colourTheme.getColourKeyBox());
+        gc.fillRect(0, boxX, boxWidth, boxHeight);
+
+        // Reset properties
+        gc.setGlobalAlpha(1);
+
+        // Draw key boxes
+        // Stopway
+        gc.setFill(colourTheme.getStopway());
+        gc.fillRect(10, boxX + keyBoxOffset, 15, 10);
+        // Clearway
+        gc.setStroke(colourTheme.getClearway());
+        gc.strokeRect(10, boxX + keyBoxOffset + 15, 15, 10);
+
+        // Add the key texts
+        addText("Stopway", 13, 40, boxX + 15);
+        addText("Clearway", 13, 40, boxX + 30);
+
+        // Add the custom keys for the visualisation
+        paintKeyCustom(boxX + 45, boxX + keyBoxOffset + 30);
+    }
+
+
+    /**
+     * Paint custom additional colour keys
+     *
+     * @param nextTextX   the x coordinate of the next key text
+     * @param nextKeyBoxX the x coordinate of the next key box
+     */
+    protected void paintKeyCustom(double nextTextX, double nextKeyBoxX) {
     }
 
     /**
@@ -642,7 +696,7 @@ public abstract class VisualisationBase extends Canvas {
 
         // Set properties
         gc.setLineWidth(0.7);
-        gc.setFill(Color.WHITE);
+        gc.setFill(colourTheme.getText());
         gc.setFont(new Font("Helvetica", size));
 
         // Add text
@@ -676,8 +730,8 @@ public abstract class VisualisationBase extends Canvas {
         var gc = getGraphicsContext2D();
 
         // Set the pen properties
-        gc.setFill(Color.WHITE);
-        gc.setStroke(Color.WHITE);
+        gc.setFill(colourTheme.getArrow());
+        gc.setStroke(colourTheme.getArrow());
         gc.setLineWidth(arrowPointWidth / 3);
         gc.setLineDashes();
 
@@ -710,7 +764,7 @@ public abstract class VisualisationBase extends Canvas {
         var gc = getGraphicsContext2D();
 
         // Set the pen properties
-        gc.setStroke(Color.WHITE);
+        gc.setStroke(colourTheme.getGuideline());
         gc.setLineWidth(0.5);
         gc.setLineDashes(5);
 
@@ -999,5 +1053,14 @@ public abstract class VisualisationBase extends Canvas {
 
         // The ratio is  actual runway width:canvas runway width
         return (value / actualRunwayWidth) * runwayWidth;
+    }
+
+    /**
+     * Set the colour theme of the visualisation
+     *
+     * @param colourTheme the colour theme object
+     */
+    public void setColourTheme(ColourTheme colourTheme) {
+        this.colourTheme = colourTheme;
     }
 }

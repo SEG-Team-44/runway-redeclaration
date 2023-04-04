@@ -1,6 +1,5 @@
 package com.team44.runwayredeclarationapp.view.component.visualisation;
 
-import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,14 +34,14 @@ public class TopDownView extends VisualisationBase {
         var gc = getGraphicsContext2D();
 
         // Clearway
-        gc.setStroke(Color.WHITE);
+        gc.setStroke(colourTheme.getClearway());
         gc.setLineDashes();
         gc.strokeRect(runwayX1 - leftClearwayLength, runwayY1 - 15, leftClearwayLength,
             runwayWidth + 30);
         gc.strokeRect(runwayX2, runwayY1 - 15, rightClearwayLength, runwayWidth + 30);
 
         // Draw the runway line markings (Displaced threshold)
-        gc.setStroke(Color.WHITE);
+        gc.setStroke(colourTheme.getThresholdMarkingLines());
         gc.setLineDashes();
         gc.setLineWidth(1.6);
         int numberOfMarkingLines = 10;
@@ -108,7 +107,7 @@ public class TopDownView extends VisualisationBase {
 
         // Cleared and Graded
         // Draw background rectangle to join with the hexagon
-        gc.setFill(Color.CORNFLOWERBLUE);
+        gc.setFill(colourTheme.getClearedGradedArea());
         double rectangleSize = calculateRatioValueWidth(75) - (runwayWidth
             / 2); // distance from top of runway to top of rectangle
         double rectangleY1 = runwayY1 - rectangleSize;
@@ -145,6 +144,25 @@ public class TopDownView extends VisualisationBase {
     }
 
     /**
+     * Paint custom additional colour keys
+     *
+     * @param nextTextX   the x coordinate of the next key text
+     * @param nextKeyBoxX the x coordinate of the next key box
+     */
+    @Override
+    protected void paintKeyCustom(double nextTextX, double nextKeyBoxX) {
+        var gc = getGraphicsContext2D();
+
+        // Draw key boxes
+        // Cleared and graded area
+        gc.setFill(colourTheme.getClearedGradedArea());
+        gc.fillRect(10, nextKeyBoxX, 15, 10);
+
+        // Add the key texts
+        addText("Cleared and Graded area", 13, 40, nextTextX);
+    }
+
+    /**
      * Draw a circle representing the obstacle on the runway
      */
     @Override
@@ -153,7 +171,7 @@ public class TopDownView extends VisualisationBase {
 
         // Set properties
         var radius = 5;
-        gc.setFill(Color.RED);
+        gc.setFill(colourTheme.getObstacle());
 
         // Draw circle
         gc.fillOval(
