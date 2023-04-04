@@ -1,6 +1,5 @@
 package com.team44.runwayredeclarationapp.view.component.visualisation;
 
-import javafx.scene.paint.Color;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +35,7 @@ public class SideOnView extends VisualisationBase {
         var rightDisplaced = runwayX2 - displacedThresholdR;
 
         // Draw displaced threshold line
-        gc.setStroke(Color.WHITE);
+        gc.setStroke(colourTheme.getThresholdMarkingLines());
         gc.setLineDashes();
         gc.setLineWidth(1.6);
         if (displacedThresholdL > 0) {
@@ -51,7 +50,7 @@ public class SideOnView extends VisualisationBase {
         var rightClearwayEndX = runwayX2 + rightClearwayLength;
 
         // Clearway
-        gc.setStroke(Color.WHITE);
+        gc.setStroke(colourTheme.getClearway());
         gc.setLineDashes();
         gc.strokeRect(leftClearwayStartX, runwayY1, leftClearwayLength,
             runwayWidth);
@@ -87,11 +86,11 @@ public class SideOnView extends VisualisationBase {
         var gc = getGraphicsContext2D();
 
         // Draw the background for below the runway
-        gc.setFill(Color.SADDLEBROWN);
+        gc.setFill(colourTheme.getSideOnBottomBackground());
         gc.fillRect(0, runwayY1, width, height - runwayY1);
 
         // Draw the background for above the runway
-        gc.setFill(Color.DARKSLATEBLUE);
+        gc.setFill(colourTheme.getSideOnTopBackground());
         gc.fillRect(0, 0, width, runwayY1);
     }
 
@@ -102,8 +101,8 @@ public class SideOnView extends VisualisationBase {
     protected void drawObstacle() {
         var gc = getGraphicsContext2D();
 
-        // Draw the background for below the runway
-        gc.setFill(Color.RED);
+        // Draw the obstacle
+        gc.setFill(colourTheme.getObstacle());
         gc.fillRect(runwayX1 + obstacleDistanceFromStart, runwayY1 - obstacleHeight, 20,
             obstacleHeight);
     }
@@ -115,11 +114,11 @@ public class SideOnView extends VisualisationBase {
     protected void drawTOCSandALS() {
         var gc = getGraphicsContext2D();
         //draw TOCS/ALS as a line
-        gc.setStroke(Color.WHITE);
+        gc.setStroke(colourTheme.getTocsALSLine());
         gc.setLineWidth(3);
         gc.strokeLine(tocsStartX, tocsStartY, tocsEndX, tocsEndY);
 
-        gc.setFill(Color.WHITE);
+        gc.setFill(colourTheme.getTocsALSLine());
         //get the angle between TOCS/ALS and the horizon in degree
         var angle = Math.toDegrees(Math.atan(obstacleHeight / slope));
 

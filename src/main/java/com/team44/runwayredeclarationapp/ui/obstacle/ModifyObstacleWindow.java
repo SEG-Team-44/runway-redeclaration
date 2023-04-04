@@ -1,8 +1,9 @@
-package com.team44.runwayredeclarationapp.ui;
+package com.team44.runwayredeclarationapp.ui.obstacle;
 
 import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.event.AddObstacleListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;
+import com.team44.runwayredeclarationapp.ui.SelectWindow;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import javafx.stage.Window;

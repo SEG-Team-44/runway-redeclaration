@@ -1,8 +1,8 @@
 package com.team44.runwayredeclarationapp.view.component.titlepane;
 
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.ui.AddAirportWindow;
-import com.team44.runwayredeclarationapp.ui.ModifyAirportWindow;
+import com.team44.runwayredeclarationapp.ui.airport.AddAirportWindow;
+import com.team44.runwayredeclarationapp.ui.airport.ModifyAirportWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import javafx.scene.control.Alert;

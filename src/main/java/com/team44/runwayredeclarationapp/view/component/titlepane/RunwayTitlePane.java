@@ -1,8 +1,8 @@
 package com.team44.runwayredeclarationapp.view.component.titlepane;
 
 import com.team44.runwayredeclarationapp.model.Runway;
-import com.team44.runwayredeclarationapp.ui.AddRunwayWindow;
-import com.team44.runwayredeclarationapp.ui.ModifyRunwayWindow;
+import com.team44.runwayredeclarationapp.ui.runway.AddRunwayWindow;
+import com.team44.runwayredeclarationapp.ui.runway.ModifyRunwayWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.RunwayInfoGrids;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
