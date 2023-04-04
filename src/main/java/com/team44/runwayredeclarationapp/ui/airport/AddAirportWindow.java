@@ -1,4 +1,4 @@
-package com.team44.runwayredeclarationapp.ui;
+package com.team44.runwayredeclarationapp.ui.airport;
 
 import com.team44.runwayredeclarationapp.event.AddAirportListener;
 import com.team44.runwayredeclarationapp.model.Airport;

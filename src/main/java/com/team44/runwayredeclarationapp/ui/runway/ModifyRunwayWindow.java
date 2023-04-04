@@ -1,9 +1,10 @@
-package com.team44.runwayredeclarationapp.ui;
+package com.team44.runwayredeclarationapp.ui.runway;
 
 import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.controller.ParameterController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
+import com.team44.runwayredeclarationapp.ui.SelectWindow;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

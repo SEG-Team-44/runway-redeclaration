@@ -1,8 +1,9 @@
-package com.team44.runwayredeclarationapp.ui;
+package com.team44.runwayredeclarationapp.ui.airport;
 
 import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.event.AddAirportListener;
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.ui.SelectWindow;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import javafx.stage.Window;

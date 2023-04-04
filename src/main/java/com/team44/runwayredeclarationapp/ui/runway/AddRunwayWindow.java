@@ -1,4 +1,4 @@
-package com.team44.runwayredeclarationapp.ui;
+package com.team44.runwayredeclarationapp.ui.runway;
 
 import com.team44.runwayredeclarationapp.controller.ParameterController;
 import com.team44.runwayredeclarationapp.model.Airport;

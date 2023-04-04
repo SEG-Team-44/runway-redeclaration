@@ -1,4 +1,4 @@
-package com.team44.runwayredeclarationapp.ui;
+package com.team44.runwayredeclarationapp.ui.obstacle;
 
 import com.team44.runwayredeclarationapp.event.AddObstacleListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;

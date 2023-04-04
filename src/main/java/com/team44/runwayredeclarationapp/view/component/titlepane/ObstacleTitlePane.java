@@ -1,8 +1,8 @@
 package com.team44.runwayredeclarationapp.view.component.titlepane;
 
 import com.team44.runwayredeclarationapp.model.Obstacle;
-import com.team44.runwayredeclarationapp.ui.AddObstacleWindow;
-import com.team44.runwayredeclarationapp.ui.ModifyObstacleWindow;
+import com.team44.runwayredeclarationapp.ui.obstacle.AddObstacleWindow;
+import com.team44.runwayredeclarationapp.ui.obstacle.ModifyObstacleWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
