@@ -1,12 +1,15 @@
 package com.team44.runwayredeclarationapp.controller;
 
+import com.team44.runwayredeclarationapp.event.AlertListener;
 import com.team44.runwayredeclarationapp.event.DataLoadedListener;
+import com.team44.runwayredeclarationapp.event.FileUploadSuccessfulListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.utility.xml.XMLHandler;
 import com.team44.runwayredeclarationapp.utility.xml.XMLWrapper;
 import java.io.File;
+import org.xml.sax.SAXException;
 
 /**
  * The controller responsible for handling the storing of user data
@@ -30,6 +33,14 @@ public class DataController {
      * Listener to call to add the list of airports and runways to the existing lists in the gui
      */
     private DataLoadedListener dataAddListener;
+    /**
+     * Listener to call to show an error on the gui
+     */
+    private AlertListener errorListener;
+    /**
+     * Listener to call when an XML file has been successfully imported
+     */
+    private FileUploadSuccessfulListener fileUploadSuccessfulListener;
 
     /**
      * Create a data controller to store and retrieve data
@@ -44,14 +55,31 @@ public class DataController {
      * @param reset whether the reset the existing data
      */
     public void uploadXMLFile(File file, Boolean reset) {
-        var uploadedData = xmlHandler.readXML(file);
+        XMLWrapper uploadedData = null;
+        try {
+            uploadedData = xmlHandler.readXML(file);
 
-        // Call the listener to update the GUI
-        if (reset) {
-            callSetListener(uploadedData.getAirports(), uploadedData.getObstacles());
-            return;
+            // Call the listener to update the GUI
+            if (reset) {
+                callSetListener(uploadedData.getAirports(), uploadedData.getObstacles());
+                return;
+            }
+            callAddListener(uploadedData.getAirports(), uploadedData.getObstacles());
+
+            // Call the listener for upload success
+            if (fileUploadSuccessfulListener != null) {
+                fileUploadSuccessfulListener.uploadSuccessful();
+            }
+
+        } catch (SAXException e) {
+            // Parsing error
+            if (errorListener != null) {
+                errorListener.alert("XML parsing error", "Uploaded XML does not match schema!",
+                    "Please ensure that the uploaded XML file matches the schema specified.\n\nError:\n"
+                        + e.getMessage().replace("cvc-complex-type.2.4.a: ", ""));
+            }
         }
-        callAddListener(uploadedData.getAirports(), uploadedData.getObstacles());
+
     }
 
     /**
@@ -67,7 +95,7 @@ public class DataController {
      * Load the initial state to the gui by calling the listener
      */
     public void loadInitialState() {
-        initialState = xmlHandler.readXML();
+        initialState = xmlHandler.readStateXML();
 
         // Write the pre-defined state if obstacle is empty
         if (initialState == null) {
@@ -82,7 +110,7 @@ public class DataController {
      */
     private void savePredefinedValues() {
         xmlHandler.saveToXML(getPredefinedAirports(), getPredefinedObstacles());
-        initialState = xmlHandler.readXML();
+        initialState = xmlHandler.readStateXML();
 
         // Call the listener to update
         callSetListener();
@@ -182,6 +210,25 @@ public class DataController {
     public void setDataAddListener(
         DataLoadedListener dataAddListener) {
         this.dataAddListener = dataAddListener;
+    }
+
+    /**
+     * Set the listener to be called to show an error in the gui
+     *
+     * @param errorListener the listener
+     */
+    public void setErrorListener(AlertListener errorListener) {
+        this.errorListener = errorListener;
+    }
+
+    /**
+     * Set the listener to be called when an XML file has been successfully imported/uploaded
+     *
+     * @param fileUploadSuccessfulListener the listener
+     */
+    public void setFileUploadSuccessfulListener(
+        FileUploadSuccessfulListener fileUploadSuccessfulListener) {
+        this.fileUploadSuccessfulListener = fileUploadSuccessfulListener;
     }
 
     /**

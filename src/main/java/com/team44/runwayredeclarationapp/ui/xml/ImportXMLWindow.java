@@ -47,6 +47,9 @@ public class ImportXMLWindow extends Stage {
     public ImportXMLWindow(Window parent, DataController dataController) {
         this.dataController = dataController;
 
+        // Set successful import event
+        dataController.setFileUploadSuccessfulListener(this::uploadSuccessful);
+
         //Setup main pane
         var mainPane = new VBox();
         mainPane.getStyleClass().add("drag-drop-window");
@@ -229,10 +232,17 @@ public class ImportXMLWindow extends Stage {
 
         // Upload XML file
         dataController.uploadXMLFile(fileToUpload, reset);
+    }
 
+    /**
+     * Called when xml upload has been successful
+     */
+    public void uploadSuccessful() {
+        // Show alert
         new InfoAlert("Upload successful", "XML file has been successfully uploaded!",
             null).show();
 
+        // Close the window
         this.close();
     }
 

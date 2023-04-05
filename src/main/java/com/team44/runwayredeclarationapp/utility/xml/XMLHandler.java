@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.xml.sax.SAXException;
 
 /**
  * The handler to read and write HTML files
@@ -51,10 +52,28 @@ public class XMLHandler {
     private Reader reader;
 
     /**
+     * The xml validator
+     */
+    private final XMLValidator xmlValidator = new XMLValidator();
+
+    /**
+     * The XSD validation file
+     */
+    private File validationFile;
+
+    /**
      * Create an XML handler
      */
     public XMLHandler() {
         logger.info("Setting up XML handler");
+
+        // Set the validation schema
+        try {
+            this.validationFile = new File(
+                XMLValidator.class.getResource("/xml/validate.xsd").toURI());
+        } catch (Exception e) {
+            logger.error("Validation file could not be found: " + e.getMessage());
+        }
 
         // XML aliases
         xstream.alias("parallelrunway", PRunway.class);
@@ -111,7 +130,7 @@ public class XMLHandler {
 
         } finally {
             // Close the stream
-            if (fileInputStream != null) {
+            if (fileInputStream != null && reader != null) {
                 try {
                     fileInputStream.close();
                     reader.close();
@@ -130,21 +149,30 @@ public class XMLHandler {
      *
      * @return the parsed xml object
      */
-    public XMLWrapper readXML() {
-        return readXML(stateFile);
+    public XMLWrapper readStateXML() {
+        try {
+            return readXML(stateFile);
+        } catch (SAXException e) {
+            return null;
+        }
     }
 
+
     /**
-     * Read and parse the xml from the file
+     * /** Read and parse the xml from the file
      *
      * @param file the file to read from
      * @return the parsed xml object
+     * @throws SAXException when there is a parsing error
      */
-    public XMLWrapper readXML(File file) {
+    public XMLWrapper readXML(File file) throws SAXException {
         logger.info("Reading from XML");
 
         // File handling
         try {
+            // Validate the xml file
+            xmlValidator.validateWithSchema(validationFile, file);
+
             // Input
             fileInputStream = new FileInputStream(file);
             reader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
@@ -153,16 +181,20 @@ public class XMLHandler {
             return ((XMLWrapper) xstream.fromXML(reader));
 
         } catch (FileNotFoundException e) {
-            logger.error("File could not be found.");
+            logger.error("XML file could not be found.");
             return null;
 
+        } catch (SAXException e) {
+            // Parsing error
+            throw e;
+
         } catch (Exception e) {
-            logger.error("The file may be empty.");
+            logger.error("Error while reading file: " + e.getMessage());
             return null;
 
         } finally {
             // Close the stream
-            if (fileInputStream != null) {
+            if (fileInputStream != null && reader != null) {
                 try {
                     fileInputStream.close();
                     reader.close();
@@ -171,7 +203,6 @@ public class XMLHandler {
                 } catch (IOException e) {
                     logger.error("I/O error in closing the read stream.");
                 }
-
             }
         }
     }

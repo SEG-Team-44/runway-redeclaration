@@ -12,6 +12,7 @@ import com.team44.runwayredeclarationapp.ui.xml.ExportXMLWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ImportXMLWindow;
 import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
 import com.team44.runwayredeclarationapp.view.component.RunwayParametersGrid;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
 import com.team44.runwayredeclarationapp.view.component.text.Title;
 import com.team44.runwayredeclarationapp.view.component.titlepane.AirportTitlePane;
@@ -181,6 +182,9 @@ public class MainScene extends BaseScene {
                     reset();
                 }
             });
+
+        // Set the show error listener
+        dataController.setErrorListener(this::showError);
 
         // Load the initial state
         dataController.loadInitialState();
@@ -368,7 +372,7 @@ public class MainScene extends BaseScene {
                     obstacleTitlePane.getObstacleLeftThreshold(),
                     obstacleTitlePane.getObstacleRightThreshold(),
                     obstacleTitlePane.getObstacleFromCentrelineThreshold(),
-                        obstacleTitlePane.getBlastProtection());
+                    obstacleTitlePane.getBlastProtection());
 
                 // Recalculate
                 recalculationController.recalculateRunway(selectedRunwayObstacle);
@@ -426,8 +430,10 @@ public class MainScene extends BaseScene {
         calculations.displayCalculations(runwayTitlePane.getSelectedRunway(), runwayObstacle);
 
         // Update both canvas
-        topDownCanvas.setRecalculatedParameters(runway, runwayObstacle, runwayObstacle.getBlastPro());
-        sideOnCanvas.setRecalculatedParameters(runway, runwayObstacle, runwayObstacle.getBlastPro());
+        topDownCanvas.setRecalculatedParameters(runway, runwayObstacle,
+            runwayObstacle.getBlastPro());
+        sideOnCanvas.setRecalculatedParameters(runway, runwayObstacle,
+            runwayObstacle.getBlastPro());
     }
 
     /**
@@ -634,5 +640,16 @@ public class MainScene extends BaseScene {
      */
     public ObstacleTitlePane getObstacleTitlePane() {
         return obstacleTitlePane;
+    }
+
+    /**
+     * Show an error alert
+     *
+     * @param title   the error title
+     * @param header  the error header
+     * @param content the error content
+     */
+    private void showError(String title, String header, String content) {
+        new ErrorAlert(title, header, content).show();
     }
 }

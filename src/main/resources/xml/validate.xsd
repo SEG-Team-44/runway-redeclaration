@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="root" type="rootType"/>
+
+  <xs:complexType name="parallelrunwayType">
+    <xs:all>
+      <xs:element type="xs:string" name="phyId"/>
+      <xs:element type="xs:string" name="runwayL"/>
+      <xs:element type="xs:string" name="runwayW"/>
+      <xs:element type="xs:string" name="stripL"/>
+      <xs:element type="xs:string" name="stripW"/>
+      <xs:element type="xs:string" name="stopwayW"/>
+      <xs:element type="xs:string" name="clearwayW"/>
+      <xs:element type="xs:string" name="resaL"/>
+      <xs:element type="xs:string" name="logicId1"/>
+      <xs:element type="xs:string" name="degree1"/>
+      <xs:element type="xs:string" name="tora1"/>
+      <xs:element type="xs:string" name="toda1"/>
+      <xs:element type="xs:string" name="asda1"/>
+      <xs:element type="xs:string" name="lda1"/>
+      <xs:element type="xs:string" name="disThresh1"/>
+      <xs:element type="xs:string" name="stopwayL1"/>
+      <xs:element type="xs:string" name="clearwayL1"/>
+      <xs:element type="xs:string" name="logicId2"/>
+      <xs:element type="xs:string" name="degree2"/>
+      <xs:element type="xs:string" name="tora2"/>
+      <xs:element type="xs:string" name="toda2"/>
+      <xs:element type="xs:string" name="asda2"/>
+      <xs:element type="xs:string" name="lda2"/>
+      <xs:element type="xs:string" name="disThresh2"/>
+      <xs:element type="xs:string" name="clearwayL2"/>
+      <xs:element type="xs:string" name="stopwayL2"/>
+      <xs:element type="xs:string" name="pos1"/>
+      <xs:element type="xs:string" name="pos2"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="singlerunwayType">
+    <xs:all>
+      <xs:element type="xs:string" name="phyId"/>
+      <xs:element type="xs:string" name="runwayL"/>
+      <xs:element type="xs:string" name="runwayW"/>
+      <xs:element type="xs:string" name="stripL"/>
+      <xs:element type="xs:string" name="stripW"/>
+      <xs:element type="xs:string" name="stopwayW"/>
+      <xs:element type="xs:string" name="clearwayW"/>
+      <xs:element type="xs:string" name="resaL"/>
+      <xs:element type="xs:string" name="logicId1"/>
+      <xs:element type="xs:string" name="degree1"/>
+      <xs:element type="xs:string" name="tora1"/>
+      <xs:element type="xs:string" name="toda1"/>
+      <xs:element type="xs:string" name="asda1"/>
+      <xs:element type="xs:string" name="lda1"/>
+      <xs:element type="xs:string" name="disThresh1"/>
+      <xs:element type="xs:string" name="stopwayL1"/>
+      <xs:element type="xs:string" name="clearwayL1"/>
+      <xs:element type="xs:string" name="logicId2"/>
+      <xs:element type="xs:string" name="degree2"/>
+      <xs:element type="xs:string" name="tora2"/>
+      <xs:element type="xs:string" name="toda2"/>
+      <xs:element type="xs:string" name="asda2"/>
+      <xs:element type="xs:string" name="lda2"/>
+      <xs:element type="xs:string" name="disThresh2"/>
+      <xs:element type="xs:string" name="clearwayL2"/>
+      <xs:element type="xs:string" name="stopwayL2"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="runwaysType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element type="parallelrunwayType" name="parallelrunway"/>
+      <xs:element type="singlerunwayType" name="singlerunway"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="airportType">
+    <xs:all>
+      <xs:element type="xs:string" name="name"/>
+      <xs:element type="runwaysType" name="runways"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="airportXMLObjsType">
+    <xs:sequence>
+      <xs:element type="airportType" name="airport" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="obstacleType">
+    <xs:all>
+      <xs:element type="xs:string" name="obstName"/>
+      <xs:element type="xs:string" name="height"/>
+    </xs:all>
+  </xs:complexType>
+
+  <xs:complexType name="obstaclesType">
+    <xs:sequence>
+      <xs:element type="obstacleType" name="obstacle" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rootType">
+    <xs:sequence>
+      <xs:element type="airportXMLObjsType" name="airportXMLObjs"/>
+      <xs:element type="obstaclesType" name="obstacles"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
