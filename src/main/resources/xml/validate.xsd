@@ -6,64 +6,64 @@
   <xs:complexType name="parallelrunwayType">
     <xs:all>
       <xs:element type="xs:string" name="phyId"/>
-      <xs:element type="xs:string" name="runwayL"/>
-      <xs:element type="xs:string" name="runwayW"/>
-      <xs:element type="xs:string" name="stripL"/>
-      <xs:element type="xs:string" name="stripW"/>
-      <xs:element type="xs:string" name="stopwayW"/>
-      <xs:element type="xs:string" name="clearwayW"/>
-      <xs:element type="xs:string" name="resaL"/>
+      <xs:element type="xs:double" name="runwayL"/>
+      <xs:element type="xs:double" name="runwayW"/>
+      <xs:element type="xs:double" name="stripL"/>
+      <xs:element type="xs:double" name="stripW"/>
+      <xs:element type="xs:double" name="stopwayW"/>
+      <xs:element type="xs:double" name="clearwayW"/>
+      <xs:element type="xs:double" name="resaL"/>
       <xs:element type="xs:string" name="logicId1"/>
-      <xs:element type="xs:string" name="degree1"/>
-      <xs:element type="xs:string" name="tora1"/>
-      <xs:element type="xs:string" name="toda1"/>
-      <xs:element type="xs:string" name="asda1"/>
-      <xs:element type="xs:string" name="lda1"/>
-      <xs:element type="xs:string" name="disThresh1"/>
-      <xs:element type="xs:string" name="stopwayL1"/>
-      <xs:element type="xs:string" name="clearwayL1"/>
+      <xs:element type="xs:int" name="degree1"/>
+      <xs:element type="xs:double" name="tora1"/>
+      <xs:element type="xs:double" name="toda1"/>
+      <xs:element type="xs:double" name="asda1"/>
+      <xs:element type="xs:double" name="lda1"/>
+      <xs:element type="xs:double" name="disThresh1"/>
+      <xs:element type="xs:double" name="stopwayL1"/>
+      <xs:element type="xs:double" name="clearwayL1"/>
       <xs:element type="xs:string" name="logicId2"/>
-      <xs:element type="xs:string" name="degree2"/>
-      <xs:element type="xs:string" name="tora2"/>
-      <xs:element type="xs:string" name="toda2"/>
-      <xs:element type="xs:string" name="asda2"/>
-      <xs:element type="xs:string" name="lda2"/>
-      <xs:element type="xs:string" name="disThresh2"/>
-      <xs:element type="xs:string" name="clearwayL2"/>
-      <xs:element type="xs:string" name="stopwayL2"/>
-      <xs:element type="xs:string" name="pos1"/>
-      <xs:element type="xs:string" name="pos2"/>
+      <xs:element type="xs:int" name="degree2"/>
+      <xs:element type="xs:double" name="tora2"/>
+      <xs:element type="xs:double" name="toda2"/>
+      <xs:element type="xs:double" name="asda2"/>
+      <xs:element type="xs:double" name="lda2"/>
+      <xs:element type="xs:double" name="disThresh2"/>
+      <xs:element type="xs:double" name="clearwayL2"/>
+      <xs:element type="xs:double" name="stopwayL2"/>
+      <xs:element type="char" name="pos1"/>
+      <xs:element type="char" name="pos2"/>
     </xs:all>
   </xs:complexType>
 
   <xs:complexType name="singlerunwayType">
     <xs:all>
       <xs:element type="xs:string" name="phyId"/>
-      <xs:element type="xs:string" name="runwayL"/>
-      <xs:element type="xs:string" name="runwayW"/>
-      <xs:element type="xs:string" name="stripL"/>
-      <xs:element type="xs:string" name="stripW"/>
-      <xs:element type="xs:string" name="stopwayW"/>
-      <xs:element type="xs:string" name="clearwayW"/>
-      <xs:element type="xs:string" name="resaL"/>
+      <xs:element type="xs:double" name="runwayL"/>
+      <xs:element type="xs:double" name="runwayW"/>
+      <xs:element type="xs:double" name="stripL"/>
+      <xs:element type="xs:double" name="stripW"/>
+      <xs:element type="xs:double" name="stopwayW"/>
+      <xs:element type="xs:double" name="clearwayW"/>
+      <xs:element type="xs:double" name="resaL"/>
       <xs:element type="xs:string" name="logicId1"/>
-      <xs:element type="xs:string" name="degree1"/>
-      <xs:element type="xs:string" name="tora1"/>
-      <xs:element type="xs:string" name="toda1"/>
-      <xs:element type="xs:string" name="asda1"/>
-      <xs:element type="xs:string" name="lda1"/>
-      <xs:element type="xs:string" name="disThresh1"/>
-      <xs:element type="xs:string" name="stopwayL1"/>
-      <xs:element type="xs:string" name="clearwayL1"/>
+      <xs:element type="xs:int" name="degree1"/>
+      <xs:element type="xs:double" name="tora1"/>
+      <xs:element type="xs:double" name="toda1"/>
+      <xs:element type="xs:double" name="asda1"/>
+      <xs:element type="xs:double" name="lda1"/>
+      <xs:element type="xs:double" name="disThresh1"/>
+      <xs:element type="xs:double" name="stopwayL1"/>
+      <xs:element type="xs:double" name="clearwayL1"/>
       <xs:element type="xs:string" name="logicId2"/>
-      <xs:element type="xs:string" name="degree2"/>
-      <xs:element type="xs:string" name="tora2"/>
-      <xs:element type="xs:string" name="toda2"/>
-      <xs:element type="xs:string" name="asda2"/>
-      <xs:element type="xs:string" name="lda2"/>
-      <xs:element type="xs:string" name="disThresh2"/>
-      <xs:element type="xs:string" name="clearwayL2"/>
-      <xs:element type="xs:string" name="stopwayL2"/>
+      <xs:element type="xs:int" name="degree2"/>
+      <xs:element type="xs:double" name="tora2"/>
+      <xs:element type="xs:double" name="toda2"/>
+      <xs:element type="xs:double" name="asda2"/>
+      <xs:element type="xs:double" name="lda2"/>
+      <xs:element type="xs:double" name="disThresh2"/>
+      <xs:element type="xs:double" name="clearwayL2"/>
+      <xs:element type="xs:double" name="stopwayL2"/>
     </xs:all>
   </xs:complexType>
 
@@ -106,4 +106,10 @@
       <xs:element type="obstaclesType" name="obstacles"/>
     </xs:sequence>
   </xs:complexType>
+
+  <xs:simpleType name="char">
+    <xs:restriction base="xs:string">
+      <xs:length fixed="true" value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
 </xs:schema>
