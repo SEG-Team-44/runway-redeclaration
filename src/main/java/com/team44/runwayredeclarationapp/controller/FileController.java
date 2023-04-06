@@ -2,13 +2,17 @@ package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.event.AlertListener;
 import com.team44.runwayredeclarationapp.event.DataLoadedListener;
+import com.team44.runwayredeclarationapp.event.ErrorListListener;
 import com.team44.runwayredeclarationapp.event.FileUploadSuccessfulListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
+import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.utility.xml.XMLHandler;
 import com.team44.runwayredeclarationapp.utility.xml.XMLWrapper;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import org.xml.sax.SAXException;
 
 /**
@@ -38,6 +42,10 @@ public class FileController {
      */
     private AlertListener errorListener;
     /**
+     * Listener to call to show a list of error on the gui
+     */
+    private ErrorListListener multipleErrorsListener;
+    /**
      * Listener to call when an XML file has been successfully imported
      */
     private FileUploadSuccessfulListener fileUploadSuccessfulListener;
@@ -55,16 +63,48 @@ public class FileController {
      * @param reset whether the reset the existing data
      */
     public void uploadXMLFile(File file, Boolean reset) {
-        XMLWrapper uploadedData = null;
+        XMLWrapper uploadedData;
         try {
+            // Parse the XML file
             uploadedData = xmlHandler.readXML(file);
+
+            var airports = uploadedData.getAirports();
+            var obstacles = uploadedData.getObstacles();
+
+            // List of validation errors
+            List<String> errors = new ArrayList<>();
+
+            // Validate the data in the file
+            for (Airport airport : airports) {
+                for (Runway runway : airport.getRunways()) {
+                    var isParallel = runway instanceof PRunway;
+                    var pos1 = isParallel ? ((PRunway) runway).getPos1() : null;
+                    var pos2 = isParallel ? ((PRunway) runway).getPos2() : null;
+
+                    var validationErrors = ValidationController.validateRunwayData(pos1, pos2,
+                        runway.getDegree1(), runway.getDegree2(), runway.getParameters(), airport);
+
+                    errors.addAll(validationErrors);
+                }
+            }
+
+            // todo:: validate the list of obstacles too
+
+            // Check if there are validation errors
+            if (!errors.isEmpty()) {
+                if (multipleErrorsListener != null) {
+                    multipleErrorsListener.alert(errors.toArray(String[]::new));
+                }
+
+                return;
+            }
 
             // Call the listener to update the GUI
             if (reset) {
-                callSetListener(uploadedData.getAirports(), uploadedData.getObstacles());
+                callSetListener(airports, obstacles);
                 return;
             }
-            callAddListener(uploadedData.getAirports(), uploadedData.getObstacles());
+            callAddListener(airports, obstacles);
 
             // Call the listener for upload success
             if (fileUploadSuccessfulListener != null) {
@@ -219,6 +259,15 @@ public class FileController {
      */
     public void setErrorListener(AlertListener errorListener) {
         this.errorListener = errorListener;
+    }
+
+    /**
+     * Set the listener to be called to show a list of errors in the gui
+     *
+     * @param multipleErrorsListener the listener
+     */
+    public void setMultipleErrorsListener(ErrorListListener multipleErrorsListener) {
+        this.multipleErrorsListener = multipleErrorsListener;
     }
 
     /**

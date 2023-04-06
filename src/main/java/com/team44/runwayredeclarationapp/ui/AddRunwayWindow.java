@@ -102,14 +102,14 @@ public class AddRunwayWindow {
         // Components for one logical runway inputs
         String lbl1 = "Logical Runway 1 Parameters:";
         GridPane runway1 = getLayout(lbl1, runwayForm.getDegreeTf1(),
-            runwayForm.getPosTf1(), runwayForm.getToraTf1(), runwayForm.getTodaTf1(),
+            runwayForm.getPosCb1(), runwayForm.getToraTf1(), runwayForm.getTodaTf1(),
             runwayForm.getAsdaTf1(),
             runwayForm.getLdaTf1(), runwayForm.getDisThreshTf1());
 
         //Components for the other logical runway inputs
         String lbl2 = "Logical Runway 2 Parameters:";
         GridPane runway2 = getLayout(lbl2, runwayForm.getDegreeTf2(),
-            runwayForm.getPosTf2(), runwayForm.getToraTf2(), runwayForm.getTodaTf2(),
+            runwayForm.getPosCb2(), runwayForm.getToraTf2(), runwayForm.getTodaTf2(),
             runwayForm.getAsdaTf2(),
             runwayForm.getLdaTf2(), runwayForm.getDisThreshTf2());
 
@@ -131,16 +131,16 @@ public class AddRunwayWindow {
             if (runway != null) {
                 // Edit runway
                 validationErrors = dataController.editRunway(runway, airport,
-                    runwayForm.getPosTf1().getValue(),
-                    runwayForm.getPosTf2().getValue(),
+                    runwayForm.getPosCb1().getValue(),
+                    runwayForm.getPosCb2().getValue(),
                     runwayForm.getDegreeTf1().getValue(),
                     runwayForm.getDegreeTf2().getValue(),
                     runwayForm.getParameters());
             } else {
                 // Add runway
                 validationErrors = dataController.addRunway(airport,
-                    runwayForm.getPosTf1().getValue(),
-                    runwayForm.getPosTf2().getValue(),
+                    runwayForm.getPosCb1().getValue(),
+                    runwayForm.getPosCb2().getValue(),
                     runwayForm.getDegreeTf1().getValue(),
                     runwayForm.getDegreeTf2().getValue(),
                     runwayForm.getParameters());

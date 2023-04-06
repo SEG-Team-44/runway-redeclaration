@@ -293,6 +293,18 @@ public class Runway implements Cloneable {
     }
 
     /**
+     * Get the list of runway parameters
+     *
+     * @return the list of runway parameters
+     */
+    public double[] getParameters() {
+        return new double[]{runwayL, runwayW, stripL, stripW, clearwayW, resaL,
+            tora1, toda1, asda1, lda1,
+            tora2, toda2, asda2, lda2, disThresh2,
+            disThresh1};
+    }
+
+    /**
      * Clone the runway object
      *
      * @return the cloned runway object

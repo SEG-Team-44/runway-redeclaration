@@ -31,8 +31,8 @@ public class RunwayForm {
      */
     private final IntegerField degreeTf1 = new IntegerField();
     private final IntegerField degreeTf2 = new IntegerField();
-    private final ComboBox<Character> posTf1 = createPosComboBox();
-    private final ComboBox<Character> posTf2 = createPosComboBox();
+    private final ComboBox<Character> posCb1 = createPosComboBox();
+    private final ComboBox<Character> posCb2 = createPosComboBox();
 
     /**
      * Parameters for logical runway 1
@@ -57,11 +57,11 @@ public class RunwayForm {
      */
     public RunwayForm() {
         // Add listeners to make the combobox dependent on each other
-        posTf1.valueProperty().addListener(createPosComboBoxListener(posTf2));
-        posTf2.valueProperty().addListener(createPosComboBoxListener(posTf1));
+        posCb1.valueProperty().addListener(createPosComboBoxListener(posCb2));
+        posCb2.valueProperty().addListener(createPosComboBoxListener(posCb1));
 
         // Bind disable property
-        posTf1.disableProperty().bindBidirectional(posTf2.disableProperty());
+        posCb1.disableProperty().bindBidirectional(posCb2.disableProperty());
 
     }
 
@@ -107,11 +107,11 @@ public class RunwayForm {
         String runway2 = runway.getLogicId2();
 
         // Don't let user change the pos when modifying
-        posTf1.setDisable(true);
+        posCb1.setDisable(true);
 
         // Set the values of the fields
         if (runway instanceof PRunway) {
-            posTf1.setValue(((PRunway) runway).getPos1());
+            posCb1.setValue(((PRunway) runway).getPos1());
         }
         degreeTf1.setValue(runway.getDegree1());
         degreeTf2.setValue(runway.getDegree2());
@@ -196,16 +196,16 @@ public class RunwayForm {
         return degreeTf1;
     }
 
-    public ComboBox<Character> getPosTf1() {
-        return posTf1;
+    public ComboBox<Character> getPosCb1() {
+        return posCb1;
     }
 
     public IntegerField getDegreeTf2() {
         return degreeTf2;
     }
 
-    public ComboBox<Character> getPosTf2() {
-        return posTf2;
+    public ComboBox<Character> getPosCb2() {
+        return posCb2;
     }
 
     public DoubleField getToraTf1() {

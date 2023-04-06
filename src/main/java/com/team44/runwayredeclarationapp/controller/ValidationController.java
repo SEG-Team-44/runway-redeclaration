@@ -26,10 +26,10 @@ public class ValidationController {
         Character pos1, Character pos2,
         int degree1, int degree2, double[] parameters, Airport airport) {
 
-        // todo:: validate phyID etc
-
         // Create list of errors
         List<String> errors = new ArrayList<>();
+
+        // todo:: add an upperbound for lengths
 
         //return false if degree1 or degree2 are <01, >36 or their difference is not equal to 18
         if (degree1 < 1 || degree1 > 36 || degree2 < 1 || degree2 > 36

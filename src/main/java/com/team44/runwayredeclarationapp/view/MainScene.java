@@ -14,6 +14,7 @@ import com.team44.runwayredeclarationapp.ui.xml.ImportXMLWindow;
 import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
 import com.team44.runwayredeclarationapp.view.component.RunwayParametersGrid;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
 import com.team44.runwayredeclarationapp.view.component.text.Title;
 import com.team44.runwayredeclarationapp.view.component.titlepane.AirportTitlePane;
@@ -179,6 +180,7 @@ public class MainScene extends BaseScene {
 
         // Set the show error listener
         fileController.setErrorListener(this::showError);
+        fileController.setMultipleErrorsListener(this::showErrorList);
 
         // Load the initial state
         fileController.loadInitialState();
@@ -647,6 +649,17 @@ public class MainScene extends BaseScene {
      */
     private void showError(String title, String header, String content) {
         new ErrorAlert(title, header, content).show();
+    }
+
+    /**
+     * Show an error list alert
+     *
+     * @param errors the list of errors
+     */
+    private void showErrorList(String[] errors) {
+        var errorList = new ErrorListAlert();
+        errorList.setErrors(errors);
+        errorList.show();
     }
 
     public DataController getDataController() {
