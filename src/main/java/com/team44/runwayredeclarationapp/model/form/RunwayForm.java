@@ -106,12 +106,12 @@ public class RunwayForm {
         String runway1 = runway.getLogicId1();
         String runway2 = runway.getLogicId2();
 
+        // Don't let user change the pos when modifying
+        posTf1.setDisable(true);
+
         // Set the values of the fields
         if (runway instanceof PRunway) {
             posTf1.setValue(((PRunway) runway).getPos1());
-
-            // Don't let user change the pos when modifying
-            posTf1.setDisable(true);
         }
         degreeTf1.setValue(runway.getDegree1());
         degreeTf2.setValue(runway.getDegree2());

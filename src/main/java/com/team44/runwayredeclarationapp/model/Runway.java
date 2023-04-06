@@ -101,14 +101,14 @@ public class Runway implements Cloneable {
     /**
      * Set a physical id for the runway
      */
-    protected void setPhyId() {
+    public void setPhyId() {
         phyId = getDegreeInString(degree1) + "/" + getDegreeInString(degree2);
     }
 
     /**
      * Set logical id for the 2 logical runways based on their degrees (positions)
      */
-    protected void setLogicId() {
+    public void setLogicId() {
         logicId1 = getDegreeInString(degree1);
         logicId2 = getDegreeInString(degree2);
     }

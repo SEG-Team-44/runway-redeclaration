@@ -3,6 +3,7 @@ package com.team44.runwayredeclarationapp.utility.xml;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
+import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.SRunway;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
@@ -82,6 +83,11 @@ public class XMLHandler {
         xstream.alias("airport", AirportXMLObj.class);
         xstream.alias("obstacle", Obstacle.class);
         xstream.alias("root", XMLWrapper.class);
+
+        // Omit fields for runway
+        xstream.omitField(Runway.class, "phyId");
+        xstream.omitField(Runway.class, "logicId1");
+        xstream.omitField(Runway.class, "logicId2");
 
         // XStream properties
         xstream.addPermission(AnyTypePermission.ANY);

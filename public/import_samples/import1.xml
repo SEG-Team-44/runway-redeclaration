@@ -5,7 +5,6 @@
       <name>Airport example 1</name>
       <runways>
         <parallelrunway>
-          <phyId>09L/27R</phyId>
           <runwayL>3902.0</runwayL>
           <runwayW>100.0</runwayW>
           <stripL>60.0</stripL>
@@ -13,7 +12,6 @@
           <stopwayW>100.0</stopwayW>
           <clearwayW>100.0</clearwayW>
           <resaL>240.0</resaL>
-          <logicId1>09L</logicId1>
           <degree1>9</degree1>
           <tora1>3902.0</tora1>
           <toda1>3902.0</toda1>
@@ -22,7 +20,6 @@
           <disThresh1>0.0</disThresh1>
           <stopwayL1>0.0</stopwayL1>
           <clearwayL1>0.0</clearwayL1>
-          <logicId2>27R</logicId2>
           <degree2>27</degree2>
           <tora2>3884.0</tora2>
           <toda2>3962.0</toda2>
@@ -35,7 +32,6 @@
           <pos2>R</pos2>
         </parallelrunway>
         <parallelrunway>
-          <phyId>09R/27L</phyId>
           <runwayL>3660.0</runwayL>
           <runwayW>100.0</runwayW>
           <stripL>60.0</stripL>
@@ -43,7 +39,6 @@
           <stopwayW>100.0</stopwayW>
           <clearwayW>100.0</clearwayW>
           <resaL>240.0</resaL>
-          <logicId1>09R</logicId1>
           <degree1>9</degree1>
           <tora1>3660.0</tora1>
           <toda1>3660.0</toda1>
@@ -52,7 +47,6 @@
           <disThresh1>0.0</disThresh1>
           <stopwayL1>0.0</stopwayL1>
           <clearwayL1>0.0</clearwayL1>
-          <logicId2>27L</logicId2>
           <degree2>27</degree2>
           <tora2>3660.0</tora2>
           <toda2>3660.0</toda2>
@@ -65,7 +59,6 @@
           <pos2>L</pos2>
         </parallelrunway>
         <singlerunway>
-          <phyId>01/19</phyId>
           <runwayL>3660.0</runwayL>
           <runwayW>100.0</runwayW>
           <stripL>60.0</stripL>
@@ -73,7 +66,6 @@
           <stopwayW>100.0</stopwayW>
           <clearwayW>100.0</clearwayW>
           <resaL>240.0</resaL>
-          <logicId1>01</logicId1>
           <degree1>1</degree1>
           <tora1>3660.0</tora1>
           <toda1>3660.0</toda1>
@@ -82,7 +74,6 @@
           <disThresh1>0.0</disThresh1>
           <stopwayL1>0.0</stopwayL1>
           <clearwayL1>0.0</clearwayL1>
-          <logicId2>19</logicId2>
           <degree2>19</degree2>
           <tora2>3660.0</tora2>
           <toda2>3660.0</toda2>
@@ -98,7 +89,6 @@
       <name>Airport example 2</name>
       <runways>
         <parallelrunway>
-          <phyId>02C/20C</phyId>
           <runwayL>3902.0</runwayL>
           <runwayW>100.0</runwayW>
           <stripL>60.0</stripL>
@@ -106,7 +96,6 @@
           <stopwayW>100.0</stopwayW>
           <clearwayW>100.0</clearwayW>
           <resaL>240.0</resaL>
-          <logicId1>02C</logicId1>
           <degree1>2</degree1>
           <tora1>3902.0</tora1>
           <toda1>3902.0</toda1>
@@ -115,7 +104,6 @@
           <disThresh1>0.0</disThresh1>
           <stopwayL1>0.0</stopwayL1>
           <clearwayL1>0.0</clearwayL1>
-          <logicId2>20C</logicId2>
           <degree2>20</degree2>
           <tora2>3884.0</tora2>
           <toda2>3962.0</toda2>

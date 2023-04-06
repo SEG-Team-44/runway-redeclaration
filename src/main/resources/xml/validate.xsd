@@ -5,7 +5,6 @@
 
   <xs:complexType name="parallelrunwayType">
     <xs:all>
-      <xs:element type="xs:string" name="phyId"/>
       <xs:element type="xs:double" name="runwayL"/>
       <xs:element type="xs:double" name="runwayW"/>
       <xs:element type="xs:double" name="stripL"/>
@@ -13,7 +12,6 @@
       <xs:element type="xs:double" name="stopwayW"/>
       <xs:element type="xs:double" name="clearwayW"/>
       <xs:element type="xs:double" name="resaL"/>
-      <xs:element type="xs:string" name="logicId1"/>
       <xs:element type="xs:int" name="degree1"/>
       <xs:element type="xs:double" name="tora1"/>
       <xs:element type="xs:double" name="toda1"/>
@@ -22,7 +20,6 @@
       <xs:element type="xs:double" name="disThresh1"/>
       <xs:element type="xs:double" name="stopwayL1"/>
       <xs:element type="xs:double" name="clearwayL1"/>
-      <xs:element type="xs:string" name="logicId2"/>
       <xs:element type="xs:int" name="degree2"/>
       <xs:element type="xs:double" name="tora2"/>
       <xs:element type="xs:double" name="toda2"/>
@@ -38,7 +35,6 @@
 
   <xs:complexType name="singlerunwayType">
     <xs:all>
-      <xs:element type="xs:string" name="phyId"/>
       <xs:element type="xs:double" name="runwayL"/>
       <xs:element type="xs:double" name="runwayW"/>
       <xs:element type="xs:double" name="stripL"/>
@@ -46,7 +42,6 @@
       <xs:element type="xs:double" name="stopwayW"/>
       <xs:element type="xs:double" name="clearwayW"/>
       <xs:element type="xs:double" name="resaL"/>
-      <xs:element type="xs:string" name="logicId1"/>
       <xs:element type="xs:int" name="degree1"/>
       <xs:element type="xs:double" name="tora1"/>
       <xs:element type="xs:double" name="toda1"/>
@@ -55,7 +50,6 @@
       <xs:element type="xs:double" name="disThresh1"/>
       <xs:element type="xs:double" name="stopwayL1"/>
       <xs:element type="xs:double" name="clearwayL1"/>
-      <xs:element type="xs:string" name="logicId2"/>
       <xs:element type="xs:int" name="degree2"/>
       <xs:element type="xs:double" name="tora2"/>
       <xs:element type="xs:double" name="toda2"/>

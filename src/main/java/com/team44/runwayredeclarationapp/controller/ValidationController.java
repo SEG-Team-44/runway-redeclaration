@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * The class that is responsible for updating the initial parameters of runways
  */
-public abstract class ValidationController {
+public class ValidationController {
 
     /**
      * Check whether the inputs are valid when a user add a new runway to the system

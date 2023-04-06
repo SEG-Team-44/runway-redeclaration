@@ -38,7 +38,7 @@ public class PRunway extends Runway {
      * Runway
      */
     @Override
-    protected void setPhyId() {
+    public void setPhyId() {
         super.setPhyId();
         phyId = phyId.substring(0, 2) + pos1 + phyId.substring(2) + pos2;
     }
@@ -48,7 +48,7 @@ public class PRunway extends Runway {
      * generated in Runway
      */
     @Override
-    protected void setLogicId() {
+    public void setLogicId() {
         super.setLogicId();
         logicId1 += pos1;
         logicId2 += pos2;
