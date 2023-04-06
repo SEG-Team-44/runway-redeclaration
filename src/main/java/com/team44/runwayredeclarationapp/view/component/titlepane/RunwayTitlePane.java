@@ -80,7 +80,7 @@ public class RunwayTitlePane extends TitledPane {
         //Generate init window when button clicked
         addRunwayBtn.setOnAction(ActionEvent -> {
             AddRunwayWindow initPage = new AddRunwayWindow(mainScene.getMainWindow().getStage(),
-                mainScene.getAirport());
+                mainScene.getDataController(), mainScene.getAirport());
 
             // Set the new runway listener
             initPage.setNewRunwayListener(runway -> {
@@ -103,6 +103,7 @@ public class RunwayTitlePane extends TitledPane {
             } else {
                 ModifyRunwayWindow modifyPage = new ModifyRunwayWindow(
                     mainScene.getMainWindow().getStage(),
+                    mainScene.getDataController(),
                     mainScene.getAirport());
 
                 // Set the runway listener to update

@@ -1,304 +1,124 @@
 package com.team44.runwayredeclarationapp.controller;
 
-import com.team44.runwayredeclarationapp.event.AlertListener;
-import com.team44.runwayredeclarationapp.event.DataLoadedListener;
-import com.team44.runwayredeclarationapp.event.FileUploadSuccessfulListener;
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.model.ErrorObjectPair;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
-import com.team44.runwayredeclarationapp.utility.xml.XMLHandler;
-import com.team44.runwayredeclarationapp.utility.xml.XMLWrapper;
-import java.io.File;
-import org.xml.sax.SAXException;
+import com.team44.runwayredeclarationapp.model.Runway;
+import com.team44.runwayredeclarationapp.model.SRunway;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
- * The controller responsible for handling the storing of user data
+ * The data controller for handling the list of airports, runways and obstacles
  */
 public class DataController {
 
     /**
-     * The XML handler to read and write with
+     * The observable list of airports
      */
-    private final XMLHandler xmlHandler = new XMLHandler();
+    private final ObservableList<Airport> airportObservableList = FXCollections.observableArrayList();
     /**
-     * The initial xml state, if any
+     * The observable list of runways
      */
-    private XMLWrapper initialState;
+    private final ObservableList<Runway> runwayObservableList = FXCollections.observableArrayList();
+    /**
+     * The observable list of obstacles
+     */
+    private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList();
 
-    /**
-     * Listener to call to set the list of airports and runways to the gui
-     */
-    private DataLoadedListener dataSetListener;
-    /**
-     * Listener to call to add the list of airports and runways to the existing lists in the gui
-     */
-    private DataLoadedListener dataAddListener;
-    /**
-     * Listener to call to show an error on the gui
-     */
-    private AlertListener errorListener;
-    /**
-     * Listener to call when an XML file has been successfully imported
-     */
-    private FileUploadSuccessfulListener fileUploadSuccessfulListener;
+    public void addAirport() {
+        //todo
+    }
 
-    /**
-     * Create a data controller to store and retrieve data
-     */
-    public DataController() {
+    public void editAirport() {
     }
 
     /**
-     * Upload data from an XML file to the program
+     * Add a runway to the list of runways
      *
-     * @param file  the xml file
-     * @param reset whether the reset the existing data
+     * @param airport    the airport to add the runway to
+     * @param pos1       the position 1 char
+     * @param pos2       the position 2 char
+     * @param degree1    the degree of logical runway 1
+     * @param degree2    the degree of logical runway 2
+     * @param parameters the array of parameters
+     * @return the pair containing the runway and a list of errors
      */
-    public void uploadXMLFile(File file, Boolean reset) {
-        XMLWrapper uploadedData = null;
-        try {
-            uploadedData = xmlHandler.readXML(file);
+    public ErrorObjectPair<Runway> addRunway(Airport airport, Character pos1, Character pos2,
+        int degree1, int degree2, double[] parameters) {
 
-            // Call the listener to update the GUI
-            if (reset) {
-                callSetListener(uploadedData.getAirports(), uploadedData.getObstacles());
-                return;
-            }
-            callAddListener(uploadedData.getAirports(), uploadedData.getObstacles());
+        // Validate the runway inputs
+        var validationErrors = ValidationController.validateRunwayData(
+            pos1, pos2, degree1, degree2, parameters, airport);
 
-            // Call the listener for upload success
-            if (fileUploadSuccessfulListener != null) {
-                fileUploadSuccessfulListener.uploadSuccessful();
-            }
+        // Add the corresponding runway
+        Runway newRunway = null;
+        if (validationErrors.size() == 0) {
+            // Check if it's a parallel runway
+            boolean isParallel = (pos1 != null && pos2 != null);
 
-        } catch (SAXException e) {
-            // Parsing error
-            if (errorListener != null) {
-                errorListener.alert("XML parsing error", "Uploaded XML does not match schema!",
-                    "Please ensure that the uploaded XML file matches the schema specified.\n\nError:\n"
-                        + e.getMessage().replace("cvc-complex-type.2.4.a: ", ""));
+            // Add airport to the list
+            if (isParallel) {
+                newRunway = new PRunway(degree1, degree2, pos1, pos2, parameters);
+                airport.addRunway(newRunway);
+            } else {
+                newRunway = new SRunway(degree1, degree2, parameters);
+                airport.addRunway(newRunway);
             }
         }
 
+        // Return the added runway and errors
+        return new ErrorObjectPair<>(newRunway, validationErrors);
     }
 
     /**
-     * Export data from program into an XML file
+     * Edit a runway in the list of runways
      *
-     * @param file the file to save to
+     * @param runway     the runway to edit
+     * @param airport    the airport of the runway
+     * @param pos1       the position 1 char
+     * @param pos2       the position 2 char
+     * @param degree1    the degree of logical runway 1
+     * @param degree2    the degree of logical runway 2
+     * @param parameters the new parameters
+     * @return the pair containing the runway and a list of errors
      */
-    public void exportXMLFile(Airport[] airports, Obstacle[] obstacles, File file) {
-        xmlHandler.saveToXML(airports, obstacles, file);
-    }
+    public ErrorObjectPair<Runway> editRunway(Runway runway, Airport airport, Character pos1,
+        Character pos2,
+        int degree1, int degree2, double[] parameters) {
 
-    /**
-     * Load the initial state to the gui by calling the listener
-     */
-    public void loadInitialState() {
-        initialState = xmlHandler.readStateXML();
+        // Validate the runway inputs
+        var validationErrors = ValidationController.validateRunwayData(
+            pos1, pos2, degree1, degree2, parameters, airport);
 
-        // Write the pre-defined state if obstacle is empty
-        if (initialState == null) {
-            savePredefinedValues();
-        } else {
-            callSetListener();
-        }
-    }
+        // Check there are no errors
+        if (validationErrors.size() == 0) {
+            runway.setDegree(degree1, degree2);
+            runway.updateParameters(parameters);
 
-    /**
-     * Save the pre-defined values into the state (overwrites)
-     */
-    private void savePredefinedValues() {
-        xmlHandler.saveToXML(getPredefinedAirports(), getPredefinedObstacles());
-        initialState = xmlHandler.readStateXML();
-
-        // Call the listener to update
-        callSetListener();
-    }
-
-    /**
-     * Call the listener to update the gui by adding the list of airports and obstacles to the
-     * existing lists
-     *
-     * @param airports  list of airports to add
-     * @param obstacles list of obstacles to add
-     */
-    private void callAddListener(Airport[] airports, Obstacle[] obstacles) {
-        // Don't call the listener if it hasn't been set yet
-        if (dataAddListener == null) {
-            return;
+            // todo:: update the observable list
         }
 
-        dataAddListener.load(airports, obstacles);
+        // Return the edited runway and errors
+        return new ErrorObjectPair<>(runway, validationErrors);
     }
 
-    /**
-     * Call the listener to update the gui by setting the list of airports and obstacles
-     */
-    private void callSetListener() {
-        callSetListener(getInitialAirports(), getInitialObstacles());
+    public void addObstacle() {
     }
 
-    /**
-     * Call the listener to update the gui by setting the list of airports and obstacles
-     *
-     * @param airports  list of airports to set
-     * @param obstacles list of obstacles to set
-     */
-    private void callSetListener(Airport[] airports, Obstacle[] obstacles) {
-        // Don't call the listener if it hasn't been set yet
-        if (dataSetListener == null) {
-            return;
-        }
-
-        dataSetListener.load(airports, obstacles);
+    public void editObstacle() {
     }
 
-    /**
-     * Get the list of obstacles initially stored in state
-     *
-     * @return the initial list of obstacles
-     */
-    private Obstacle[] getInitialObstacles() {
-        // If something went wrong reading the file, just return the predefined obstacles
-        return initialState != null ? initialState.getObstacles() : getPredefinedObstacles();
+    public ObservableList<Airport> getAirportObservableList() {
+        return airportObservableList;
     }
 
-    /**
-     * Get the list of airports initially stored in state
-     *
-     * @return the initial list of airports
-     */
-    private Airport[] getInitialAirports() {
-        // If something went wrong reading the file, just return the predefined airports
-        return initialState != null ? initialState.getAirports() : getPredefinedAirports();
+    public ObservableList<Runway> getRunwayObservableList() {
+        return runwayObservableList;
     }
 
-    /**
-     * Set the current state of program's data
-     *
-     * @param airports  the list of airports
-     * @param obstacles the list of obstacles
-     */
-    public void setState(Airport[] airports, Obstacle[] obstacles) {
-        xmlHandler.saveToXML(airports, obstacles);
-    }
-
-    /**
-     * Reset the data in the state
-     */
-    public void resetState() {
-        savePredefinedValues();
-    }
-
-    /**
-     * Set the listener to be called to set the list of airports and obstacles in the gui
-     *
-     * @param dataSetListener the listener
-     */
-    public void setDataSetListener(
-        DataLoadedListener dataSetListener) {
-        this.dataSetListener = dataSetListener;
-    }
-
-    /**
-     * Set the listener to be called to add list of airports and obstacles to the existing lists in
-     * the gui
-     *
-     * @param dataAddListener the listener
-     */
-    public void setDataAddListener(
-        DataLoadedListener dataAddListener) {
-        this.dataAddListener = dataAddListener;
-    }
-
-    /**
-     * Set the listener to be called to show an error in the gui
-     *
-     * @param errorListener the listener
-     */
-    public void setErrorListener(AlertListener errorListener) {
-        this.errorListener = errorListener;
-    }
-
-    /**
-     * Set the listener to be called when an XML file has been successfully imported/uploaded
-     *
-     * @param fileUploadSuccessfulListener the listener
-     */
-    public void setFileUploadSuccessfulListener(
-        FileUploadSuccessfulListener fileUploadSuccessfulListener) {
-        this.fileUploadSuccessfulListener = fileUploadSuccessfulListener;
-    }
-
-    /**
-     * Get a list of predefined airports
-     *
-     * @return the list of predefined airports
-     */
-    public static Airport[] getPredefinedAirports() {
-        var airports = new Airport[]{new Airport("Scenarios")};
-        airports[0].addRunway(new PRunway(9, 27, 'L', 'R', new double[]{
-            3902,//runwayL
-            100,//runwayW
-            60,//stripL
-            100,//stripW
-            100,//clearwayW
-            240, //resaL
-            3902,//tora1
-            3902,//toda1
-            3902,//asda1
-            3595,//lda1
-            3884,//tora2
-            3962,//toda2
-            3884,//asda2
-            3884,//lda2
-            0,//disThresh1
-            306//disThresh2
-        }));
-        airports[0].addRunway(new PRunway(9, 27, 'R', 'L', new double[]{
-            3660,//runwayL
-            100,//runwayW
-            60,//stripL
-            100,//stripW
-            100,//clearwayW
-            240, //resaL
-            3660,//tora1
-            3660,//toda1
-            3660,//asda1
-            3353,//lda1
-            3660,//tora2
-            3660,//toda2
-            3660,//asda2
-            3660,//lda2
-            0,//disThresh1
-            307//disThresh2
-        }));
-
-        return airports;
-    }
-
-
-    /**
-     * Get a list of predefined obstacles
-     *
-     * @return the list of predefined obstacles
-     */
-    public static Obstacle[] getPredefinedObstacles() {
-        return new Obstacle[]{
-            new Obstacle("Airbus A319", 12),
-            new Obstacle("Airbus A330", 16),
-            new Obstacle("Airbus A340", 17),
-            new Obstacle("Airbus A380", 24),
-            new Obstacle("Boeing 737 MAX", 13),
-            new Obstacle("Boeing 747", 19),
-            new Obstacle("Boeing 757", 14),
-            new Obstacle("Boeing 767", 17),
-            new Obstacle("Boeing 777", 18),
-            new Obstacle("Boeing 787 Dreamliner", 17),
-            new Obstacle("Cessna 172", 2),
-            new Obstacle("Gulfstream G650", 7),
-            new Obstacle("Embraer E145", 6)
-        };
+    public ObservableList<Obstacle> getObstacleObservableList() {
+        return obstacleObservableList;
     }
 }

@@ -132,6 +132,20 @@ public class Runway implements Cloneable {
     }
 
     /**
+     * Update the degrees of the runway based on the given values
+     *
+     * @param degree1 the degree for logical runway 1
+     * @param degree2 the degree for logical runway 2
+     */
+    public void setDegree(int degree1, int degree2) {
+        this.degree1 = degree1;
+        this.degree2 = degree2;
+
+        setPhyId();
+        setLogicId();
+    }
+
+    /**
      * Update all parameters of the runway based on the given values
      *
      * @param parameters new parameters to be updated
@@ -265,6 +279,17 @@ public class Runway implements Cloneable {
 
     public double getResaL() {
         return resaL;
+    }
+
+    /**
+     * Generate a physical ID given both of the degree values
+     *
+     * @param degree1 the degree for logical runway 1
+     * @param degree2 the degree for logical runway 2
+     * @return the physical id string
+     */
+    public static String createPhyId(int degree1, int degree2) {
+        return String.valueOf(degree1) + degree2;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.team44.runwayredeclarationapp.view;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
+import com.team44.runwayredeclarationapp.controller.FileController;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
@@ -23,7 +24,6 @@ import com.team44.runwayredeclarationapp.view.component.visualisation.TopDownVie
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationPane;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -63,6 +63,11 @@ public class MainScene extends BaseScene {
     /**
      * The controller responsible for reading/writing data in the file system
      */
+    private final FileController fileController = new FileController();
+
+    /**
+     * The data controller responsible for handling the list of airports, runways and obstacles
+     */
     private final DataController dataController = new DataController();
 
     /**
@@ -88,20 +93,6 @@ public class MainScene extends BaseScene {
     private ObstacleTitlePane obstacleTitlePane;
 
     /**
-     * Observable list of obstacles
-     */
-    private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList();
-
-    /**
-     * Observable list of airports
-     */
-    private final ObservableList<Airport> airportObservableList = FXCollections.observableArrayList();
-    /**
-     * Observable list of runways
-     */
-    private final ObservableList<Runway> runwayObservableList = FXCollections.observableArrayList();
-
-    /**
      * Create scene within the main window
      *
      * @param mainWindow the main window
@@ -122,16 +113,17 @@ public class MainScene extends BaseScene {
             }
 
             // Update the list of runways whenever the airport changes
-            runwayObservableList.setAll(airport.get().getRunways());
+            dataController.getRunwayObservableList().setAll(airport.get().getRunways());
 
             // Update the list of runways whenever one of the runway changes
             airport.get().getRunwayObservableList().addListener(
                 (ListChangeListener<Runway>) observable -> {
-                    runwayObservableList.setAll(airport.get().getRunways());
+                    dataController.getRunwayObservableList().setAll(airport.get().getRunways());
 
                     //reset related gui if a selected runway is removed
                     if (runwayTitlePane.getSelectedRunway() != null &&
-                        !runwayObservableList.contains(runwayTitlePane.getSelectedRunway())) {
+                        !dataController.getRunwayObservableList()
+                            .contains(runwayTitlePane.getSelectedRunway())) {
                         runwayTitlePane.clearInputs();
                         ogValuesGrid.reset();
                         newValuesGrid.reset();
@@ -145,22 +137,23 @@ public class MainScene extends BaseScene {
         });
 
         // Set the data loaded set listener
-        dataController.setDataSetListener((airports, obstacles) -> {
-            airportObservableList.setAll(airports);
-            obstacleObservableList.setAll(obstacles);
+        fileController.setDataSetListener((airports, obstacles) -> {
+            dataController.getAirportObservableList().setAll(airports);
+            dataController.getObstacleObservableList().setAll(obstacles);
         });
 
         // Set the data loaded add listener
-        dataController.setDataAddListener((airports, obstacles) -> {
-            airportObservableList.addAll(airports);
-            obstacleObservableList.addAll(obstacles);
+        fileController.setDataAddListener((airports, obstacles) -> {
+            dataController.getAirportObservableList().addAll(airports);
+            dataController.getObstacleObservableList().addAll(obstacles);
         });
 
         //Update the obstacle gui when a selected obstacle is removed
-        obstacleObservableList.addListener(
+        dataController.getObstacleObservableList().addListener(
             (ListChangeListener<Obstacle>) observable -> {
                 if (obstacleTitlePane.getSelectedObstacle() != null &&
-                    !obstacleObservableList.contains(obstacleTitlePane.getSelectedObstacle())) {
+                    !dataController.getObstacleObservableList()
+                        .contains(obstacleTitlePane.getSelectedObstacle())) {
                     obstacleTitlePane.clearInputs();
 
                     // Update the gui
@@ -175,19 +168,20 @@ public class MainScene extends BaseScene {
             });
 
         //reset the whole main scene if current selected airport is deleted
-        airportObservableList.addListener(
+        dataController.getAirportObservableList().addListener(
             (ListChangeListener<Airport>) observable -> {
                 if (airportTitlePane.getSelectedAirport() != null &&
-                    !airportObservableList.contains(airportTitlePane.getSelectedAirport())) {
+                    !dataController.getAirportObservableList()
+                        .contains(airportTitlePane.getSelectedAirport())) {
                     reset();
                 }
             });
 
         // Set the show error listener
-        dataController.setErrorListener(this::showError);
+        fileController.setErrorListener(this::showError);
 
         // Load the initial state
-        dataController.loadInitialState();
+        fileController.loadInitialState();
     }
 
     /**
@@ -207,8 +201,9 @@ public class MainScene extends BaseScene {
 
         // Save event
         menuItemSave.setOnAction(event -> {
-            dataController.setState(airportObservableList.toArray(new Airport[0]),
-                obstacleObservableList.toArray(new Obstacle[0]));
+            fileController.setState(
+                dataController.getAirportObservableList().toArray(new Airport[0]),
+                dataController.getObstacleObservableList().toArray(new Obstacle[0]));
 
             // Show alert
             var alert = new InfoAlert("Save successful", "Your data has been saved!",
@@ -219,7 +214,7 @@ public class MainScene extends BaseScene {
         // Reset event
         menuItemResetState.setOnAction(event -> {
             this.reset();
-            dataController.resetState();
+            fileController.resetState();
 
             // Show alert
             var alert = new InfoAlert("Reset successful", "Your data has been reset!",
@@ -255,11 +250,12 @@ public class MainScene extends BaseScene {
 
         // Event handlers for XML menu items
         menuItemImportXML.setOnAction(event -> {
-            new ImportXMLWindow(getMainWindow().getStage(), dataController);
+            new ImportXMLWindow(getMainWindow().getStage(), fileController);
         });
         menuItemExportXML.setOnAction(event -> {
-            new ExportXMLWindow(getMainWindow().getStage(), dataController, airportObservableList,
-                obstacleObservableList);
+            new ExportXMLWindow(getMainWindow().getStage(), fileController,
+                dataController.getAirportObservableList(),
+                dataController.getObstacleObservableList());
         });
 
         // Create a menu for selecting scenarios to test the program with
@@ -567,7 +563,7 @@ public class MainScene extends BaseScene {
      * @return the observable list
      */
     public ObservableList<Obstacle> getObstacleObservableList() {
-        return obstacleObservableList;
+        return dataController.getObstacleObservableList();
     }
 
     /**
@@ -603,7 +599,7 @@ public class MainScene extends BaseScene {
      * @return the airports
      */
     public ObservableList<Airport> getAirportObservableList() {
-        return airportObservableList;
+        return dataController.getAirportObservableList();
     }
 
     /**
@@ -612,7 +608,7 @@ public class MainScene extends BaseScene {
      * @return the runways
      */
     public ObservableList<Runway> getRunwayObservableList() {
-        return runwayObservableList;
+        return dataController.getRunwayObservableList();
     }
 
     /**
@@ -651,5 +647,9 @@ public class MainScene extends BaseScene {
      */
     private void showError(String title, String header, String content) {
         new ErrorAlert(title, header, content).show();
+    }
+
+    public DataController getDataController() {
+        return dataController;
     }
 }

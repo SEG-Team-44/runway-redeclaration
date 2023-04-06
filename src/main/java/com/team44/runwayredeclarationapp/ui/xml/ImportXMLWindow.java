@@ -1,6 +1,6 @@
 package com.team44.runwayredeclarationapp.ui.xml;
 
-import com.team44.runwayredeclarationapp.controller.DataController;
+import com.team44.runwayredeclarationapp.controller.FileController;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
 import java.io.File;
@@ -36,19 +36,19 @@ public class ImportXMLWindow extends Stage {
     /**
      * The data controller to import/export XML files
      */
-    private final DataController dataController;
+    private final FileController fileController;
 
     /**
      * Create the window for importing xml file
      *
      * @param parent         the parent window
-     * @param dataController the data controller
+     * @param fileController the data controller
      */
-    public ImportXMLWindow(Window parent, DataController dataController) {
-        this.dataController = dataController;
+    public ImportXMLWindow(Window parent, FileController fileController) {
+        this.fileController = fileController;
 
         // Set successful import event
-        dataController.setFileUploadSuccessfulListener(this::uploadSuccessful);
+        fileController.setFileUploadSuccessfulListener(this::uploadSuccessful);
 
         //Setup main pane
         var mainPane = new VBox();
@@ -231,7 +231,7 @@ public class ImportXMLWindow extends Stage {
         }
 
         // Upload XML file
-        dataController.uploadXMLFile(fileToUpload, reset);
+        fileController.uploadXMLFile(fileToUpload, reset);
     }
 
     /**

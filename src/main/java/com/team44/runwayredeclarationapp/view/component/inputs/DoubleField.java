@@ -100,4 +100,13 @@ public class DoubleField extends RegexField {
         }
         return 0.0;
     }
+
+    /**
+     * Set the value of the field
+     *
+     * @param value the double value of the field
+     */
+    public void setValue(double value) {
+        this.setText(String.valueOf(value));
+    }
 }
