@@ -1,4 +1,4 @@
-package com.team44.runwayredeclarationapp.ui;
+package com.team44.runwayredeclarationapp.ui.runway;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.event.SetRunwayListener;
@@ -158,7 +158,7 @@ public class AddRunwayWindow {
             } else {
                 // Display errors
                 var errorAlert = new ErrorListAlert();
-                errorAlert.setErrors(validationErrors.getErrors().toArray(new String[]{}));
+                errorAlert.setErrors(validationErrors.getErrorsArray());
                 errorAlert.show();
             }
         });

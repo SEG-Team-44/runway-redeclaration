@@ -14,7 +14,7 @@ import javafx.scene.control.ComboBox;
 /**
  * Form for adding a new runway
  */
-public class RunwayForm {
+public class RunwayForm extends BaseForm {
 
     /**
      * The physical parameters of the runway
@@ -152,6 +152,7 @@ public class RunwayForm {
      *
      * @return whether all the fields are valid
      */
+    @Override
     public Boolean isValid() {
         // Get all the parameter fields that need to be validated
         RegexField[] parameterFields = {runwayLTf, runwayWTf, stripLTf, stripWTf,

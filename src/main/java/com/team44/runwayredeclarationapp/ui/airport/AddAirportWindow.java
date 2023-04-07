@@ -1,10 +1,12 @@
-package com.team44.runwayredeclarationapp.ui;
+package com.team44.runwayredeclarationapp.ui.airport;
 
+import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.event.AddAirportListener;
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.model.ErrorObjectPair;
+import com.team44.runwayredeclarationapp.model.form.AirportForm;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
-import com.team44.runwayredeclarationapp.view.component.inputs.RegexField;
-import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,11 +28,7 @@ public class AddAirportWindow {
     /**
      * The input taking in the airport name
      */
-    private final RegexField airportNameInput;
-    /**
-     * The error alert
-     */
-    private final ErrorListAlert errorListAlert = new ErrorListAlert();
+    private final AirportForm airportForm = new AirportForm();
     /**
      * The listener called when an airport has been added/edited
      */
@@ -40,20 +38,21 @@ public class AddAirportWindow {
     /**
      * Create the add airport modal window
      *
-     * @param parent                the parent window/stage
-     * @param airportObservableList the observable list of airports
+     * @param parent         the parent window/stage
+     * @param dataController the data controller
      */
-    public AddAirportWindow(Window parent, ObservableList<Airport> airportObservableList) {
-        this(parent, airportObservableList, null);
+    public AddAirportWindow(Window parent, DataController dataController) {
+        this(parent, dataController, null);
     }
 
     /**
      * Create the add airport modal window
      *
-     * @param parent                the parent window/stage
-     * @param airportObservableList the observable list of airports
+     * @param parent         the parent window/stage
+     * @param dataController the data controller
+     * @param airport        the selected airport (if any)
      */
-    public AddAirportWindow(Window parent, ObservableList<Airport> airportObservableList,
+    public AddAirportWindow(Window parent, DataController dataController,
         Airport airport) {
         Stage stage = new Stage();
 
@@ -72,47 +71,45 @@ public class AddAirportWindow {
         GridPane.setHalignment(addBtn, HPos.RIGHT);
         GridPane.setValignment(addBtn, VPos.BOTTOM);
 
-        // Inputs
-        String airportNameRegex = "^.{0,60}$";
-        airportNameInput = new RegexField(airportNameRegex);
-
         // If there is an existing airport, set its values
         if (airport != null) {
-            airportNameInput.setText(airport.getName());
+            airportForm.setAirport(airport);
         }
 
         // Add event
         addBtn.setOnAction(event -> {
             if (isInputValid()) {
-                var newAirport = new Airport(airportNameInput.getText());
 
+                ErrorObjectPair<Airport> validationErrors;
                 if (airport == null) {
-                    // Create and add the airport to the observable list
-                    airportObservableList.add(newAirport);
+                    // Add airport
+                    validationErrors = dataController.addAirport(
+                        airportForm.getAirportNameInput().getText());
                 } else {
-                    // Update the airport in the observable list
-                    var index = airportObservableList.indexOf(airport);
-
-                    // Set airport list of runways
-                    newAirport.setRunways(airport.getRunways());
-
-                    airportObservableList.set(index, newAirport);
-                }
-                // Call the listener
-                if (addAirportListener != null) {
-                    addAirportListener.addAirport(newAirport);
+                    // Edit airport
+                    validationErrors = dataController.editAirport(airport,
+                        airportForm.getAirportNameInput().getText());
                 }
 
-                // Close the window
-                stage.close();
-            } else {
-                // Show alert with errors if input is not valid
-                errorListAlert.show();
+                // Check if there are any validation errors
+                if (!validationErrors.hasErrors()) {
+                    // Call the listener
+                    if (addAirportListener != null) {
+                        addAirportListener.addAirport(validationErrors.getObject());
+                    }
+
+                    stage.close();
+                } else {
+                    // Display errors
+                    var errorAlert = new ErrorListAlert();
+                    errorAlert.setErrors(validationErrors.getErrorsArray());
+                    errorAlert.show();
+                }
             }
         });
 
         // Add rows to grid
-        mainPane.addRow(1, new Text("Airport Name:"), airportNameInput);
+        mainPane.addRow(1, new Text("Airport Name:"), airportForm.getAirportNameInput());
         mainPane.add(addBtn, 0, 3, 2, 1);
 
         //Set scene
@@ -136,20 +133,13 @@ public class AddAirportWindow {
      * @return whether user input is valid or not
      */
     private Boolean isInputValid() {
-        // Check the regex and text empty
-        var checkRegex = airportNameInput.isRegexMatch();
-        var checkEmpty = airportNameInput.isEmpty();
-
         // Add error messages if needed
-        if (!checkRegex) {
-            errorListAlert.addError("Name must be under 60 characters.");
-        }
-        if (checkEmpty) {
-            errorListAlert.addError("Inputs cannot be empty.");
+        if (!airportForm.isValid()) {
+            new ErrorAlert("Invalid inputs", "Provided airport inputs are invalid!",
+                "Ensure that the name field is not empty and under 60 characters.").show();
         }
 
-        // Return if the inputs are valid or not
-        return checkRegex && !checkEmpty;
+        return airportForm.isValid();
     }
 
     /**

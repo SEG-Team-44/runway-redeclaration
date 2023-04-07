@@ -1,8 +1,8 @@
 package com.team44.runwayredeclarationapp.view.component.titlepane;
 
 import com.team44.runwayredeclarationapp.model.Obstacle;
-import com.team44.runwayredeclarationapp.ui.AddObstacleWindow;
-import com.team44.runwayredeclarationapp.ui.ModifyObstacleWindow;
+import com.team44.runwayredeclarationapp.ui.obstacle.AddObstacleWindow;
+import com.team44.runwayredeclarationapp.ui.obstacle.ModifyObstacleWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
@@ -86,7 +86,7 @@ public class ObstacleTitlePane extends TitledPane {
         editObstacleBtn.setOnAction(event -> {
             ModifyObstacleWindow modifyObstacleWindow = new ModifyObstacleWindow(
                 mainScene.getMainWindow().getStage(),
-                mainScene.getObstacleObservableList());
+                mainScene.getDataController());
 
             // Set the listener
             modifyObstacleWindow.setEditAirportListener(obstacleSelectComboBox::setValue);
@@ -94,7 +94,7 @@ public class ObstacleTitlePane extends TitledPane {
         addObstacleBtn.setOnAction(event -> {
             AddObstacleWindow addObstacleWindow = new AddObstacleWindow(
                 mainScene.getMainWindow().getStage(),
-                mainScene.getObstacleObservableList());
+                mainScene.getDataController());
 
             // Set the listener
             // todo:: only replace (setValue) if currently selected, as done in RunwayTitlePane

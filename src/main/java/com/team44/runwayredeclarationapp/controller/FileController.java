@@ -12,6 +12,7 @@ import com.team44.runwayredeclarationapp.utility.xml.XMLHandler;
 import com.team44.runwayredeclarationapp.utility.xml.XMLWrapper;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import org.xml.sax.SAXException;
 
@@ -76,24 +77,35 @@ public class FileController {
 
             // Validate the data in the file
             for (Airport airport : airports) {
+                // Validate the airport name
+                errors.addAll(ValidationController.validateAirport(airport.getName()));
+
+                // Validate the runways
                 for (Runway runway : airport.getRunways()) {
                     var isParallel = runway instanceof PRunway;
                     var pos1 = isParallel ? ((PRunway) runway).getPos1() : null;
                     var pos2 = isParallel ? ((PRunway) runway).getPos2() : null;
 
-                    var validationErrors = ValidationController.validateRunwayData(pos1, pos2,
+                    var validationErrors = ValidationController.validateRunway(pos1, pos2,
                         runway.getDegree1(), runway.getDegree2(), runway.getParameters(), airport);
 
                     errors.addAll(validationErrors);
                 }
             }
 
-            // todo:: validate the list of obstacles too
+            // Validate the list of obstacles
+            for (Obstacle obstacle : obstacles) {
+                errors.addAll(ValidationController.validateObstacle(obstacle.getObstName(),
+                    obstacle.getHeight()));
+            }
 
             // Check if there are validation errors
             if (!errors.isEmpty()) {
+                // Remove duplicate errors
+                List<String> cleanErrors = new ArrayList<>(new HashSet<>(errors));
+
                 if (multipleErrorsListener != null) {
-                    multipleErrorsListener.alert(errors.toArray(String[]::new));
+                    multipleErrorsListener.alert(cleanErrors.toArray(String[]::new));
                 }
 
                 return;

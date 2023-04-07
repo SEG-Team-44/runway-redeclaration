@@ -1,8 +1,8 @@
 package com.team44.runwayredeclarationapp.view.component.titlepane;
 
 import com.team44.runwayredeclarationapp.model.Airport;
-import com.team44.runwayredeclarationapp.ui.AddAirportWindow;
-import com.team44.runwayredeclarationapp.ui.ModifyAirportWindow;
+import com.team44.runwayredeclarationapp.ui.airport.AddAirportWindow;
+import com.team44.runwayredeclarationapp.ui.airport.ModifyAirportWindow;
 import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
 import javafx.scene.control.Alert;
@@ -66,7 +66,7 @@ public class AirportTitlePane extends TitledPane {
         //Generate init window when button clicked
         addAirportBtn.setOnAction(ActionEvent -> {
             AddAirportWindow initPage = new AddAirportWindow(mainScene.getMainWindow().getStage(),
-                mainScene.getAirportObservableList());
+                mainScene.getDataController());
 
             initPage.setAddAirportListener(airportSelectComboBox::setValue);
         });
@@ -83,7 +83,7 @@ public class AirportTitlePane extends TitledPane {
             } else {
                 ModifyAirportWindow modifyPage = new ModifyAirportWindow(
                     mainScene.getMainWindow().getStage(),
-                    mainScene.getAirportObservableList());
+                    mainScene.getDataController());
 
                 modifyPage.setEditAirportListener(airportSelectComboBox::setValue);
             }

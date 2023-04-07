@@ -11,7 +11,50 @@ import java.util.List;
 public class ValidationController {
 
     /**
-     * Check whether the inputs are valid when a user add a new runway to the system
+     * Validate the inputs of an airport
+     *
+     * @param airportName the airport name
+     * @return the list of errors
+     */
+    public static List<String> validateAirport(String airportName) {
+        // Create list of errors
+        List<String> errors = new ArrayList<>();
+
+        if (!airportName.matches("^.{1,60}$")) {
+            errors.add("Airport name provided (\"" + airportName
+                + "\") must not be empty and under 60 characters.");
+        }
+
+        return errors;
+    }
+
+    /**
+     * Validate the inputs of an obstacle
+     *
+     * @param obstacleName   the obstacle name
+     * @param obstacleHeight the obstacle height
+     * @return the list of errors
+     */
+    public static List<String> validateObstacle(String obstacleName, double obstacleHeight) {
+        // Create list of errors
+        List<String> errors = new ArrayList<>();
+
+        if (!obstacleName.matches("^.{1,60}$")) {
+            errors.add("Obstacle name provided (\"" + obstacleName
+                + "\") must not be empty and under 60 characters.");
+        }
+
+        if (obstacleHeight >= 500) {
+            errors.add("Obstacle (" + obstacleName + ") height must be under 500m.");
+        } else if (obstacleHeight <= 0) {
+            errors.add("Obstacle (" + obstacleName + ") height must be greater than 0m.");
+        }
+
+        return errors;
+    }
+
+    /**
+     * Validate the inputs when a user add a new runway to the system
      *
      * @param pos1       position character input by the user
      * @param pos2       the other position character input by the user
@@ -22,7 +65,7 @@ public class ValidationController {
      * @param airport    the airport that the runway is in
      * @return the list of errors
      */
-    public static List<String> validateRunwayData(
+    public static List<String> validateRunway(
         Character pos1, Character pos2,
         int degree1, int degree2, double[] parameters, Airport airport) {
 

@@ -48,6 +48,15 @@ public class ErrorObjectPair<T> {
     }
 
     /**
+     * Get the list of errors as a string array
+     *
+     * @return the list of errors in a string array
+     */
+    public String[] getErrorsArray() {
+        return errors.toArray(new String[]{});
+    }
+
+    /**
      * Get the object in the pairing
      *
      * @return the object
