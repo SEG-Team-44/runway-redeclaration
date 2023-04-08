@@ -8,6 +8,7 @@ import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
+import com.team44.runwayredeclarationapp.model.theme.ColourTheme;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ExportXMLWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ImportXMLWindow;
@@ -24,6 +25,7 @@ import com.team44.runwayredeclarationapp.view.component.visualisation.SideOnView
 import com.team44.runwayredeclarationapp.view.component.visualisation.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationPane;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -92,6 +94,12 @@ public class MainScene extends BaseScene {
     private AirportTitlePane airportTitlePane;
     private RunwayTitlePane runwayTitlePane;
     private ObstacleTitlePane obstacleTitlePane;
+
+    /**
+     * The colour theme of the program
+     */
+    private final ObjectProperty<ColourTheme> colourThemeProperty = new SimpleObjectProperty<>(
+        new ColourTheme());
 
     /**
      * Create scene within the main window
@@ -345,6 +353,18 @@ public class MainScene extends BaseScene {
         var sideOnPane = new VisualisationPane(sideOnCanvas);
         topDownTab.setContent(topDownPane);
         sideOnTab.setContent(sideOnPane);
+
+        // Set theme listener
+        colourThemeProperty.addListener((observableValue, oldColourTheme, newColourTheme) -> {
+            // Set theme to default if colour theme is empty
+            if (newColourTheme == null) {
+                topDownCanvas.setColourTheme(new ColourTheme());
+                sideOnCanvas.setColourTheme(new ColourTheme());
+                return;
+            }
+            topDownCanvas.setColourTheme(newColourTheme);
+            sideOnCanvas.setColourTheme(newColourTheme);
+        });
 
         // Input section
         var inputSectionTitle = new Title("Input:");

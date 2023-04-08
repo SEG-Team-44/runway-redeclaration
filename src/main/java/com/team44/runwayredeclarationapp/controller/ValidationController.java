@@ -139,7 +139,7 @@ public class ValidationController {
         //return false if any of the physical parameters is 0
         for (int i = 0; i < 6; i++) {
             if (parametersList.get(i) < 1) {
-                errors.add("Physical parameters cannot be 0.");
+                errors.add("Runway parameters cannot be less than or equal to 0.");
             }
         }
 
