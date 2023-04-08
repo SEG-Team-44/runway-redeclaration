@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.team44.runwayredeclarationapp.model.Obstacle;
+import com.team44.runwayredeclarationapp.TestConstants;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import java.util.HashMap;
@@ -32,75 +32,6 @@ class RecalculationControllerTest {
     RecalculationController recalculationController;
 
     /**
-     * Runway object representing 09L/27R
-     */
-    PRunway runway09L27R = new PRunway(9, 27, 'L', 'R', new double[]{
-        3902,//runwayL
-        100,//runwayW
-        60,//stripL
-        100,//stripW
-        100,//clearwayW
-        240, //resaL
-        3902,//tora1
-        3902,//toda1
-        3902,//asda1
-        3595,//lda1
-        3884,//tora2
-        3962,//toda2
-        3884,//asda2
-        3884,//lda2
-        0,//disThresh1
-        306//disThresh2
-    });
-
-    /**
-     * Runway object representing 09R/27L
-     */
-    PRunway runway09R27L = new PRunway(9, 27, 'R', 'L', new double[]{
-        3660,//runwayL
-        100,//runwayW
-        60,//stripL
-        100,//stripW
-        100,//clearwayW
-        240, //resaL
-        3660,//tora1
-        3660,//toda1
-        3660,//asda1
-        3353,//lda1
-        3660,//tora2
-        3660,//toda2
-        3660,//asda2
-        3660,//lda2
-        0,//disThresh1
-        307//disThresh2
-    });
-
-    /**
-     * Obstacle object representing the obstacle specified in Scenario 1 in the spec
-     */
-    Obstacle obstacle1 = new Obstacle("Obstacle Name", 12);
-    RunwayObstacle runwayObstacle1 = new RunwayObstacle(obstacle1, runway09L27R, -50.0, 3646.0,
-        0.0, 240);
-    /**
-     * Obstacle object representing the obstacle specified in Scenario 2 in the spec
-     */
-    Obstacle obstacle2 = new Obstacle("Obstacle Name", 25);
-    RunwayObstacle runwayObstacle2 = new RunwayObstacle(obstacle2, runway09R27L, 2853.0, 500.0,
-        -20.0, 240);
-    /**
-     * Obstacle object representing the obstacle specified in Scenario 3 in the spec
-     */
-    Obstacle obstacle3 = new Obstacle("Obstacle Name", 15);
-    RunwayObstacle runwayObstacle3 = new RunwayObstacle(obstacle3, runway09R27L, 150.0, 3203.0,
-        60.0, 240);
-    /**
-     * Obstacle object representing the obstacle specified in Scenario 4 in the spec
-     */
-    Obstacle obstacle4 = new Obstacle("Obstacle Name", 20);
-    RunwayObstacle runwayObstacle4 = new RunwayObstacle(obstacle4, runway09L27R, 3546.0, 50.0,
-        20.0, 240);
-
-    /**
      * Set up a new recalculation controller before each test
      */
     @BeforeEach
@@ -118,7 +49,7 @@ class RecalculationControllerTest {
     @Test
     @DisplayName("Recalculate scenario 1")
     void recalculateRunwayScenario1() {
-        testPRunway(runway09L27R, runwayObstacle1,
+        testPRunway(TestConstants.RUNWAY_09L_27R, TestConstants.RUNWAY_OBSTACLE_1,
             3346, 3346, 3346, 2985,
             2986, 2986, 2986, 3346);
     }
@@ -127,7 +58,7 @@ class RecalculationControllerTest {
     @Test
     @DisplayName("Recalculate scenario 2")
     void recalculateRunwayScenario2() {
-        testPRunway(runway09R27L, runwayObstacle2,
+        testPRunway(TestConstants.RUNWAY_09R_27L, TestConstants.RUNWAY_OBSTACLE_2,
             1850, 1850, 1850, 2553,
             2860, 2860, 2860, 1850);
     }
@@ -136,7 +67,7 @@ class RecalculationControllerTest {
     @Test
     @DisplayName("Recalculate scenario 3")
     void recalculateRunwayScenario3() {
-        testPRunway(runway09R27L, runwayObstacle3,
+        testPRunway(TestConstants.RUNWAY_09R_27L, TestConstants.RUNWAY_OBSTACLE_3,
             2903, 2903, 2903, 2393,
             2393, 2393, 2393, 2903);
     }
@@ -145,7 +76,7 @@ class RecalculationControllerTest {
     @Test
     @DisplayName("Recalculate scenario 4")
     void recalculateRunwayScenario4() {
-        testPRunway(runway09L27R, runwayObstacle4,
+        testPRunway(TestConstants.RUNWAY_09L_27R, TestConstants.RUNWAY_OBSTACLE_4,
             2792, 2792, 2792, 3246,
             3534, 3612, 3534, 2774);
     }
@@ -162,7 +93,8 @@ class RecalculationControllerTest {
         expected.put("ogTORA", 3902.0);
 
         assertTrue(testRecalculatedHashmaps(expected,
-            recalculationController.recalculateTORA(runway09L27R, "09L", runwayObstacle1, 300)));
+            recalculationController.recalculateTORA(TestConstants.RUNWAY_09L_27R, "09L",
+                TestConstants.RUNWAY_OBSTACLE_1, 300)));
     }
 
     @Order(6)
@@ -176,7 +108,8 @@ class RecalculationControllerTest {
         expected.put("recalTORA", 2986.0);
 
         assertTrue(testRecalculatedHashmaps(expected,
-            recalculationController.recalculateTORA(runway09L27R, "27R", runwayObstacle1, 300)));
+            recalculationController.recalculateTORA(TestConstants.RUNWAY_09L_27R, "27R",
+                TestConstants.RUNWAY_OBSTACLE_1, 300)));
     }
 
     @Order(7)
@@ -189,7 +122,8 @@ class RecalculationControllerTest {
         expected.put("tora", 300.0);
 
         assertTrue(testRecalculatedHashmaps(expected,
-            recalculationController.recalculateTODA(runway09L27R, "09L", runwayObstacle1, 300)));
+            recalculationController.recalculateTODA(TestConstants.RUNWAY_09L_27R, "09L",
+                TestConstants.RUNWAY_OBSTACLE_1, 300)));
     }
 
     @Order(8)
@@ -201,7 +135,8 @@ class RecalculationControllerTest {
         expected.put("tora", 300.0);
 
         assertTrue(testRecalculatedHashmaps(expected,
-            recalculationController.recalculateTODA(runway09L27R, "27R", runwayObstacle1, 300)));
+            recalculationController.recalculateTODA(TestConstants.RUNWAY_09L_27R, "27R",
+                TestConstants.RUNWAY_OBSTACLE_1, 300)));
     }
 
     @Order(9)
@@ -214,7 +149,8 @@ class RecalculationControllerTest {
         expected.put("tora", 300.0);
 
         assertTrue(testRecalculatedHashmaps(expected,
-            recalculationController.recalculateASDA(runway09L27R, "09L", runwayObstacle1, 300)));
+            recalculationController.recalculateASDA(TestConstants.RUNWAY_09L_27R, "09L",
+                TestConstants.RUNWAY_OBSTACLE_1, 300)));
     }
 
     @Order(10)
@@ -226,7 +162,8 @@ class RecalculationControllerTest {
         expected.put("tora", 300.0);
 
         assertTrue(testRecalculatedHashmaps(expected,
-            recalculationController.recalculateASDA(runway09L27R, "27R", runwayObstacle1, 300)));
+            recalculationController.recalculateASDA(TestConstants.RUNWAY_09L_27R, "27R",
+                TestConstants.RUNWAY_OBSTACLE_1, 300)));
     }
 
     @Order(111)
@@ -241,7 +178,8 @@ class RecalculationControllerTest {
         expected.put("stripEnd", 60.0);
 
         assertTrue(testRecalculatedHashmaps(expected,
-            recalculationController.recalculateLDA(runway09L27R, "09L", runwayObstacle1)));
+            recalculationController.recalculateLDA(TestConstants.RUNWAY_09L_27R, "09L",
+                TestConstants.RUNWAY_OBSTACLE_1)));
     }
 
     @Order(12)
@@ -255,7 +193,8 @@ class RecalculationControllerTest {
         expected.put("stripEnd", 60.0);
 
         assertTrue(testRecalculatedHashmaps(expected,
-            recalculationController.recalculateLDA(runway09L27R, "27R", runwayObstacle1)));
+            recalculationController.recalculateLDA(TestConstants.RUNWAY_09L_27R, "27R",
+                TestConstants.RUNWAY_OBSTACLE_1)));
     }
 
     /**
