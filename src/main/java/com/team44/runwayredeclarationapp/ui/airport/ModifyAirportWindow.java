@@ -1,7 +1,6 @@
 package com.team44.runwayredeclarationapp.ui.airport;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
-import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.event.AddAirportListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
@@ -20,10 +19,6 @@ public class ModifyAirportWindow {
      * The data controller to edit an airport
      */
     private final DataController dataController;
-    /**
-     * The delete controller to delete an airport
-     */
-    private final DeleteController deleteController = new DeleteController();
 
     /**
      * The listener called when an airport has been successfully edited
@@ -97,6 +92,6 @@ public class ModifyAirportWindow {
      * @param airport airport to be deleted
      */
     private void deleteIsPressed(Airport airport) {
-        deleteController.deleteAirport(airport, dataController.getAirportObservableList());
+        dataController.deleteAirport(airport, dataController.getAirportObservableList());
     }
 }
