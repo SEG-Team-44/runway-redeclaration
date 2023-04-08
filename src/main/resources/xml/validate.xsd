@@ -3,8 +3,6 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="root" type="rootType"/>
 
-  <!--  todo:: validate double to 2 dp and strings to 6 digits -->
-
   <xs:complexType name="parallelrunwayType">
     <xs:all>
       <xs:element type="xs:double" name="runwayL"/>

@@ -11,6 +11,27 @@ import java.util.List;
 public class ValidationController {
 
     /**
+     * Regex for a maximum for 60 characters
+     */
+    private static final String sixtyCharsRegex = "^.{1,60}$";
+    /**
+     * Regex for a maximum of 2 decimal places
+     */
+    private static final String twoDpRegex = "^-?\\d+(\\.\\d{1,2})?$";
+
+    /**
+     * Lower and upper bounds for obstacle numerical inputs
+     */
+    private static final int obstacleHeightLowerBound = 0;
+    private static final int obstacleHeightUpperBound = 500;
+
+    /**
+     * Lower and upper bounds for runway numerical inputs
+     */
+    private static final int runwayParametersUpperBound = 20000;
+
+
+    /**
      * Validate the inputs of an airport
      *
      * @param airportName the airport name
@@ -20,7 +41,7 @@ public class ValidationController {
         // Create list of errors
         List<String> errors = new ArrayList<>();
 
-        if (!airportName.matches("^.{1,60}$")) {
+        if (!airportName.matches(sixtyCharsRegex)) {
             errors.add("Airport name provided (\"" + airportName
                 + "\") must not be empty and under 60 characters.");
         }
@@ -39,14 +60,20 @@ public class ValidationController {
         // Create list of errors
         List<String> errors = new ArrayList<>();
 
-        if (!obstacleName.matches("^.{1,60}$")) {
+        if (!obstacleName.matches(sixtyCharsRegex)) {
             errors.add("Obstacle name provided (\"" + obstacleName
                 + "\") must not be empty and under 60 characters.");
         }
 
-        if (obstacleHeight >= 500) {
+        // Validate obstacle height to 2 dp
+        if (!String.valueOf(obstacleHeight).matches(twoDpRegex)) {
+            errors.add("Obstacle (" + obstacleName + ": " + obstacleHeight
+                + ") height must have a maximum of 2 decimal places.");
+        }
+
+        if (obstacleHeight >= obstacleHeightUpperBound) {
             errors.add("Obstacle (" + obstacleName + ") height must be under 500m.");
-        } else if (obstacleHeight <= 0) {
+        } else if (obstacleHeight <= obstacleHeightLowerBound) {
             errors.add("Obstacle (" + obstacleName + ") height must be greater than 0m.");
         }
 
@@ -72,10 +99,8 @@ public class ValidationController {
         // Create list of errors
         List<String> errors = new ArrayList<>();
 
-        // todo:: add an upperbound for lengths
-
-        //return false if degree1 or degree2 are <01, >36 or their difference is not equal to 18
-        if (degree1 < 1 || degree1 > 36 || degree2 < 1 || degree2 > 36
+        //return false if degree1 or degree2 are <0, >36 or their difference is not equal to 18
+        if (degree1 < 0 || degree1 > 36 || degree2 < 0 || degree2 > 36
             || Math.abs(degree1 - degree2) != 18) {
             errors.add("Degrees 1 and 2 must be in the range 0-36, "
                 + "and have a difference of 18 between them.");
@@ -95,9 +120,9 @@ public class ValidationController {
                 && pos2 != 'R')) {
                 errors.add("Positions can only be either 'L','C' or 'R'.");
             }
-            //return false if the pair of position chars is not L&R or C&C
+            //return false if the pair of position chars is not L&R, R&L or C&C
             else if (!((pos1 == 'C' && pos2 == 'C') || (pos1 == 'L' && pos2 == 'R') || (
-                pos1 == 'R' || pos2 == 'L'))) {
+                pos1 == 'R' && pos2 == 'L'))) {
                 errors.add("Positions must either be L&R, C&C or R&L.");
             }
 
@@ -136,12 +161,26 @@ public class ValidationController {
             parametersList.add(par);
         }
 
+        // Validate parameter lengths to 2 dp and upper bound
+        for (double parameter : parameters) {
+            if (!String.valueOf(parameter).matches(twoDpRegex)) {
+                errors.add("Runway parameter length (" + parameter
+                    + ") must have a maximum of 2 decimal places.");
+            }
+
+            if (parameter > runwayParametersUpperBound) {
+                errors.add("Runway parameters must be <= 20,000.");
+            }
+        }
+
         //return false if any of the physical parameters is 0
         for (int i = 0; i < 6; i++) {
             if (parametersList.get(i) < 1) {
-                errors.add("Runway parameters cannot be less than or equal to 0.");
+                errors.add("Runway physical parameters cannot be less than or equal to 0.");
             }
         }
+
+        // todo:: tora,toda,asda,lda lower bound 0
 
         //return false if any of the 2 TORA > runway length
         if (parametersList.get(6) > parametersList.get(0)
