@@ -86,7 +86,7 @@ public class ObstacleTitlePane extends TitledPane {
         editObstacleBtn.setOnAction(event -> {
             ModifyObstacleWindow modifyObstacleWindow = new ModifyObstacleWindow(
                 mainScene.getMainWindow().getStage(),
-                mainScene.getObstacleObservableList());
+                mainScene.getDataController());
 
             // Set the listener
             modifyObstacleWindow.setEditAirportListener(obstacleSelectComboBox::setValue);
@@ -94,7 +94,7 @@ public class ObstacleTitlePane extends TitledPane {
         addObstacleBtn.setOnAction(event -> {
             AddObstacleWindow addObstacleWindow = new AddObstacleWindow(
                 mainScene.getMainWindow().getStage(),
-                mainScene.getObstacleObservableList());
+                mainScene.getDataController());
 
             // Set the listener
             // todo:: only replace (setValue) if currently selected, as done in RunwayTitlePane

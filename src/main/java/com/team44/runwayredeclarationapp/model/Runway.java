@@ -101,14 +101,14 @@ public class Runway implements Cloneable {
     /**
      * Set a physical id for the runway
      */
-    protected void setPhyId() {
+    public void setPhyId() {
         phyId = getDegreeInString(degree1) + "/" + getDegreeInString(degree2);
     }
 
     /**
      * Set logical id for the 2 logical runways based on their degrees (positions)
      */
-    protected void setLogicId() {
+    public void setLogicId() {
         logicId1 = getDegreeInString(degree1);
         logicId2 = getDegreeInString(degree2);
     }
@@ -129,6 +129,20 @@ public class Runway implements Cloneable {
         }
 
         return newDegree;
+    }
+
+    /**
+     * Update the degrees of the runway based on the given values
+     *
+     * @param degree1 the degree for logical runway 1
+     * @param degree2 the degree for logical runway 2
+     */
+    public void setDegree(int degree1, int degree2) {
+        this.degree1 = degree1;
+        this.degree2 = degree2;
+
+        setPhyId();
+        setLogicId();
     }
 
     /**
@@ -265,6 +279,29 @@ public class Runway implements Cloneable {
 
     public double getResaL() {
         return resaL;
+    }
+
+    /**
+     * Generate a physical ID given both of the degree values
+     *
+     * @param degree1 the degree for logical runway 1
+     * @param degree2 the degree for logical runway 2
+     * @return the physical id string
+     */
+    public static String createPhyId(int degree1, int degree2) {
+        return String.valueOf(degree1) + degree2;
+    }
+
+    /**
+     * Get the list of runway parameters
+     *
+     * @return the list of runway parameters
+     */
+    public double[] getParameters() {
+        return new double[]{runwayL, runwayW, stripL, stripW, clearwayW, resaL,
+            tora1, toda1, asda1, lda1,
+            tora2, toda2, asda2, lda2, disThresh2,
+            disThresh1};
     }
 
     /**

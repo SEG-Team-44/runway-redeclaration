@@ -1,47 +1,45 @@
 package com.team44.runwayredeclarationapp.ui.runway;
 
+import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.controller.DeleteController;
-import com.team44.runwayredeclarationapp.controller.ParameterController;
+import com.team44.runwayredeclarationapp.event.SetRunwayListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
-import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.geometry.VPos;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
  * The class responsible for generate & display the UI for modify initial parameters of runways
  */
-public class ModifyRunwayWindow extends ParameterController {
+public class ModifyRunwayWindow {
 
-    Window parent;
-    Stage stage;
-    private SelectWindow<Runway> selectRunwayWindow;
-
-    private DeleteController deleteController = new DeleteController();
+    /**
+     * The parent window
+     */
+    private final Window parent;
+    /**
+     * The delete controller to delete a runway
+     */
+    private final DeleteController deleteController = new DeleteController();
+    /**
+     * The listener that is called when the runway has been successfully modified
+     */
+    private SetRunwayListener setRunwayListener;
+    /**
+     * The data controller to modify the runway
+     */
+    private final DataController dataController;
 
     /**
      * Initialising the stage
      *
-     * @param parent
-     * @param airport current airport
+     * @param parent         the parent window
+     * @param dataController the data controller
+     * @param airport        current airport
      */
-    public ModifyRunwayWindow(Window parent, Airport airport) {
+    public ModifyRunwayWindow(Window parent, DataController dataController, Airport airport) {
         this.parent = parent;
+        this.dataController = dataController;
 
         //Pop up option window for user to choose runways
         showOptionScene(airport);
@@ -54,7 +52,7 @@ public class ModifyRunwayWindow extends ParameterController {
      */
     private void showOptionScene(Airport airport) {
         //listing all runways recorded in the system
-        selectRunwayWindow = new SelectWindow<Runway>(parent, "Runway To Edit",
+        var selectRunwayWindow = new SelectWindow<Runway>(parent, "Runway To Edit",
             airport.getRunwayObservableList());
         selectRunwayWindow.setStringMethod(Runway::getPhyId);
 
@@ -63,6 +61,7 @@ public class ModifyRunwayWindow extends ParameterController {
             showModifyScene(airport, (Runway) selectedRunway);
         });
 
+        // Set on runway delete
         selectRunwayWindow.setOnDelete((selectedRunway) -> {
             deleteIsPressed(airport, (Runway) selectedRunway);
         });
@@ -75,125 +74,11 @@ public class ModifyRunwayWindow extends ParameterController {
      * @param runway  the selected runway
      */
     private void showModifyScene(Airport airport, Runway runway) {
-        //components for physical measurements
-        Label phyParameter = new Label("Current Physical Parameters of " + runway.getPhyId() + ":");
-        phyParameter.setFont(new Font(17));
+        // Show the add runway window with the selected runway
+        var addRunwayWindow = new AddRunwayWindow(parent, dataController, airport, runway);
 
-        Label runwayL = new Label("Runway Length (m)");
-        TextField runwayLTf = new TextField(String.valueOf(runway.getRunwayL()));
-        Label runwayW = new Label("Runway Width (m)");
-        TextField runwayWTf = new TextField(String.valueOf(runway.getRunwayW()));
-        Label stripL = new Label("Distance between runway \n end & strip end (m)");
-        TextField stripLTf = new TextField(String.valueOf(runway.getStripL()));
-        Label stripW = new Label("Distance between runway \n centreline & strip edge (m)");
-        TextField stripWTf = new TextField(String.valueOf(runway.getStripW()));
-        Label clearW = new Label("Clearway Vertical Width (m)");
-        TextField clearWTf = new TextField(String.valueOf(runway.getClearwayW()));
-
-        Label resa = new Label("RESA Length (m) ");
-        TextField resaTf = new TextField(String.valueOf(runway.getResaL()));
-        resaTf.setPrefSize(60, 20);
-
-        //combine components of physical input part
-        GridPane phyPane = new GridPane();
-        phyPane.setHgap(5);
-        phyPane.setVgap(5);
-        phyPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60),
-            new ColumnConstraints(), new ColumnConstraints(60));
-        phyPane.add(phyParameter, 0, 0, 4, 1);
-        phyPane.addRow(1, runwayL, runwayLTf, runwayW, runwayWTf);
-        phyPane.addRow(2, stripL, stripLTf, stripW, stripWTf);
-        phyPane.addRow(3, clearW, clearWTf, resa, resaTf);
-
-        String runway1 = runway.getLogicId1();
-        String runway2 = runway.getLogicId2();
-
-        //components for 1 logical parameters
-        TextField toraTf1 = new TextField(String.valueOf(runway.getTora(runway1)));
-        TextField todaTf1 = new TextField(String.valueOf(runway.getToda(runway1)));
-        TextField asdaTf1 = new TextField(String.valueOf(runway.getAsda(runway1)));
-        TextField ldaTf1 = new TextField(String.valueOf(runway.getLda(runway1)));
-        TextField disThreshTf1 = new TextField(String.valueOf(runway.getDisThresh(runway2)));
-
-        //components for the other logical parameters
-        TextField toraTf2 = new TextField(String.valueOf(runway.getTora(runway2)));
-        TextField todaTf2 = new TextField(String.valueOf(runway.getToda(runway2)));
-        TextField asdaTf2 = new TextField(String.valueOf(runway.getAsda(runway2)));
-        TextField ldaTf2 = new TextField(String.valueOf(runway.getLda(runway2)));
-        TextField disThreshTf2 = new TextField(String.valueOf(runway.getDisThresh(runway1)));
-
-        //logical runway 1 input interface Layout
-        GridPane gridPane1 = getLayout(runway1, toraTf1, todaTf1, asdaTf1, ldaTf1, disThreshTf1);
-        //logical runway 2 input interface Layout
-        GridPane gridPane2 = getLayout(runway2, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2);
-
-        TextField[] textFields = {runwayLTf, runwayWTf, stripLTf, stripWTf, clearWTf, resaTf,
-            toraTf1,
-            todaTf1, asdaTf1, ldaTf1, toraTf2, todaTf2, asdaTf2, ldaTf2, disThreshTf2,
-            disThreshTf1};
-
-        Button modifyBtn = new Button("Modify");
-        modifyBtn.setFont(new Font(15));
-        modifyBtn.setOnAction(ActionEvent -> {
-            //update all values if inputs are valid
-            if (validNumericalInput(textFields)) {
-                runway.updateParameters(convertTextToDouble(textFields));
-
-                // Call the listener to set the updated runway to the UI
-                setRunwayListener.updateRunway(runway);
-                printAlert(true);
-                stage.close();
-            }
-
-            //else print alert
-            else {
-                var errorAlert = new ErrorListAlert();
-                errorAlert.setErrors(getErrors().toArray(new String[]{}));
-                getErrors();
-                errorAlert.show();
-            }
-        });
-
-        //return to option page
-        Button returnBtn = new Button("Back");
-        returnBtn.setFont(new Font(15));
-        returnBtn.setOnAction(ActionEvent -> {
-            stage.close();
-        });
-
-        HBox buttons = new HBox();
-        buttons.setSpacing(2);
-        buttons.setAlignment(Pos.BOTTOM_RIGHT);
-        buttons.getChildren().addAll(returnBtn, modifyBtn);
-
-        //Setup main pane
-        GridPane mainPane = new GridPane();
-        mainPane.setAlignment(Pos.CENTER);
-        mainPane.setPadding(new Insets(5, 5, 5, 5));
-        mainPane.setVgap(10);
-
-        //Add all layouts & components to main pane
-        mainPane.add(phyPane, 0, 0, 2, 1);
-        mainPane.add(gridPane1, 0, 1);
-        mainPane.add(gridPane2, 0, 2);
-        mainPane.add(buttons, 1, 2);
-        GridPane.setHalignment(buttons, HPos.RIGHT);
-        GridPane.setValignment(buttons, VPos.BOTTOM);
-
-        //Setup scene
-        stage = new Stage();
-        Scene scene = new Scene(mainPane);
-        mainPane.requestFocus();
-        scene.setOnMouseClicked(mouseEvent -> {
-            mainPane.requestFocus();
-        });
-        stage.setScene(scene);
-
-        // Stage properties
-        stage.initOwner(selectRunwayWindow);
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setResizable(false);
-        stage.show();
+        // Set the successfully modified listener
+        addRunwayWindow.setNewRunwayListener(setRunwayListener);
     }
 
     /**
@@ -206,47 +91,12 @@ public class ModifyRunwayWindow extends ParameterController {
         deleteController.deleteRunway(airport, runway);
     }
 
-    private GridPane getLayout(String degree, TextField toraTf, TextField todaTf, TextField asdaTf,
-        TextField ldaTf, TextField disThreshTf) {
-        GridPane gridPane = new GridPane();
-        ColumnConstraints col1 = new ColumnConstraints();
-        ColumnConstraints col2 = new ColumnConstraints(60);
-        gridPane.setHgap(5);
-        gridPane.setVgap(5);
-
-        Label lbl = new Label();
-        lbl.setFont(new Font(17));
-        lbl.setText("Current Parameters of " + degree + ":");
-        Label toraLbl = new Label("TORA (m)");
-        Label todaLbl = new Label("TODA (m)");
-        Label asdaLbl = new Label("ASDA (m)");
-        Label ldaLbl = new Label("LDA (m)");
-        Label disThreshLbl = new Label("Displaced Threshold (m)");
-
-        gridPane.getColumnConstraints().addAll(col1, col2, col1, col2);
-        gridPane.setAlignment(Pos.CENTER_LEFT);
-        gridPane.add(lbl, 0, 0, 4, 1);
-        gridPane.addRow(1, toraLbl, toraTf, asdaLbl, asdaTf);
-        gridPane.addRow(2, todaLbl, todaTf, ldaLbl, ldaTf);
-        gridPane.addRow(3, disThreshLbl, disThreshTf);
-
-        return gridPane;
-    }
-
-    @Override
-    protected void printAlert(boolean success) {
-
-        super.printAlert(success);
-        Alert a;
-
-        if (success) {
-            a = new Alert(Alert.AlertType.INFORMATION);
-            a.setContentText("Parameters updated.");
-        } else {
-            a = new Alert(Alert.AlertType.ERROR);
-            a.setContentText("Invalid Input.");
-        }
-
-        a.show();
+    /**
+     * Set the listener to be called when a runway has been selected or updated
+     *
+     * @param setRunwayListener the listener
+     */
+    public void setNewRunwayListener(SetRunwayListener setRunwayListener) {
+        this.setRunwayListener = setRunwayListener;
     }
 }

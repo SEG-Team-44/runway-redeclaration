@@ -2,7 +2,7 @@ package com.team44.runwayredeclarationapp.view.component.alert;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 
 /**
  * Information alert that has wrapped content text
@@ -32,8 +32,8 @@ public class ErrorAlert {
         var alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);
         alert.setHeaderText(header);
-        var alertText = new Label(content);
-        alertText.setWrapText(true);
+        var alertText = new Text(content);
+        alertText.setWrappingWidth(500);
         alert.getDialogPane().setContent(alertText);
 
         // Show the alert

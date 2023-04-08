@@ -1,10 +1,10 @@
 package com.team44.runwayredeclarationapp.ui.obstacle;
 
+import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.event.AddObstacleListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
-import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -16,10 +16,12 @@ public class ModifyObstacleWindow {
     private Stage stage;
     private final Window parent;
     /**
-     * The observable list containing the obstacles
+     * The data controller for editing an obstacle
      */
-    private final ObservableList<Obstacle> obstacleObservableList;
-
+    private final DataController dataController;
+    /**
+     * The delete controller for deleting an obstacle
+     */
     private final DeleteController deleteController = new DeleteController();
 
     /**
@@ -30,12 +32,12 @@ public class ModifyObstacleWindow {
     /**
      * Initialising the stage
      *
-     * @param parent                 the parent window
-     * @param obstacleObservableList the observable list containing the obstacles
+     * @param parent         the parent window
+     * @param dataController the data controller
      */
-    public ModifyObstacleWindow(Window parent, ObservableList<Obstacle> obstacleObservableList) {
+    public ModifyObstacleWindow(Window parent, DataController dataController) {
         this.parent = parent;
-        this.obstacleObservableList = obstacleObservableList;
+        this.dataController = dataController;
 
         // Pop up option window for user to choose an obstacle
         showOptionScene();
@@ -47,7 +49,7 @@ public class ModifyObstacleWindow {
     private void showOptionScene() {
         // Create the select window
         var selectWindow = new SelectWindow<Obstacle>(parent, "Obstacle To Edit",
-            obstacleObservableList);
+            dataController.getObstacleObservableList());
         selectWindow.setStringMethod(Obstacle::getObstName);
 
         // On select event
@@ -69,7 +71,7 @@ public class ModifyObstacleWindow {
      * @param obstacle the obstacle selected
      */
     private void showModifyScene(Obstacle obstacle) {
-        var modifyWindow = new AddObstacleWindow(stage, obstacleObservableList, obstacle);
+        var modifyWindow = new AddObstacleWindow(stage, dataController, obstacle);
 
         // Call listener
         modifyWindow.setAddObstacleListener(modifiedObstacle -> {
@@ -94,7 +96,7 @@ public class ModifyObstacleWindow {
      * @param obstacle obstacle to be deleted
      */
     private void deleteIsPressed(Obstacle obstacle) {
-        deleteController.deleteObstacle(obstacle, obstacleObservableList);
+        deleteController.deleteObstacle(obstacle, dataController.getObstacleObservableList());
 
     }
 }

@@ -47,6 +47,13 @@ public class AirportXMLObj {
      */
     public Airport toAirport() {
         var airport = new Airport(name);
+
+        // Create phys and logical ids for the runways
+        for (Runway runway : runways) {
+            runway.setPhyId();
+            runway.setLogicId();
+        }
+
         // Set the list of runways to the observable list
         airport.getRunwayObservableList().setAll(runways);
 

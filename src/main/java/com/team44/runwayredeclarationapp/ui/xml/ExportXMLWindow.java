@@ -1,6 +1,6 @@
 package com.team44.runwayredeclarationapp.ui.xml;
 
-import com.team44.runwayredeclarationapp.controller.DataController;
+import com.team44.runwayredeclarationapp.controller.FileController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import javafx.collections.ObservableList;
@@ -26,11 +26,11 @@ public class ExportXMLWindow extends Stage {
      * Create the window for exporting xml file
      *
      * @param parent                 the parent window
-     * @param dataController         the data controller
+     * @param fileController         the data controller
      * @param airportObservableList  the observable list of airports
      * @param obstacleObservableList the observable list of obstacles
      */
-    public ExportXMLWindow(Window parent, DataController dataController,
+    public ExportXMLWindow(Window parent, FileController fileController,
         ObservableList<Airport> airportObservableList,
         ObservableList<Obstacle> obstacleObservableList) {
 
@@ -59,7 +59,7 @@ public class ExportXMLWindow extends Stage {
         fileChooser.getExtensionFilters()
             .add(new FileChooser.ExtensionFilter("XML Files", "*.xml"));
         exportButton.setOnAction(event -> {
-            dataController.exportXMLFile(airportObservableList.toArray(Airport[]::new),
+            fileController.exportXMLFile(airportObservableList.toArray(Airport[]::new),
                 obstacleObservableList.toArray(Obstacle[]::new), fileChooser.showSaveDialog(this));
         });
 

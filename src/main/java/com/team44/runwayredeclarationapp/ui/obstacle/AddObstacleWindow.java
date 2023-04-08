@@ -1,11 +1,12 @@
 package com.team44.runwayredeclarationapp.ui.obstacle;
 
+import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.event.AddObstacleListener;
+import com.team44.runwayredeclarationapp.model.ErrorObjectPair;
 import com.team44.runwayredeclarationapp.model.Obstacle;
+import com.team44.runwayredeclarationapp.model.form.ObstacleForm;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
-import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
-import com.team44.runwayredeclarationapp.view.component.inputs.RegexField;
-import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -25,17 +26,9 @@ import javafx.stage.Window;
 public class AddObstacleWindow {
 
     /**
-     * The input taking in the obstacle name
+     * The form containing the fields to add a new obstacle
      */
-    private final RegexField obstacleNameInput;
-    /**
-     * The input taking in the obstacle height
-     */
-    private final DoubleField obstacleHeightInput;
-    /**
-     * The error alert
-     */
-    private final ErrorListAlert errorListAlert = new ErrorListAlert();
+    private final ObstacleForm obstacleForm = new ObstacleForm();
     /**
      * The listener called when an obstacle has been added/edited
      */
@@ -44,21 +37,21 @@ public class AddObstacleWindow {
     /**
      * Create a new Add Obstacle window
      *
-     * @param parent                 the parent window
-     * @param obstacleObservableList the observable list of current obstacles
+     * @param parent         the parent window
+     * @param dataController the data controller
      */
-    public AddObstacleWindow(Window parent, ObservableList<Obstacle> obstacleObservableList) {
-        this(parent, obstacleObservableList, null);
+    public AddObstacleWindow(Window parent, DataController dataController) {
+        this(parent, dataController, null);
     }
 
     /**
      * Create a new Add Obstacle window
      *
-     * @param parent                 the parent window
-     * @param obstacleObservableList the observable list of current obstacles
-     * @param obstacle               the existing obstacle, if any (else null)
+     * @param parent         the parent window
+     * @param dataController the data controller
+     * @param obstacle       the existing obstacle, if any (else null)
      */
-    public AddObstacleWindow(Window parent, ObservableList<Obstacle> obstacleObservableList,
+    public AddObstacleWindow(Window parent, DataController dataController,
         Obstacle obstacle) {
         Stage stage = new Stage();
 
@@ -77,50 +70,47 @@ public class AddObstacleWindow {
         GridPane.setHalignment(addBtn, HPos.RIGHT);
         GridPane.setValignment(addBtn, VPos.BOTTOM);
 
-        // Inputs
-        String obstacleNameRegex = "^.{0,29}$";
-        obstacleNameInput = new RegexField(obstacleNameRegex);
-        obstacleHeightInput = new DoubleField();
-
         // If there is an existing obstacle, set its values
         if (obstacle != null) {
-            obstacleNameInput.setText(obstacle.getObstName());
-            obstacleHeightInput.setText(String.valueOf(obstacle.getHeight()));
+            obstacleForm.setObstacle(obstacle);
         }
 
         // Add event
         addBtn.setOnAction(event -> {
             if (isInputValid()) {
-                var newObstacle = new Obstacle(obstacleNameInput.getText(),
-                    obstacleHeightInput.getValue());
 
+                ErrorObjectPair<Obstacle> validationErrors;
                 if (obstacle == null) {
-                    // Create and add the obstacle to the observable list
-                    obstacleObservableList.add(
-                        new Obstacle(obstacleNameInput.getText(), obstacleHeightInput.getValue())
-                    );
+                    // Add Obstacle
+                    validationErrors = dataController.addObstacle(
+                        obstacleForm.getObstacleNameInput().getText(),
+                        obstacleForm.getObstacleHeightInput().getValue());
                 } else {
-                    // Update the obstacle in the observable list
-                    var index = obstacleObservableList.indexOf(obstacle);
-
-                    obstacleObservableList.set(index, newObstacle);
-                }
-                // Call the listener
-                if (addObstacleListener != null) {
-                    addObstacleListener.addObstacle(newObstacle);
+                    // Edit obstacle
+                    validationErrors = dataController.editObstacle(obstacle,
+                        obstacleForm.getObstacleNameInput().getText(),
+                        obstacleForm.getObstacleHeightInput().getValue());
                 }
 
-                // Close the window
-                stage.close();
-            } else {
-                // Show alert with errors if input is not valid
-                errorListAlert.show();
+                // Check if there are any validation errors
+                if (!validationErrors.hasErrors()) {
+                    // Call the listener
+                    if (addObstacleListener != null) {
+                        addObstacleListener.addObstacle(validationErrors.getObject());
+                    }
+                    stage.close();
+                } else {
+                    // Display errors
+                    var errorAlert = new ErrorListAlert();
+                    errorAlert.setErrors(validationErrors.getErrorsArray());
+                    errorAlert.show();
+                }
             }
         });
 
         // Add rows to grid
-        mainPane.addRow(1, new Text("Obstacle Name:"), obstacleNameInput);
-        mainPane.addRow(2, new Text("Obstacle Height:"), obstacleHeightInput);
+        mainPane.addRow(1, new Text("Obstacle Name:"), obstacleForm.getObstacleNameInput());
+        mainPane.addRow(2, new Text("Obstacle Height:"), obstacleForm.getObstacleHeightInput());
         mainPane.add(addBtn, 0, 3, 2, 1);
 
         //Set scene
@@ -144,26 +134,14 @@ public class AddObstacleWindow {
      * @return whether the inputs are valid
      */
     private Boolean isInputValid() {
-        // Check the regex and text empty
-        var checkRegex = obstacleNameInput.isRegexMatch() &&
-            obstacleHeightInput.isRegexMatch();
-        var checkEmpty =
-            obstacleNameInput.isEmpty() || obstacleHeightInput.isEmpty();
-
         // Add error messages if needed
-        if (!checkRegex) {
-            errorListAlert.addError(
-                """
-                    Input cannot be validated:\s
-                     - Name must be under 30 characters.
-                     - Height must be under 10,000m and rounded to 2 decimal places.""");
-        }
-        if (checkEmpty) {
-            errorListAlert.addError("Inputs cannot be empty.");
+        if (!obstacleForm.isValid()) {
+            new ErrorAlert("Invalid inputs", "Provided obstacle inputs are invalid!",
+                "Ensure that the name field is not empty and under 30 characters.\n"
+                    + "Ensure that the height field is not empty and rounded to 2 decimal places.").show();
         }
 
-        // Return if the inputs are valid or not
-        return checkRegex && !checkEmpty;
+        return obstacleForm.isValid();
     }
 
     /**

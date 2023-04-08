@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 
 /**
  * Error alert that is able to show a list of errors
@@ -57,8 +57,8 @@ public class ErrorListAlert {
         // Create alert and text
         var alert = new Alert(AlertType.ERROR);
         alert.setHeaderText("Please fix the following errors:");
-        var errorText = new Label(String.join("\n", errors));
-        errorText.setWrapText(true);
+        var errorText = new Text(String.join("\n", errors));
+        errorText.setWrappingWidth(500);
         alert.getDialogPane().setContent(errorText);
 
         // Show the alert

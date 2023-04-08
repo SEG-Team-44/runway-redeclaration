@@ -66,7 +66,7 @@ public class AirportTitlePane extends TitledPane {
         //Generate init window when button clicked
         addAirportBtn.setOnAction(ActionEvent -> {
             AddAirportWindow initPage = new AddAirportWindow(mainScene.getMainWindow().getStage(),
-                mainScene.getAirportObservableList());
+                mainScene.getDataController());
 
             initPage.setAddAirportListener(airportSelectComboBox::setValue);
         });
@@ -83,7 +83,7 @@ public class AirportTitlePane extends TitledPane {
             } else {
                 ModifyAirportWindow modifyPage = new ModifyAirportWindow(
                     mainScene.getMainWindow().getStage(),
-                    mainScene.getAirportObservableList());
+                    mainScene.getDataController());
 
                 modifyPage.setEditAirportListener(airportSelectComboBox::setValue);
             }

@@ -52,9 +52,25 @@ public class ColourTheme {
     public ColourTheme() {
     }
 
+
     /**
-     * Create a custom colour theme
-     * todo: write documentation
+     * Create a custom colour scheme
+     *
+     * @param loadingScreen          the loading screen background colour
+     * @param text                   the text colour
+     * @param arrow                  the arrow colour
+     * @param guideline              the guideline colour
+     * @param runwayStrip            the runway strip colour
+     * @param stopway                the stopway colour
+     * @param clearway               the clearway colour
+     * @param colourKeyBox           the colour key box colour
+     * @param obstacle               the obstacle colour
+     * @param thresholdMarkingLines  the threshold marking/lines colour
+     * @param topDownBackground      the top-down view background colour
+     * @param clearedGradedArea      the cleared and graded area colour
+     * @param tocsALSLine            the tocs line colour
+     * @param sideOnTopBackground    the side-on view top background colour (sky)
+     * @param sideOnBottomBackground the side-on view bottom background colour (under runway)
      */
     public ColourTheme(Color loadingScreen, Color text,
         Color arrow, Color guideline, Color runwayStrip, Color stopway,

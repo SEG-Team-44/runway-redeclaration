@@ -1,10 +1,10 @@
 package com.team44.runwayredeclarationapp.ui.airport;
 
+import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.event.AddAirportListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
-import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -17,11 +17,13 @@ public class ModifyAirportWindow {
     private final Window parent;
 
     /**
-     * The observable list of airports
+     * The data controller to edit an airport
      */
-    private final ObservableList<Airport> airportObservableList;
-
-    private DeleteController deleteController = new DeleteController();
+    private final DataController dataController;
+    /**
+     * The delete controller to delete an airport
+     */
+    private final DeleteController deleteController = new DeleteController();
 
     /**
      * The listener called when an airport has been successfully edited
@@ -31,12 +33,12 @@ public class ModifyAirportWindow {
     /**
      * Create the select and edit airport modal windows
      *
-     * @param parent                the parent window/stage
-     * @param airportObservableList the observable list of airports
+     * @param parent         the parent window/stage
+     * @param dataController the data controller
      */
-    public ModifyAirportWindow(Window parent, ObservableList<Airport> airportObservableList) {
+    public ModifyAirportWindow(Window parent, DataController dataController) {
         this.parent = parent;
-        this.airportObservableList = airportObservableList;
+        this.dataController = dataController;
 
         // Pop up option window for user to choose an airport
         showOptionScene();
@@ -48,7 +50,7 @@ public class ModifyAirportWindow {
     private void showOptionScene() {
         // Create the select window
         var selectWindow = new SelectWindow<Airport>(parent, "Airport To Edit",
-            airportObservableList);
+            dataController.getAirportObservableList());
         selectWindow.setStringMethod(Airport::getName);
 
         // On select event
@@ -70,7 +72,7 @@ public class ModifyAirportWindow {
      * @param airport the airport to be edited
      */
     private void showModifyScene(Airport airport) {
-        var modifyWindow = new AddAirportWindow(stage, airportObservableList, airport);
+        var modifyWindow = new AddAirportWindow(stage, dataController, airport);
 
         // Call listener
         modifyWindow.setAddAirportListener(modifiedAirport -> {
@@ -95,6 +97,6 @@ public class ModifyAirportWindow {
      * @param airport airport to be deleted
      */
     private void deleteIsPressed(Airport airport) {
-        deleteController.deleteAirport(airport, airportObservableList);
+        deleteController.deleteAirport(airport, dataController.getAirportObservableList());
     }
 }
