@@ -1,7 +1,6 @@
 package com.team44.runwayredeclarationapp.ui.obstacle;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
-import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.event.AddObstacleListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
@@ -19,10 +18,6 @@ public class ModifyObstacleWindow {
      * The data controller for editing an obstacle
      */
     private final DataController dataController;
-    /**
-     * The delete controller for deleting an obstacle
-     */
-    private final DeleteController deleteController = new DeleteController();
 
     /**
      * The listener called when an obstacle has been successfully edited
@@ -96,7 +91,7 @@ public class ModifyObstacleWindow {
      * @param obstacle obstacle to be deleted
      */
     private void deleteIsPressed(Obstacle obstacle) {
-        deleteController.deleteObstacle(obstacle, dataController.getObstacleObservableList());
+        dataController.deleteObstacle(obstacle, dataController.getObstacleObservableList());
 
     }
 }

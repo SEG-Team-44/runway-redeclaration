@@ -1,7 +1,6 @@
 package com.team44.runwayredeclarationapp.ui.runway;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
-import com.team44.runwayredeclarationapp.controller.DeleteController;
 import com.team44.runwayredeclarationapp.event.SetRunwayListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
@@ -17,10 +16,7 @@ public class ModifyRunwayWindow {
      * The parent window
      */
     private final Window parent;
-    /**
-     * The delete controller to delete a runway
-     */
-    private final DeleteController deleteController = new DeleteController();
+
     /**
      * The listener that is called when the runway has been successfully modified
      */
@@ -88,7 +84,7 @@ public class ModifyRunwayWindow {
      * @param runway  runway to be removed
      */
     private void deleteIsPressed(Airport airport, Runway runway) {
-        deleteController.deleteRunway(airport, runway);
+        dataController.deleteRunway(airport, runway);
     }
 
     /**
