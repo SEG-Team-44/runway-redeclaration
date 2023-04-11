@@ -6,7 +6,7 @@ package com.team44.runwayredeclarationapp.model;
  */
 public class RunwayObstacle {
 
-    private Runway recalRw;
+    private final Runway recalRw;
     private final Obstacle obst;
     private final double posL;
     private final double posR;

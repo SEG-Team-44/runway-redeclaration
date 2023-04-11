@@ -6,6 +6,7 @@ module com.team44.runwayredeclarationapp {
     requires com.dlsc.formsfx;
     requires org.apache.logging.log4j;
     requires java.xml;
+    requires org.mockito;
 
     opens com.team44.runwayredeclarationapp to javafx.fxml;
     opens com.team44.runwayredeclarationapp.model to xstream;

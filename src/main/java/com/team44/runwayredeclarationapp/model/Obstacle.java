@@ -1,5 +1,7 @@
 package com.team44.runwayredeclarationapp.model;
 
+import java.util.Objects;
+
 /**
  * The class is responsible for creating Obstacles
  */
@@ -36,6 +38,24 @@ public class Obstacle {
      */
     public double getSlope() {
         return height * 50;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Obstacle)) {
+            return false;
+        }
+        Obstacle obstacle = (Obstacle) o;
+        return Double.compare(obstacle.height, height) == 0 && obstName.equals(
+            obstacle.obstName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(obstName, height);
     }
 }
 

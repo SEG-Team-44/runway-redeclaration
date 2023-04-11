@@ -6,11 +6,12 @@ import javafx.scene.control.Label;
 /**
  * Class responsible for creating a confirmation alert
  */
-public class ConfirmAlert extends Alert{
+public class ConfirmAlert extends Alert {
 
     /**
      * Create a confirmation alert
-     * @param header header
+     *
+     * @param header  header
      * @param content content
      */
     public ConfirmAlert(String header, String content) {

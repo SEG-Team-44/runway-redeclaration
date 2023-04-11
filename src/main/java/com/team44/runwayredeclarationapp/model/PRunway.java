@@ -1,5 +1,7 @@
 package com.team44.runwayredeclarationapp.model;
 
+import java.util.Objects;
+
 /**
  * The class refers to a parallel runway in real world Extends Runway
  */
@@ -74,5 +76,25 @@ public class PRunway extends Runway {
 
     public char getPos2() {
         return pos2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PRunway)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        PRunway runway = (PRunway) o;
+        return pos1 == runway.pos1 && pos2 == runway.pos2;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), pos1, pos2);
     }
 }

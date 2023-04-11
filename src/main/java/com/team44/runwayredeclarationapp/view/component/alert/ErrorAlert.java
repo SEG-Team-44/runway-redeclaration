@@ -9,7 +9,9 @@ import javafx.scene.text.Text;
  */
 public class ErrorAlert {
 
-    private String title, header, content;
+    private final String title;
+    private final String header;
+    private final String content;
 
     /**
      * Create an error alert
