@@ -3,6 +3,7 @@ package com.team44.runwayredeclarationapp;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
+import com.team44.runwayredeclarationapp.model.SRunway;
 
 /**
  * Test constants that can be used in the unit tests
@@ -51,6 +52,50 @@ public class TestConstants {
         3660,//lda2
         0,//disThresh1
         307//disThresh2
+    });
+
+    /**
+     * Runway object representing 01/19 (from valid-import-1.xml)
+     */
+    public static final SRunway RUNWAY_01_19 = new SRunway(1, 19, new double[]{
+        3660,//runwayL
+        100,//runwayW
+        60,//stripL
+        100,//stripW
+        100,//clearwayW
+        240, //resaL
+        3660,//tora1
+        3660,//toda1
+        3660,//asda1
+        3353,//lda1
+        3660,//tora2
+        3660,//toda2
+        3660,//asda2
+        3660,//lda2
+        0,//disThresh1
+        307//disThresh2
+    });
+
+    /**
+     * Runway object representing 02C/20C (from valid-import-1.xml)
+     */
+    public static final PRunway RUNWAY_02C_20C = new PRunway(2, 20, 'C', 'C', new double[]{
+        3902,//runwayL
+        100,//runwayW
+        60,//stripL
+        100,//stripW
+        100,//clearwayW
+        240, //resaL
+        3902,//tora1
+        3902,//toda1
+        3902,//asda1
+        3595,//lda1
+        3884,//tora2
+        3962,//toda2
+        3884,//asda2
+        3884,//lda2
+        0,//disThresh1
+        306//disThresh2
     });
 
     /**

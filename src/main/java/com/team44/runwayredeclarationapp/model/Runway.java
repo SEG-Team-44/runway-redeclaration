@@ -1,5 +1,7 @@
 package com.team44.runwayredeclarationapp.model;
 
+import java.util.Objects;
+
 /**
  * The class refers to a runway in real world
  */
@@ -316,5 +318,46 @@ public class Runway implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Runway)) {
+            return false;
+        }
+        Runway runway = (Runway) o;
+        return Double.compare(runway.runwayL, runwayL) == 0
+            && Double.compare(runway.runwayW, runwayW) == 0
+            && Double.compare(runway.stripL, stripL) == 0
+            && Double.compare(runway.stripW, stripW) == 0
+            && Double.compare(runway.stopwayW, stopwayW) == 0
+            && Double.compare(runway.clearwayW, clearwayW) == 0
+            && Double.compare(runway.resaL, resaL) == 0 && degree1 == runway.degree1
+            && Double.compare(runway.tora1, tora1) == 0
+            && Double.compare(runway.toda1, toda1) == 0
+            && Double.compare(runway.asda1, asda1) == 0
+            && Double.compare(runway.lda1, lda1) == 0
+            && Double.compare(runway.disThresh1, disThresh1) == 0
+            && Double.compare(runway.stopwayL1, stopwayL1) == 0
+            && Double.compare(runway.clearwayL1, clearwayL1) == 0 && degree2 == runway.degree2
+            && Double.compare(runway.tora2, tora2) == 0
+            && Double.compare(runway.toda2, toda2) == 0
+            && Double.compare(runway.asda2, asda2) == 0
+            && Double.compare(runway.lda2, lda2) == 0
+            && Double.compare(runway.disThresh2, disThresh2) == 0
+            && Double.compare(runway.clearwayL2, clearwayL2) == 0
+            && Double.compare(runway.stopwayL2, stopwayL2) == 0 && phyId.equals(runway.phyId)
+            && logicId1.equals(runway.logicId1) && logicId2.equals(runway.logicId2);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(phyId, runwayL, runwayW, stripL, stripW, stopwayW, clearwayW, resaL,
+            logicId1, degree1, tora1, toda1, asda1, lda1, disThresh1, stopwayL1, clearwayL1,
+            logicId2,
+            degree2, tora2, toda2, asda2, lda2, disThresh2, clearwayL2, stopwayL2);
     }
 }

@@ -68,36 +68,11 @@ public class FileController {
         try {
             // Parse the XML file
             uploadedData = xmlHandler.readXML(file);
-
             var airports = uploadedData.getAirports();
             var obstacles = uploadedData.getObstacles();
 
-            // List of validation errors
-            List<String> errors = new ArrayList<>();
-
-            // Validate the data in the file
-            for (Airport airport : airports) {
-                // Validate the airport name
-                errors.addAll(ValidationController.validateAirport(airport.getName()));
-
-                // Validate the runways
-                for (Runway runway : airport.getRunways()) {
-                    var isParallel = runway instanceof PRunway;
-                    var pos1 = isParallel ? ((PRunway) runway).getPos1() : null;
-                    var pos2 = isParallel ? ((PRunway) runway).getPos2() : null;
-
-                    var validationErrors = ValidationController.validateRunway(pos1, pos2,
-                        runway.getDegree1(), runway.getDegree2(), runway.getParameters(), airport);
-
-                    errors.addAll(validationErrors);
-                }
-            }
-
-            // Validate the list of obstacles
-            for (Obstacle obstacle : obstacles) {
-                errors.addAll(ValidationController.validateObstacle(obstacle.getObstName(),
-                    obstacle.getHeight()));
-            }
+            // Validate the data
+            var errors = validateUploadedData(airports, obstacles);
 
             // Check if there are validation errors
             if (!errors.isEmpty()) {
@@ -140,6 +115,7 @@ public class FileController {
      * @param file the file to save to
      */
     public void exportXMLFile(Airport[] airports, Obstacle[] obstacles, File file) {
+        // todo check file exists?
         xmlHandler.saveToXML(airports, obstacles, file);
     }
 
@@ -149,8 +125,17 @@ public class FileController {
     public void loadInitialState() {
         initialState = xmlHandler.readStateXML();
 
-        // Write the pre-defined state if obstacle is empty
+        // Write the pre-defined state if error in parsing
         if (initialState == null) {
+            savePredefinedValues();
+            return;
+        }
+
+        // Validate the data
+        var errors = validateUploadedData(initialState.getAirports(), initialState.getObstacles());
+
+        // Write the pre-defined state if invalid data
+        if (!errors.isEmpty()) {
             savePredefinedValues();
         } else {
             callSetListener();
@@ -361,5 +346,52 @@ public class FileController {
             new Obstacle("Gulfstream G650", 7),
             new Obstacle("Embraer E145", 6)
         };
+    }
+
+    /**
+     * Validate the list of airports and obstacles uploaded
+     *
+     * @param airports  list of airports uploaded
+     * @param obstacles list of obstacles uploaded
+     * @return the list of errors
+     */
+    private List<String> validateUploadedData(Airport[] airports, Obstacle[] obstacles) {
+        // List of validation errors
+        List<String> errors = new ArrayList<>();
+
+        // Validate the data in the file
+        for (Airport airport : airports) {
+            // Validate the airport name
+            errors.addAll(ValidationController.validateAirport(airport.getName()));
+
+            // Validate the runways
+            for (Runway runway : airport.getRunways()) {
+                var isParallel = runway instanceof PRunway;
+                var pos1 = isParallel ? ((PRunway) runway).getPos1() : null;
+                var pos2 = isParallel ? ((PRunway) runway).getPos2() : null;
+
+                var validationErrors = ValidationController.validateRunway(pos1, pos2,
+                    runway.getDegree1(), runway.getDegree2(), runway.getParameters(), airport);
+
+                errors.addAll(validationErrors);
+            }
+        }
+
+        // Validate the list of obstacles
+        for (Obstacle obstacle : obstacles) {
+            errors.addAll(ValidationController.validateObstacle(obstacle.getObstName(),
+                obstacle.getHeight()));
+        }
+
+        return errors;
+    }
+
+    /**
+     * Set a new directory (file object) to save the state to
+     *
+     * @param stateFile the new state file
+     */
+    public void setStateFileDirectory(File stateFile) {
+        xmlHandler.setStateFile(stateFile);
     }
 }

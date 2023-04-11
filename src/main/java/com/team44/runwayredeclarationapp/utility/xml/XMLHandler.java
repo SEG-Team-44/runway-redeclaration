@@ -38,7 +38,7 @@ public class XMLHandler {
     /**
      * The file to save to
      */
-    private final File stateFile = new File("." + File.separator + "state.xml");
+    private File stateFile = new File("." + File.separator + "state.xml");
 
     /**
      * The output/write stream
@@ -222,6 +222,15 @@ public class XMLHandler {
         } else {
             logger.error("State file could not be deleted.");
         }
+    }
+
+    /**
+     * Set a different directory for the state file
+     *
+     * @param stateFile the new file
+     */
+    public void setStateFile(File stateFile) {
+        this.stateFile = stateFile;
     }
 }
 

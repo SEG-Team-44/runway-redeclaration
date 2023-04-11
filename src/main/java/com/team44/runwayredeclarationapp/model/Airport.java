@@ -2,6 +2,7 @@ package com.team44.runwayredeclarationapp.model;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -103,5 +104,22 @@ public class Airport {
      */
     public void removeRunway(Runway runway) {
         runways.remove(runway);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Airport)) {
+            return false;
+        }
+        Airport airport = (Airport) o;
+        return name.equals(airport.name) && runways.equals(airport.runways);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, runways);
     }
 }
