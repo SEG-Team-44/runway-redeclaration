@@ -266,7 +266,7 @@ public class RecalculationController {
     /**
      * Recalculate a given runway
      *
-     * @param rwObst          the runway-obstacle pairing
+     * @param rwObst the runway-obstacle pairing
      * @return the updated runway
      */
     public Runway recalculateRunway(RunwayObstacle rwObst) {
@@ -317,7 +317,8 @@ public class RecalculationController {
         // Call the listener to update the GUI
         if (recalculatedRunwayListener != null) {
             var newRunwayObstacle = new RunwayObstacle(rwObst.getObst(), recalculatedRunway,
-                rwObst.getPositionL(), rwObst.getPositionR(), rwObst.getDistCR(), rwObst.getBlastPro());
+                rwObst.getPositionL(), rwObst.getPositionR(), rwObst.getDistCR(),
+                rwObst.getBlastPro());
 
             // Update the runway on gui
             recalculatedRunwayListener.updateRunway(newRunwayObstacle);

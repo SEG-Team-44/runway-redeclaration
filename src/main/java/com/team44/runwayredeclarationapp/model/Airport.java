@@ -16,7 +16,7 @@ public class Airport {
     /**
      * Runways on airport
      */
-    private ObservableList<Runway> runways;
+    private final ObservableList<Runway> runways;
 
     public Airport(String name) {
         this.name = name;

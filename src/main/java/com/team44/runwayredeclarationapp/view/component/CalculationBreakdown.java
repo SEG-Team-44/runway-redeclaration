@@ -11,7 +11,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
@@ -56,8 +55,8 @@ public class CalculationBreakdown extends VBox {
     /**
      * Generate calculation breakdown for TORA
      *
-     * @param runway          current runway
-     * @param rwObst          current runway and obstacle appeared
+     * @param runway current runway
+     * @param rwObst current runway and obstacle appeared
      * @return VBox containing calculation breakdown of TORA
      */
     private VBox initTORA(Runway runway, RunwayObstacle rwObst) {
@@ -258,8 +257,8 @@ public class CalculationBreakdown extends VBox {
     /**
      * Generate the TabPane displaying the whole calculation breakdown
      *
-     * @param originRunway    original runway
-     * @param rwObst          obstacle appeared on the runway
+     * @param originRunway original runway
+     * @param rwObst       obstacle appeared on the runway
      */
     public void displayCalculations(Runway originRunway, RunwayObstacle rwObst) {
         //remove previous calculation breakdown before generating a new one

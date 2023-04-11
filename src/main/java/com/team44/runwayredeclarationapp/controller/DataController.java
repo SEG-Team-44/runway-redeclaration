@@ -8,12 +8,11 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.SRunway;
 import com.team44.runwayredeclarationapp.view.component.alert.ConfirmAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-
-import java.util.Optional;
 
 /**
  * The data controller for handling the list of airports, runways and obstacles
@@ -187,7 +186,8 @@ public class DataController {
 
     /**
      * Handle when an airport is to be deleted
-     * @param airport airport to be deleted
+     *
+     * @param airport               airport to be deleted
      * @param airportObservableList list of airports
      */
     public void deleteAirport(Airport airport, ObservableList<Airport> airportObservableList) {
@@ -204,8 +204,9 @@ public class DataController {
 
     /**
      * Handle when a runway is to be deleted
+     *
      * @param airport current airport
-     * @param runway runway to be deleted
+     * @param runway  runway to be deleted
      */
     public void deleteRunway(Airport airport, Runway runway) {
         Alert confirmAlert = createConfirmAlert("runway" + runway.getPhyId());
@@ -221,7 +222,8 @@ public class DataController {
 
     /**
      * Handle when an obstacle is to be deleted
-     * @param obstacle obstacle to be deleted
+     *
+     * @param obstacle  obstacle to be deleted
      * @param obstacles list of obstacles
      */
     public void deleteObstacle(Obstacle obstacle, ObservableList<Obstacle> obstacles) {
@@ -238,22 +240,24 @@ public class DataController {
 
     /**
      * Generate confirmation alert
+     *
      * @param name item name
      * @return confirmation alert
      */
     private ConfirmAlert createConfirmAlert(String name) {
         return new ConfirmAlert("Confirmation", "Do you want to remove " +
-                name + " from the system?");
+            name + " from the system?");
     }
 
     /**
      * Print an information alert informing action success
+     *
      * @param name item name
      */
     private void printInfoAlert(String name) {
         //inform user that deletion is successful
         InfoAlert infoAlert = new InfoAlert("Delete successful", "Delete successful",
-                name + " has been removed");
+            name + " has been removed");
         infoAlert.show();
     }
 
