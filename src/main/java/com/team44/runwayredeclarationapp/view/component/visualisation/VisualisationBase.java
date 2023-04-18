@@ -24,6 +24,7 @@ public abstract class VisualisationBase extends Canvas {
     protected boolean isLoadingScreen = true;
     protected boolean isObstacleScreen = false;
     protected boolean isShowValues = false;
+    protected boolean isShowKey = true;
 
     /**
      * Runway width and height
@@ -223,7 +224,9 @@ public abstract class VisualisationBase extends Canvas {
         drawTakeOffLandingDirection();
 
         // Draw key
-        drawColourKey();
+        if (isShowKey) {
+            drawColourKey();
+        }
     }
 
     protected void drawTOCSandALS() {
@@ -352,12 +355,13 @@ public abstract class VisualisationBase extends Canvas {
      */
     protected void drawTakeOffLandingDirection() {
         // Top arrow
-        addArrow(20, 35, 70, 10);
-        addText("Landing and Take-off in this direction", 13, 20, 20);
+        addArrow(20 - 15, 35 - 5, 70, 10);
+        addText("Landing and Take-off in this direction", 13, 20 - 15, 20 - 5);
 
         // Bottom arrow
-        addArrow(getWidth() - 20, getHeight() - 35, getWidth() - 70, 10);
-        addText("Landing and Take-off in this direction", 13, getWidth() - 230, getHeight() - 13);
+        addArrow(getWidth() - 20 + 15, getHeight() - 35 + 5, getWidth() - 70, 10);
+        addText("Landing and Take-off in this direction", 13, getWidth() - 230 + 15,
+            getHeight() - 13 + 5);
     }
 
     /**
@@ -1062,5 +1066,32 @@ public abstract class VisualisationBase extends Canvas {
      */
     public void setColourTheme(ColourTheme colourTheme) {
         this.colourTheme = colourTheme;
+    }
+
+    /**
+     * Set the distance/offset from the runway strip to the first arrow annotation
+     *
+     * @param offset the offset value
+     */
+    public void setArrowsFromRunwayOffset(double offset) {
+        this.arrowsFromRunwayOffset = offset;
+    }
+
+    /**
+     * Set the gap between the arrows on the visualisation
+     *
+     * @param gap the gap value
+     */
+    public void setArrowsGapBetween(double gap) {
+        this.arrowsGapBetween = gap;
+    }
+
+    /**
+     * Set whether to show the colour key on the visualisation
+     *
+     * @param showKey whether to show the key
+     */
+    public void setShowKey(boolean showKey) {
+        isShowKey = showKey;
     }
 }

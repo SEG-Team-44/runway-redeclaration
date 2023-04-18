@@ -22,7 +22,7 @@ public class App extends Application {
     public void start(Stage stage) {
         logger.info("Starting scene");
 
-        var mainWindow = new MainWindow(stage, 1200, 600);
+        var mainWindow = new MainWindow(stage, 1200, 650);
         stage.show();
     }
 
