@@ -33,7 +33,7 @@ public class MapView extends TopDownView {
         var gc = getGraphicsContext2D();
 
         // Draw the image
-        var scale = 0.33;
+        var scale = getWidth() / 1818.18;
         gc.drawImage(runwayImage,
             (getWidth() - runwayImage.getWidth() * scale) / 2,
             (getHeight() - runwayImage.getHeight() * scale) / 2,
