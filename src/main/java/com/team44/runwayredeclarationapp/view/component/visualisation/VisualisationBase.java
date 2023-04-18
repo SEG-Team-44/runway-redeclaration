@@ -355,13 +355,13 @@ public abstract class VisualisationBase extends Canvas {
      */
     protected void drawTakeOffLandingDirection() {
         // Top arrow
-        addArrow(20 - 15, 35 - 5, 70, 10);
-        addText("Landing and Take-off in this direction", 13, 20 - 15, 20 - 5);
+        addArrow(5, 30, 70, 10);
+        addText("Landing and Take-off in this direction", 13, 5, 15);
 
         // Bottom arrow
-        addArrow(getWidth() - 20 + 15, getHeight() - 35 + 5, getWidth() - 70, 10);
-        addText("Landing and Take-off in this direction", 13, getWidth() - 230 + 15,
-            getHeight() - 13 + 5);
+        addArrow(getWidth() - 25, getHeight() - 30, getWidth() - 90, 10);
+        addText("Landing and Take-off in this direction", 13, getWidth() - 230,
+            getHeight() - 8);
     }
 
     /**

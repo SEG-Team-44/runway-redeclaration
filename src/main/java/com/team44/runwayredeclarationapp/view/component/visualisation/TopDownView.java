@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * The side-on view visualisation canvas for the runway
+ * The top-down view visualisation canvas for the runway
  */
 public class TopDownView extends VisualisationBase {
 
