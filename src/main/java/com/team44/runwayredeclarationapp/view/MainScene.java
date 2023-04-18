@@ -21,10 +21,12 @@ import com.team44.runwayredeclarationapp.view.component.text.Title;
 import com.team44.runwayredeclarationapp.view.component.titlepane.AirportTitlePane;
 import com.team44.runwayredeclarationapp.view.component.titlepane.ObstacleTitlePane;
 import com.team44.runwayredeclarationapp.view.component.titlepane.RunwayTitlePane;
+import com.team44.runwayredeclarationapp.view.component.visualisation.MapView;
 import com.team44.runwayredeclarationapp.view.component.visualisation.SideOnView;
 import com.team44.runwayredeclarationapp.view.component.visualisation.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationPane;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
@@ -45,6 +47,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -86,7 +89,7 @@ public class MainScene extends BaseScene {
     /**
      * The canvas displaying the top down and side on view
      */
-    private VisualisationBase topDownCanvas, sideOnCanvas;
+    private VisualisationBase topDownCanvas, sideOnCanvas, simultBottomCanvas, simultTopCanvas, mapCanvas;
 
     /**
      * Titled Panes
@@ -139,6 +142,9 @@ public class MainScene extends BaseScene {
 
                         topDownCanvas.reset();
                         sideOnCanvas.reset();
+                        simultTopCanvas.reset();
+                        simultBottomCanvas.reset();
+                        mapCanvas.reset();
                         obstacleTitlePane.clearInputs();
 
                     }
@@ -245,10 +251,15 @@ public class MainScene extends BaseScene {
             if (toggleShowValueMenuItem.isSelected()) {
                 topDownCanvas.setShowValues(true);
                 sideOnCanvas.setShowValues(true);
+                simultTopCanvas.setShowValues(true);
+                simultBottomCanvas.setShowValues(true);
+                mapCanvas.setShowValues(true);
             } else {
                 topDownCanvas.setShowValues(false);
                 sideOnCanvas.setShowValues(false);
-
+                simultTopCanvas.setShowValues(false);
+                simultBottomCanvas.setShowValues(false);
+                mapCanvas.setShowValues(false);
             }
         });
 
@@ -344,15 +355,42 @@ public class MainScene extends BaseScene {
         // Create tabs for the runway visualisations
         Tab topDownTab = new Tab("Top-down view");
         Tab sideOnTab = new Tab("Side-on view");
-        visualTabPane.getTabs().addAll(topDownTab, sideOnTab);
+        Tab simultTab = new Tab("Simultaneous view");
+        Tab mapTab = new Tab("Map view");
+        visualTabPane.getTabs().addAll(topDownTab, sideOnTab, simultTab, mapTab);
 
         // Add the visualisations to the tabs
         topDownCanvas = new TopDownView(0, 0);
         sideOnCanvas = new SideOnView(0, 0);
+        mapCanvas = new MapView(0, 0);
         var topDownPane = new VisualisationPane(topDownCanvas);
         var sideOnPane = new VisualisationPane(sideOnCanvas);
+        var mapPane = new VisualisationPane(mapCanvas);
         topDownTab.setContent(topDownPane);
         sideOnTab.setContent(sideOnPane);
+        mapTab.setContent(mapPane);
+
+        // Create the simultaneous view canvas and panes
+        simultBottomCanvas = new TopDownView(0, 0);
+        simultTopCanvas = new SideOnView(0, 0);
+        var simultBottomPane = new VisualisationPane(simultBottomCanvas);
+        var simultTopPane = new VisualisationPane(simultTopCanvas);
+
+        // Split the simultaneous view into half
+        var simultVBox = new VBox();
+        simultTab.setContent(simultVBox);
+        VBox.setVgrow(simultVBox, Priority.ALWAYS);
+        simultVBox.getChildren().addAll(simultBottomPane, simultTopPane);
+        simultTopPane.prefHeightProperty().bind(simultBottomPane.prefHeightProperty());
+        simultBottomPane.prefHeightProperty().bind(Bindings.divide(simultVBox.heightProperty(), 2));
+
+        // Set the simultaneous view canvas properties
+        simultTopCanvas.setArrowsFromRunwayOffset(10);
+        simultTopCanvas.setArrowsGapBetween(14);
+        simultTopCanvas.setShowKey(false);
+        simultBottomCanvas.setArrowsFromRunwayOffset(10);
+        simultBottomCanvas.setArrowsGapBetween(14);
+        simultBottomCanvas.setShowKey(false);
 
         // Set theme listener
         colourThemeProperty.addListener((observableValue, oldColourTheme, newColourTheme) -> {
@@ -360,10 +398,16 @@ public class MainScene extends BaseScene {
             if (newColourTheme == null) {
                 topDownCanvas.setColourTheme(new ColourTheme());
                 sideOnCanvas.setColourTheme(new ColourTheme());
+                simultTopCanvas.setColourTheme(new ColourTheme());
+                simultBottomCanvas.setColourTheme(new ColourTheme());
+                mapCanvas.setColourTheme(new ColourTheme());
                 return;
             }
             topDownCanvas.setColourTheme(newColourTheme);
             sideOnCanvas.setColourTheme(newColourTheme);
+            simultTopCanvas.setColourTheme(newColourTheme);
+            simultBottomCanvas.setColourTheme(newColourTheme);
+            mapCanvas.setColourTheme(newColourTheme);
         });
 
         // Input section
@@ -433,6 +477,9 @@ public class MainScene extends BaseScene {
         // Update both canvas
         topDownCanvas.setInitialParameters(runway);
         sideOnCanvas.setInitialParameters(runway);
+        simultBottomCanvas.setInitialParameters(runway);
+        simultTopCanvas.setInitialParameters(runway);
+        mapCanvas.setInitialParameters(runway);
     }
 
     /**
@@ -452,6 +499,12 @@ public class MainScene extends BaseScene {
             runwayObstacle.getBlastPro());
         sideOnCanvas.setRecalculatedParameters(runway, runwayObstacle,
             runwayObstacle.getBlastPro());
+        simultBottomCanvas.setRecalculatedParameters(runway, runwayObstacle,
+            runwayObstacle.getBlastPro());
+        simultTopCanvas.setRecalculatedParameters(runway, runwayObstacle,
+            runwayObstacle.getBlastPro());
+        mapCanvas.setRecalculatedParameters(runway, runwayObstacle,
+            runwayObstacle.getBlastPro());
     }
 
     /**
@@ -464,6 +517,9 @@ public class MainScene extends BaseScene {
 
         topDownCanvas.reset();
         sideOnCanvas.reset();
+        simultTopCanvas.reset();
+        simultBottomCanvas.reset();
+        mapCanvas.reset();
     }
 
     /**
