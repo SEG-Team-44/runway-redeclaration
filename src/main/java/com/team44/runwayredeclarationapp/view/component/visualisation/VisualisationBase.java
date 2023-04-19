@@ -25,6 +25,7 @@ public abstract class VisualisationBase extends Canvas {
     protected boolean isObstacleScreen = false;
     protected boolean isShowValues = false;
     protected boolean isShowKey = true;
+    protected boolean isRotateCompass = false;
 
     /**
      * Runway width and height
@@ -175,9 +176,14 @@ public abstract class VisualisationBase extends Canvas {
         // Clear the current canvas
         gc.clearRect(0, 0, width, height);
 
+        gc.save();
+        gc.translate(getWidth() / 2, getHeight() / 2);
+        gc.rotate(isRotateCompass ? (Double.parseDouble(degree1) * 10 - 90) : 0);
+        gc.translate(-getWidth() / 2, -getHeight() / 2);
+
         // Draw the new canvas
         gc.setFill(colourTheme.getTopDownBackground());
-        gc.fillRect(0, 0, width, height);
+        gc.fillRect(-width, -height, width * 3, height * 3);
 
         // Runway cords and info:
         this.runwayX1 = width * 0.1;
@@ -219,6 +225,8 @@ public abstract class VisualisationBase extends Canvas {
 
         // Draw the guidelines
         drawGuidelines();
+
+        gc.restore();
 
         // Draw the take-off/landing direction and text
         drawTakeOffLandingDirection();
@@ -1092,6 +1100,18 @@ public abstract class VisualisationBase extends Canvas {
      * @param showKey whether to show the key
      */
     public void setShowKey(boolean showKey) {
-        isShowKey = showKey;
+        this.isShowKey = showKey;
+    }
+
+    /**
+     * Set whether to rotate the runway strip to match its compass heading
+     *
+     * @param rotateCompass whether to rotate the runway strip
+     */
+    public void setRotateCompass(boolean rotateCompass) {
+        isRotateCompass = rotateCompass;
+
+        // Update canvas
+        paint();
     }
 }
