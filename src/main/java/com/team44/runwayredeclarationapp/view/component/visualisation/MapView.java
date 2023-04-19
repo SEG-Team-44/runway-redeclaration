@@ -31,12 +31,14 @@ public class MapView extends TopDownView {
     protected void paintCanvasBackground() {
         // Set new size
         var gc = getGraphicsContext2D();
+        var width = getWidth();
+        var height = getHeight();
 
         // Draw the image
         var scale = getWidth() / 1818.18;
         gc.drawImage(runwayImage,
-            (getWidth() - runwayImage.getWidth() * scale) / 2,
-            (getHeight() - runwayImage.getHeight() * scale) / 2,
+            (width - runwayImage.getWidth() * scale) / 2,
+            (height - runwayImage.getHeight() * scale) / 2,
             runwayImage.getWidth() * scale,
             runwayImage.getHeight() * scale
         );
@@ -44,7 +46,7 @@ public class MapView extends TopDownView {
         // Make background darker
         gc.setGlobalAlpha(0.3);
         gc.setFill(Color.BLACK);
-        gc.fillRect(0, 0, getWidth(), getHeight());
+        gc.fillRect(-width, -height, width * 3, height * 3);
         gc.setGlobalAlpha(1);
     }
 

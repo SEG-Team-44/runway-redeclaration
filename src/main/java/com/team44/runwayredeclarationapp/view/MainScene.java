@@ -243,8 +243,10 @@ public class MainScene extends BaseScene {
         // Menu for view
         var viewMenu = new Menu("View");
         var toggleShowValueMenuItem = new CheckMenuItem("Show values on visualisation");
+        var toggleMatchCompassHeading = new CheckMenuItem("Match compass on visualisation");
         toggleShowValueMenuItem.setSelected(false);
-        viewMenu.getItems().add(toggleShowValueMenuItem);
+        toggleMatchCompassHeading.setSelected(false);
+        viewMenu.getItems().addAll(toggleShowValueMenuItem, toggleMatchCompassHeading);
 
         // Event handler for toggling the show value state
         toggleShowValueMenuItem.setOnAction(event -> {
@@ -260,6 +262,16 @@ public class MainScene extends BaseScene {
                 simultTopCanvas.setShowValues(false);
                 simultBottomCanvas.setShowValues(false);
                 mapCanvas.setShowValues(false);
+            }
+        });
+
+        toggleMatchCompassHeading.setOnAction(event -> {
+            if (toggleMatchCompassHeading.isSelected()) {
+                topDownCanvas.setRotateCompass(true);
+                mapCanvas.setRotateCompass(true);
+            } else {
+                topDownCanvas.setRotateCompass(false);
+                mapCanvas.setRotateCompass(false);
             }
         });
 
