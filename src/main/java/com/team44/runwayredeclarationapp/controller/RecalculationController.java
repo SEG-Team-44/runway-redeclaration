@@ -1,8 +1,6 @@
 package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.event.RecalculatedRunwayListener;
-import com.team44.runwayredeclarationapp.model.Obstacle;
-import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import java.util.HashMap;
@@ -17,6 +15,26 @@ public class RecalculationController {
      * The listener to call after the runway has been recalculated
      */
     private RecalculatedRunwayListener recalculatedRunwayListener;
+
+    /**
+     * The data controller of the program
+     */
+    private DataController dataController;
+
+    /**
+     * Create a recalculation controller
+     */
+    public RecalculationController() {
+    }
+
+    /**
+     * Create a recalculation controller
+     *
+     * @param dataController the data controller of the program (used to log the process)
+     */
+    public RecalculationController(DataController dataController) {
+        this.dataController = dataController;
+    }
 
     /**
      * Recalculate the TORA parameter
@@ -324,36 +342,12 @@ public class RecalculationController {
             recalculatedRunwayListener.updateRunway(newRunwayObstacle);
         }
 
+        // Log the action
+        if (dataController != null) {
+            dataController.logAction("Recalculated",
+                "Runway (" + runway.getPhyId() + ") has been recalculated.");
+        }
+
         return recalculatedRunway;
-    }
-
-    public static void main(String[] args) {
-        PRunway runway09L27R = new PRunway(9, 27, 'L', 'R', new double[]{
-            3902,//runwayL
-            100,//runwayW
-            60,//stripL
-            100,//stripW
-            100,//clearwayW
-            240, //resaL
-            3902,//tora1
-            3902,//toda1
-            3902,//asda1
-            3595,//lda1
-            3884,//tora2
-            3962,//toda2
-            3884,//asda2
-            3884,//lda2
-            0,//disThresh1
-            306//disThresh2
-        });
-        Obstacle obstacle1 = new Obstacle("Obstacle Name", 12);
-        RunwayObstacle runwayObstacle1 = new RunwayObstacle(obstacle1, runway09L27R, -50.0, 3646.0,
-            0.0, 300);
-
-        var ok = new RecalculationController();
-        System.out.println(ok.recalculateTORA(runway09L27R, "09L", runwayObstacle1, 300));
-        System.out.println(ok.recalculateTODA(runway09L27R, "09L", runwayObstacle1, 300));
-        System.out.println(ok.recalculateASDA(runway09L27R, "09L", runwayObstacle1, 300));
-        System.out.println(ok.recalculateLDA(runway09L27R, "09L", runwayObstacle1));
     }
 }

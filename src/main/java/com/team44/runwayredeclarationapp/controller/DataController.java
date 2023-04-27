@@ -8,6 +8,8 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.SRunway;
 import com.team44.runwayredeclarationapp.view.component.alert.ConfirmAlert;
 import com.team44.runwayredeclarationapp.view.component.alert.InfoAlert;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,6 +35,11 @@ public class DataController {
     private final ObservableList<Obstacle> obstacleObservableList = FXCollections.observableArrayList();
 
     /**
+     * The log of the user actions
+     */
+    private final ObservableList<String> userLog = FXCollections.observableArrayList();
+
+    /**
      * Add a new airport to the list of airports
      *
      * @param airportName the airport name
@@ -42,9 +49,18 @@ public class DataController {
         // Validate the airport inputs
         var validationErrors = ValidationController.validateAirport(airportName);
 
-        // Create a new airport and add it to the list
+        //Create new airport
         var newAirport = new Airport(airportName);
-        airportObservableList.add(newAirport);
+
+        // Successful
+        if (validationErrors.isEmpty()) {
+            // Add airport to the list
+            airportObservableList.add(newAirport);
+
+            // Log the action
+            logAction("Airport Added",
+                "Airport (" + airportName + ") has been successfully added.");
+        }
 
         return new ErrorObjectPair<>(newAirport, validationErrors);
     }
@@ -67,8 +83,15 @@ public class DataController {
         var newAirport = new Airport(airportName);
         newAirport.setRunways(airport.getRunways());
 
-        // Replace current airport with new (modified) airport
-        airportObservableList.set(index, newAirport);
+        // Successful
+        if (validationErrors.isEmpty()) {
+            // Replace current airport with new (modified) airport
+            airportObservableList.set(index, newAirport);
+
+            // Log the action
+            logAction("Airport Edited",
+                "Airport (" + airportName + ") has been successfully edited.");
+        }
 
         return new ErrorObjectPair<>(newAirport, validationErrors);
     }
@@ -105,6 +128,10 @@ public class DataController {
                 newRunway = new SRunway(degree1, degree2, parameters);
                 airport.addRunway(newRunway);
             }
+
+            // Log the action
+            logAction("Runway Added",
+                "Runway (" + newRunway.getPhyId() + ") has been successfully added.");
         }
 
         // Return the added runway and errors
@@ -136,6 +163,10 @@ public class DataController {
             runway.setDegree(degree1, degree2);
             runway.updateParameters(parameters);
 
+            // Log the action
+            logAction("Runway Edited",
+                "Runway (" + runway.getPhyId() + ") has been successfully edited.");
+
             // todo:: update the observable list
         }
 
@@ -154,9 +185,18 @@ public class DataController {
         // Validate the obstacle inputs
         var validationErrors = ValidationController.validateObstacle(obstacleName, obstacleHeight);
 
-        // Create the new obstacle and add it to the list
+        // Create the new obstacle
         var newObstacle = new Obstacle(obstacleName, obstacleHeight);
-        obstacleObservableList.add(newObstacle);
+
+        // Successful
+        if (validationErrors.isEmpty()) {
+            // Add obstacle to list
+            obstacleObservableList.add(newObstacle);
+
+            // Log the action
+            logAction("Obstacle Added",
+                "Obstacle (" + obstacleName + ") has been successfully added.");
+        }
 
         return new ErrorObjectPair<>(newObstacle, validationErrors);
     }
@@ -177,9 +217,18 @@ public class DataController {
         // Get the index of the obstacle to edit in the list
         var index = obstacleObservableList.indexOf(obstacle);
 
-        // Create the new obstacle and replace it with the current obstacle in list
+        // Create the new obstacle
         var newObstacle = new Obstacle(obstacleName, obstacleHeight);
-        obstacleObservableList.set(index, newObstacle);
+
+        // Successful
+        if (validationErrors.isEmpty()) {
+            // Replace it with the current obstacle in list
+            obstacleObservableList.set(index, newObstacle);
+
+            // Log the action
+            logAction("Obstacle Edited",
+                "Obstacle (" + obstacleName + ") has been successfully edited.");
+        }
 
         return new ErrorObjectPair<>(newObstacle, validationErrors);
     }
@@ -197,6 +246,10 @@ public class DataController {
         Optional<ButtonType> btnType = confirmAlert.showAndWait();
         if (btnType.get() == ButtonType.OK) {
             airportObservableList.remove(airport);
+
+            // Log
+            logAction("Airport Deleted",
+                "Airport (" + airport.getName() + ") has been successfully deleted.");
 
             printInfoAlert(airport.getName() + "Airport");
         }
@@ -216,6 +269,10 @@ public class DataController {
         if (btnType.get() == ButtonType.OK) {
             airport.removeRunway(runway);
 
+            // Log
+            logAction("Runway Deleted",
+                "Runway (" + runway.getPhyId() + ") has been successfully deleted.");
+
             printInfoAlert("runway" + runway.getPhyId());
         }
     }
@@ -233,6 +290,10 @@ public class DataController {
         Optional<ButtonType> btnType = confirmAlert.showAndWait();
         if (btnType.get() == ButtonType.OK) {
             obstacles.remove(obstacle);
+
+            // Log
+            logAction("Obstacle Deleted",
+                "Obstacle (" + obstacle.getObstName() + ") has been successfully deleted.");
 
             printInfoAlert(obstacle.getObstName());
         }
@@ -286,5 +347,31 @@ public class DataController {
      */
     public ObservableList<Obstacle> getObstacleObservableList() {
         return obstacleObservableList;
+    }
+
+    /**
+     * Log an action to the program logger
+     *
+     * @param action      the action
+     * @param description the description of the action
+     */
+    public void logAction(String action, String description) {
+        // Get the current date and time
+        var timeNow = LocalDateTime.now();
+        var timeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        var logString = "[" + action + "] " + timeNow.format(timeFormatter) + " - " + description;
+
+        // Add the string to the log array
+        userLog.add(logString);
+    }
+
+    /**
+     * Get the observable list of the log
+     *
+     * @return the log observable list
+     */
+    public ObservableList<String> getUserLog() {
+        return userLog;
     }
 }

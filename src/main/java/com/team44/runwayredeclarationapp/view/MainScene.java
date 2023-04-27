@@ -10,6 +10,7 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.model.theme.ColourTheme;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
+import com.team44.runwayredeclarationapp.ui.log.ViewLogWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ExportXMLWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ImportXMLWindow;
 import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
@@ -63,19 +64,20 @@ public class MainScene extends BaseScene {
     private final SimpleObjectProperty<Airport> airport = new SimpleObjectProperty<>();
 
     /**
+     * The data controller responsible for handling the list of airports, runways and obstacles
+     */
+    private final DataController dataController = new DataController();
+
+    /**
      * The controller responsible for setting the recalculated values
      */
-    private final RecalculationController recalculationController = new RecalculationController();
+    private final RecalculationController recalculationController = new RecalculationController(
+        dataController);
 
     /**
      * The controller responsible for reading/writing data in the file system
      */
     private final FileController fileController = new FileController();
-
-    /**
-     * The data controller responsible for handling the list of airports, runways and obstacles
-     */
-    private final DataController dataController = new DataController();
 
     /**
      * The grid displaying the original and recalculated values
@@ -210,6 +212,7 @@ public class MainScene extends BaseScene {
         var fileMenu = new Menu("File");
         var menuItemSave = new MenuItem("Save");
         var menuItemResetState = new MenuItem("Reset");
+        var menuItemViewLog = new MenuItem("View Log");
 
         // Save keyboard shortcut
         var saveKeyShortcut = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
@@ -238,14 +241,19 @@ public class MainScene extends BaseScene {
             alert.show();
         });
 
-        fileMenu.getItems().addAll(menuItemSave, menuItemResetState);
+        // View log event
+        menuItemViewLog.setOnAction(event -> {
+            new ViewLogWindow(getMainWindow().getStage(), dataController);
+        });
+
+        fileMenu.getItems().addAll(menuItemSave, menuItemResetState, menuItemViewLog);
 
         // Menu for view
         var viewMenu = new Menu("View");
-        var toggleShowValueMenuItem = new CheckMenuItem("Show values");
-        var toggleMatchCompassHeading = new CheckMenuItem("Match compass");
-        var toggleColourBlindMode = new CheckMenuItem("Colour blind mode");
-        var toggleWhiteArrows = new CheckMenuItem("Set white arrows");
+        var toggleShowValueMenuItem = new CheckMenuItem("Show Values");
+        var toggleMatchCompassHeading = new CheckMenuItem("Match Compass");
+        var toggleColourBlindMode = new CheckMenuItem("Colour Blind Mode");
+        var toggleWhiteArrows = new CheckMenuItem("Set White Arrows");
         toggleShowValueMenuItem.setSelected(false);
         toggleMatchCompassHeading.setSelected(false);
         toggleColourBlindMode.setSelected(false);
