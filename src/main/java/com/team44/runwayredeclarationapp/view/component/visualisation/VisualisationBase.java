@@ -25,6 +25,7 @@ public abstract class VisualisationBase extends Canvas {
     protected boolean isObstacleScreen = false;
     protected boolean isShowValues = false;
     protected boolean iscbMode = false;
+    protected boolean isWhiteArrow = false;
     protected boolean isShowKey = true;
     protected boolean isRotateCompass = false;
 
@@ -398,6 +399,16 @@ public abstract class VisualisationBase extends Canvas {
     }
 
     /**
+     * Set whether to change arrow colours to white
+     *
+     * @param arrowColour whether to change arrow colours to white
+     */
+    public void setWhiteArrow(boolean arrowColour){
+        isWhiteArrow = arrowColour;
+        paint();
+    }
+
+    /**
      * Create a string with the text and value side by side
      *
      * @param text  the text
@@ -723,7 +734,7 @@ public abstract class VisualisationBase extends Canvas {
 
         // Set properties
         gc.setLineWidth(0.7);
-        if (iscbMode) {
+        if (iscbMode || isWhiteArrow) {
             if (text.contains("ASDA")) {
                 gc.setFill(colourTheme.getText());
             } else if (text.contains("TORA")) {
@@ -803,7 +814,7 @@ public abstract class VisualisationBase extends Canvas {
         var gc = getGraphicsContext2D();
 
         // Set the pen properties
-        if (iscbMode) {
+        if (iscbMode || isWhiteArrow) {
             if (text.contains("ASDA")) {
                 gc.setFill(colourTheme.getArrow());
                 gc.setStroke(colourTheme.getArrow());
