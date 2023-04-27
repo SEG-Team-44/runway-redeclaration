@@ -85,13 +85,24 @@ public class SideOnView extends VisualisationBase {
         double height = getHeight();
         var gc = getGraphicsContext2D();
 
-        // Draw the background for below the runway
-        gc.setFill(colourTheme.getSideOnBottomBackground());
-        gc.fillRect(0, runwayY1, width, height - runwayY1);
+        if (iscbMode) {
+            // Draw the background for below the runway
+            gc.setFill(colourTheme.getSideOnBottomBackgroundCB());
+            gc.fillRect(0, runwayY1, width, height - runwayY1);
 
-        // Draw the background for above the runway
-        gc.setFill(colourTheme.getSideOnTopBackground());
-        gc.fillRect(0, 0, width, runwayY1);
+            // Draw the background for above the runway
+            gc.setFill(colourTheme.getSideOnTopBackgroundCB());
+            gc.fillRect(0, 0, width, runwayY1);
+        } else {
+            // Draw the background for below the runway
+            gc.setFill(colourTheme.getSideOnBottomBackground());
+            gc.fillRect(0, runwayY1, width, height - runwayY1);
+
+            // Draw the background for above the runway
+            gc.setFill(colourTheme.getSideOnTopBackground());
+            gc.fillRect(0, 0, width, runwayY1);
+        }
+
     }
 
     /**

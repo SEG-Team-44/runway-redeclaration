@@ -244,9 +244,11 @@ public class MainScene extends BaseScene {
         var viewMenu = new Menu("View");
         var toggleShowValueMenuItem = new CheckMenuItem("Show values on visualisation");
         var toggleMatchCompassHeading = new CheckMenuItem("Match compass on visualisation");
+        var toggleColourBlindMode = new CheckMenuItem("Colour Blind Mode");
         toggleShowValueMenuItem.setSelected(false);
         toggleMatchCompassHeading.setSelected(false);
-        viewMenu.getItems().addAll(toggleShowValueMenuItem, toggleMatchCompassHeading);
+        toggleColourBlindMode.setSelected(false);
+        viewMenu.getItems().addAll(toggleShowValueMenuItem, toggleMatchCompassHeading,toggleColourBlindMode);
 
         // Event handler for toggling the show value state
         toggleShowValueMenuItem.setOnAction(event -> {
@@ -272,6 +274,22 @@ public class MainScene extends BaseScene {
             } else {
                 topDownCanvas.setRotateCompass(false);
                 mapCanvas.setRotateCompass(false);
+            }
+        });
+
+        toggleColourBlindMode.setOnAction(event -> {
+            if (toggleColourBlindMode.isSelected()) {
+                topDownCanvas.setColourBlindMode(true);
+                sideOnCanvas.setColourBlindMode(true);
+                simultTopCanvas.setColourBlindMode(true);
+                simultBottomCanvas.setColourBlindMode(true);
+                mapCanvas.setColourBlindMode(true);
+            } else {
+                topDownCanvas.setColourBlindMode(false);
+                sideOnCanvas.setColourBlindMode(false);
+                simultTopCanvas.setColourBlindMode(false);
+                simultBottomCanvas.setColourBlindMode(false);
+                mapCanvas.setColourBlindMode(false);
             }
         });
 
