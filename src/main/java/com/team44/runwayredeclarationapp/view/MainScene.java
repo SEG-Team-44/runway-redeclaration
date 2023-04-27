@@ -245,10 +245,13 @@ public class MainScene extends BaseScene {
         var toggleShowValueMenuItem = new CheckMenuItem("Show values on visualisation");
         var toggleMatchCompassHeading = new CheckMenuItem("Match compass on visualisation");
         var toggleColourBlindMode = new CheckMenuItem("Colour Blind Mode");
+        var toggleWhiteArrows = new CheckMenuItem("Set arrow colour to white");
         toggleShowValueMenuItem.setSelected(false);
         toggleMatchCompassHeading.setSelected(false);
         toggleColourBlindMode.setSelected(false);
-        viewMenu.getItems().addAll(toggleShowValueMenuItem, toggleMatchCompassHeading,toggleColourBlindMode);
+        toggleWhiteArrows.setSelected(false);
+        viewMenu.getItems().addAll(toggleShowValueMenuItem, toggleMatchCompassHeading,
+            toggleColourBlindMode, toggleWhiteArrows);
 
         // Event handler for toggling the show value state
         toggleShowValueMenuItem.setOnAction(event -> {
@@ -290,6 +293,22 @@ public class MainScene extends BaseScene {
                 simultTopCanvas.setColourBlindMode(false);
                 simultBottomCanvas.setColourBlindMode(false);
                 mapCanvas.setColourBlindMode(false);
+            }
+        });
+
+        toggleWhiteArrows.setOnAction(event -> {
+            if (toggleWhiteArrows.isSelected()) {
+                topDownCanvas.setWhiteArrow(true);
+                sideOnCanvas.setWhiteArrow(true);
+                simultTopCanvas.setWhiteArrow(true);
+                simultBottomCanvas.setWhiteArrow(true);
+                mapCanvas.setWhiteArrow(true);
+            } else {
+                topDownCanvas.setWhiteArrow(false);
+                sideOnCanvas.setWhiteArrow(false);
+                simultTopCanvas.setWhiteArrow(false);
+                simultBottomCanvas.setWhiteArrow(false);
+                mapCanvas.setWhiteArrow(false);
             }
         });
 
