@@ -26,6 +26,7 @@ import com.team44.runwayredeclarationapp.view.component.visualisation.SideOnView
 import com.team44.runwayredeclarationapp.view.component.visualisation.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationPane;
+import java.util.function.Function;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -140,11 +141,10 @@ public class MainScene extends BaseScene {
                         ogValuesGrid.reset();
                         newValuesGrid.reset();
 
-                        topDownCanvas.reset();
-                        sideOnCanvas.reset();
-                        simultTopCanvas.reset();
-                        simultBottomCanvas.reset();
-                        mapCanvas.reset();
+                        callAllCanvasMethod((canvas) -> {
+                            canvas.reset();
+                            return null;
+                        });
                         obstacleTitlePane.clearInputs();
 
                     }
@@ -242,10 +242,10 @@ public class MainScene extends BaseScene {
 
         // Menu for view
         var viewMenu = new Menu("View");
-        var toggleShowValueMenuItem = new CheckMenuItem("Show values on visualisation");
-        var toggleMatchCompassHeading = new CheckMenuItem("Match compass on visualisation");
-        var toggleColourBlindMode = new CheckMenuItem("Colour Blind Mode");
-        var toggleWhiteArrows = new CheckMenuItem("Set arrow colour to white");
+        var toggleShowValueMenuItem = new CheckMenuItem("Show values");
+        var toggleMatchCompassHeading = new CheckMenuItem("Match compass");
+        var toggleColourBlindMode = new CheckMenuItem("Colour blind mode");
+        var toggleWhiteArrows = new CheckMenuItem("Set white arrows");
         toggleShowValueMenuItem.setSelected(false);
         toggleMatchCompassHeading.setSelected(false);
         toggleColourBlindMode.setSelected(false);
@@ -256,20 +256,19 @@ public class MainScene extends BaseScene {
         // Event handler for toggling the show value state
         toggleShowValueMenuItem.setOnAction(event -> {
             if (toggleShowValueMenuItem.isSelected()) {
-                topDownCanvas.setShowValues(true);
-                sideOnCanvas.setShowValues(true);
-                simultTopCanvas.setShowValues(true);
-                simultBottomCanvas.setShowValues(true);
-                mapCanvas.setShowValues(true);
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setShowValues(true);
+                    return null;
+                });
             } else {
-                topDownCanvas.setShowValues(false);
-                sideOnCanvas.setShowValues(false);
-                simultTopCanvas.setShowValues(false);
-                simultBottomCanvas.setShowValues(false);
-                mapCanvas.setShowValues(false);
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setShowValues(false);
+                    return null;
+                });
             }
         });
 
+        // Event handler for toggling whether to match the compass heading
         toggleMatchCompassHeading.setOnAction(event -> {
             if (toggleMatchCompassHeading.isSelected()) {
                 topDownCanvas.setRotateCompass(true);
@@ -280,35 +279,33 @@ public class MainScene extends BaseScene {
             }
         });
 
+        // Event handler for toggling colour blind mode
         toggleColourBlindMode.setOnAction(event -> {
             if (toggleColourBlindMode.isSelected()) {
-                topDownCanvas.setColourBlindMode(true);
-                sideOnCanvas.setColourBlindMode(true);
-                simultTopCanvas.setColourBlindMode(true);
-                simultBottomCanvas.setColourBlindMode(true);
-                mapCanvas.setColourBlindMode(true);
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setColourTheme(ColourTheme.getColourBlindTheme());
+                    return null;
+                });
             } else {
-                topDownCanvas.setColourBlindMode(false);
-                sideOnCanvas.setColourBlindMode(false);
-                simultTopCanvas.setColourBlindMode(false);
-                simultBottomCanvas.setColourBlindMode(false);
-                mapCanvas.setColourBlindMode(false);
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setColourTheme(new ColourTheme());
+                    return null;
+                });
             }
         });
 
+        // Event handler for toggling white arrows
         toggleWhiteArrows.setOnAction(event -> {
             if (toggleWhiteArrows.isSelected()) {
-                topDownCanvas.setWhiteArrow(true);
-                sideOnCanvas.setWhiteArrow(true);
-                simultTopCanvas.setWhiteArrow(true);
-                simultBottomCanvas.setWhiteArrow(true);
-                mapCanvas.setWhiteArrow(true);
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setWhiteArrow(true);
+                    return null;
+                });
             } else {
-                topDownCanvas.setWhiteArrow(false);
-                sideOnCanvas.setWhiteArrow(false);
-                simultTopCanvas.setWhiteArrow(false);
-                simultBottomCanvas.setWhiteArrow(false);
-                mapCanvas.setWhiteArrow(false);
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setWhiteArrow(false);
+                    return null;
+                });
             }
         });
 
@@ -445,18 +442,16 @@ public class MainScene extends BaseScene {
         colourThemeProperty.addListener((observableValue, oldColourTheme, newColourTheme) -> {
             // Set theme to default if colour theme is empty
             if (newColourTheme == null) {
-                topDownCanvas.setColourTheme(new ColourTheme());
-                sideOnCanvas.setColourTheme(new ColourTheme());
-                simultTopCanvas.setColourTheme(new ColourTheme());
-                simultBottomCanvas.setColourTheme(new ColourTheme());
-                mapCanvas.setColourTheme(new ColourTheme());
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setColourTheme(new ColourTheme());
+                    return null;
+                });
                 return;
             }
-            topDownCanvas.setColourTheme(newColourTheme);
-            sideOnCanvas.setColourTheme(newColourTheme);
-            simultTopCanvas.setColourTheme(newColourTheme);
-            simultBottomCanvas.setColourTheme(newColourTheme);
-            mapCanvas.setColourTheme(newColourTheme);
+            callAllCanvasMethod((canvas) -> {
+                canvas.setColourTheme(newColourTheme);
+                return null;
+            });
         });
 
         // Input section
@@ -523,12 +518,11 @@ public class MainScene extends BaseScene {
         newValuesGrid.reset();
         calculations.reset();
 
-        // Update both canvas
-        topDownCanvas.setInitialParameters(runway);
-        sideOnCanvas.setInitialParameters(runway);
-        simultBottomCanvas.setInitialParameters(runway);
-        simultTopCanvas.setInitialParameters(runway);
-        mapCanvas.setInitialParameters(runway);
+        // Update all canvas
+        callAllCanvasMethod((canvas) -> {
+            canvas.setInitialParameters(runway);
+            return null;
+        });
     }
 
     /**
@@ -543,17 +537,12 @@ public class MainScene extends BaseScene {
         newValuesGrid.setRunway(runway);
         calculations.displayCalculations(runwayTitlePane.getSelectedRunway(), runwayObstacle);
 
-        // Update both canvas
-        topDownCanvas.setRecalculatedParameters(runway, runwayObstacle,
-            runwayObstacle.getBlastPro());
-        sideOnCanvas.setRecalculatedParameters(runway, runwayObstacle,
-            runwayObstacle.getBlastPro());
-        simultBottomCanvas.setRecalculatedParameters(runway, runwayObstacle,
-            runwayObstacle.getBlastPro());
-        simultTopCanvas.setRecalculatedParameters(runway, runwayObstacle,
-            runwayObstacle.getBlastPro());
-        mapCanvas.setRecalculatedParameters(runway, runwayObstacle,
-            runwayObstacle.getBlastPro());
+        // Update all canvas
+        callAllCanvasMethod((canvas) -> {
+            canvas.setRecalculatedParameters(runway, runwayObstacle,
+                runwayObstacle.getBlastPro());
+            return null;
+        });
     }
 
     /**
@@ -564,11 +553,10 @@ public class MainScene extends BaseScene {
         newValuesGrid.reset();
         calculations.reset();
 
-        topDownCanvas.reset();
-        sideOnCanvas.reset();
-        simultTopCanvas.reset();
-        simultBottomCanvas.reset();
-        mapCanvas.reset();
+        callAllCanvasMethod((canvas) -> {
+            canvas.reset();
+            return null;
+        });
     }
 
     /**
@@ -581,28 +569,6 @@ public class MainScene extends BaseScene {
         runwayTitlePane.clearInputs();
         obstacleTitlePane.clearInputs();
     }
-
-    /*public void airportDeleted(Airport airport) {
-        if (airport == airportTitlePane.getSelectedAirport()) {
-            reset();
-        }
-    }
-
-    public void runwayDeleted(Runway runway) {
-         if (runway == runwayTitlePane.getSelectedRunway()) {
-             runwayTitlePane.clearInputs();
-             sideOnCanvas.reset();
-             topDownCanvas.reset();
-             ogValuesGrid.reset();
-             newValuesGrid.reset();
-         }
-    }
-
-    public void obstacleDeleted(Obstacle obstacle) {
-        if (obstacle == obstacleTitlePane.getSelectedObstacle()) {
-            obstacleTitlePane.clearInputs();
-        }
-    }*/
 
     /**
      * Select a specific scenario to test the program with
@@ -787,7 +753,25 @@ public class MainScene extends BaseScene {
         errorList.show();
     }
 
+    /**
+     * Get the data controller of the program
+     *
+     * @return the data controller
+     */
     public DataController getDataController() {
         return dataController;
+    }
+
+    /**
+     * Call a specific method on all the visualisation canvas'
+     *
+     * @param canvasMethod the method to call
+     */
+    private void callAllCanvasMethod(Function<VisualisationBase, Void> canvasMethod) {
+        canvasMethod.apply(topDownCanvas);
+        canvasMethod.apply(sideOnCanvas);
+        canvasMethod.apply(simultTopCanvas);
+        canvasMethod.apply(simultBottomCanvas);
+        canvasMethod.apply(mapCanvas);
     }
 }
