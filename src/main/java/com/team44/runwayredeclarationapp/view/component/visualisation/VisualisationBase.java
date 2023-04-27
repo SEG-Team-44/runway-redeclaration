@@ -24,6 +24,7 @@ public abstract class VisualisationBase extends Canvas {
     protected boolean isLoadingScreen = true;
     protected boolean isObstacleScreen = false;
     protected boolean isShowValues = false;
+    protected boolean iscbMode = false;
     protected boolean isShowKey = true;
     protected boolean isRotateCompass = false;
 
@@ -182,7 +183,11 @@ public abstract class VisualisationBase extends Canvas {
         gc.translate(-getWidth() / 2, -getHeight() / 2);
 
         // Draw the new canvas
-        gc.setFill(colourTheme.getTopDownBackground());
+        if (iscbMode) {
+            gc.setFill(colourTheme.getTopDownBackgroundCB());
+        } else {
+            gc.setFill(colourTheme.getTopDownBackground());
+        }
         gc.fillRect(-width, -height, width * 3, height * 3);
 
         // Runway cords and info:
@@ -363,11 +368,11 @@ public abstract class VisualisationBase extends Canvas {
      */
     protected void drawTakeOffLandingDirection() {
         // Top arrow
-        addArrow(5, 30, 70, 10);
+        addArrow("CornerArrow",5, 30, 70, 10);
         addText("Landing and Take-off in this direction", 13, 5, 15);
 
         // Bottom arrow
-        addArrow(getWidth() - 25, getHeight() - 30, getWidth() - 90, 10);
+        addArrow("CornerArrow",getWidth() - 25, getHeight() - 30, getWidth() - 90, 10);
         addText("Landing and Take-off in this direction", 13, getWidth() - 230,
             getHeight() - 8);
     }
@@ -379,6 +384,16 @@ public abstract class VisualisationBase extends Canvas {
      */
     public void setShowValues(boolean showValues) {
         isShowValues = showValues;
+        paint();
+    }
+
+    /**
+     * Set whether to show the canvas in colour blind mode
+     *
+     * @param cbMode whether to display colour blind mode
+     */
+    public void setColourBlindMode(boolean cbMode){
+        iscbMode = cbMode;
         paint();
     }
 
@@ -670,7 +685,7 @@ public abstract class VisualisationBase extends Canvas {
 
         // Draw the text and arrow separately
         addText(text, 12, Math.min(x1, x2) + (Math.abs(x1 - x2) * textOnLinePercentage), y1 - 3);
-        addArrow(x1, y1, x2);
+        addArrow(text, x1, y1, x2);
 
         // Add the coordinates to the array of guideline coords
         if (x2 > x1) {
@@ -708,7 +723,51 @@ public abstract class VisualisationBase extends Canvas {
 
         // Set properties
         gc.setLineWidth(0.7);
-        gc.setFill(colourTheme.getText());
+        if (iscbMode) {
+            if (text.contains("ASDA")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("TORA")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("TODA")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("LDA")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("SE")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("RESA")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("Slope")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("DT")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("Blast")) {
+                gc.setFill(colourTheme.getText());
+            } else if (text.contains("Corner")) {
+                gc.setFill(colourTheme.getText());
+            }
+        } else {
+            if (text.contains("ASDA")) {
+                gc.setFill(colourTheme.getASDAarrow());
+            } else if (text.contains("TORA")) {
+                gc.setFill(colourTheme.getTORAarrow());
+            } else if (text.contains("TODA")) {
+                gc.setFill(colourTheme.getTODAarrow());
+            } else if (text.contains("LDA")) {
+                gc.setFill(colourTheme.getLDAarrow());
+            } else if (text.contains("SE")) {
+                gc.setFill(colourTheme.getSEarrow());
+            } else if (text.contains("RESA")) {
+                gc.setFill(colourTheme.getRESAarrow());
+            } else if (text.contains("Slope")) {
+                gc.setFill(colourTheme.getSlopearrow());
+            } else if (text.contains("DT")) {
+                gc.setFill(colourTheme.getDTarrow());
+            } else if (text.contains("Blast")) {
+                gc.setFill(colourTheme.getBlastarrow());
+            } else if (text.contains("Corner")) {
+                gc.setFill(colourTheme.getText());
+            }
+        }
         gc.setFont(new Font("Helvetica", size));
 
         // Add text
@@ -722,28 +781,93 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Add a horizontal arrow to the canvas
      *
-     * @param x1 the start x coordinate
-     * @param y1 the start (and finish) y coordinate
-     * @param x2 the finish x coordinate
+     * @param text  the Parameter the arrow represents
+     * @param x1    the start x coordinate
+     * @param y1    the start (and finish) y coordinate
+     * @param x2    the finish x coordinate
      */
-    protected void addArrow(double x1, double y1, double x2) {
-        addArrow(x1, y1, x2, 3);
+    protected void addArrow(String text, double x1, double y1, double x2) {
+        addArrow(text, x1, y1, x2, 3);
     }
 
     /**
      * Add a horizontal arrow to the canvas
      *
+     * @param text            the Parameter the arrow represents
      * @param x1              the start x coordinate
      * @param y1              the start (and finish) y coordinate
      * @param x2              the finish x coordinate
      * @param arrowPointWidth the width of the arrowhead
      */
-    protected void addArrow(double x1, double y1, double x2, double arrowPointWidth) {
+    protected void addArrow(String text, double x1, double y1, double x2, double arrowPointWidth) {
         var gc = getGraphicsContext2D();
 
         // Set the pen properties
-        gc.setFill(colourTheme.getArrow());
-        gc.setStroke(colourTheme.getArrow());
+        if (iscbMode) {
+            if (text.contains("ASDA")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("TORA")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("TODA")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("LDA")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("SE")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("RESA")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("Slope")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("DT")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("Blast")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            } else if (text.contains("Corner")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            }
+        } else {
+            if (text.contains("ASDA")) {
+                gc.setFill(colourTheme.getASDAarrow());
+                gc.setStroke(colourTheme.getASDAarrow());
+            } else if (text.contains("TORA")) {
+                gc.setFill(colourTheme.getTORAarrow());
+                gc.setStroke(colourTheme.getTORAarrow());
+            } else if (text.contains("TODA")) {
+                gc.setFill(colourTheme.getTODAarrow());
+                gc.setStroke(colourTheme.getTODAarrow());
+            } else if (text.contains("LDA")) {
+                gc.setFill(colourTheme.getLDAarrow());
+                gc.setStroke(colourTheme.getLDAarrow());
+            } else if (text.contains("SE")) {
+                gc.setFill(colourTheme.getSEarrow());
+                gc.setStroke(colourTheme.getSEarrow());
+            } else if (text.contains("RESA")) {
+                gc.setFill(colourTheme.getRESAarrow());
+                gc.setStroke(colourTheme.getRESAarrow());
+            } else if (text.contains("Slope")) {
+                gc.setFill(colourTheme.getSlopearrow());
+                gc.setStroke(colourTheme.getSlopearrow());
+            } else if (text.contains("DT")) {
+                gc.setFill(colourTheme.getDTarrow());
+                gc.setStroke(colourTheme.getDTarrow());
+            } else if (text.contains("Blast")) {
+                gc.setFill(colourTheme.getBlastarrow());
+                gc.setStroke(colourTheme.getBlastarrow());
+            } else if (text.contains("Corner")) {
+                gc.setFill(colourTheme.getArrow());
+                gc.setStroke(colourTheme.getArrow());
+            }
+        }
         gc.setLineWidth(arrowPointWidth / 3);
         gc.setLineDashes();
 
