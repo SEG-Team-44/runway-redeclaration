@@ -10,7 +10,7 @@ import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.model.theme.ColourTheme;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
-import com.team44.runwayredeclarationapp.ui.log.ViewLogWindow;
+import com.team44.runwayredeclarationapp.ui.userlog.ViewLogWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ExportXMLWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ImportXMLWindow;
 import com.team44.runwayredeclarationapp.view.component.CalculationBreakdown;
