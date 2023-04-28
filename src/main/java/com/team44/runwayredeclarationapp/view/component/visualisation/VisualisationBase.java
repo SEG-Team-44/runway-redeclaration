@@ -28,6 +28,13 @@ public abstract class VisualisationBase extends Canvas {
     protected boolean isWhiteArrow = false;
     protected boolean isShowKey = true;
     protected boolean isRotateCompass = false;
+    protected boolean isThresholdSwitched = false;
+
+    /**
+     * The runway and obstacle shown on the visualisation
+     */
+    protected Runway runway;
+    protected RunwayObstacle runwayObstacle;
 
     /**
      * Runway width and height
@@ -102,7 +109,7 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Indicating whether the obstacle is on the left (True) or the right (False)
      */
-    protected Boolean isObstacleOnLeftSide;
+    protected Boolean isObstacleOnLeftSide, isObstacleOnLeftSideActual;
 
 
     /**
@@ -420,7 +427,7 @@ public abstract class VisualisationBase extends Canvas {
             runwayX1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
             runwayX2 + rightStopwayLength, colourTheme.getASDAarrow());
-        addTextArrow(createValueText("TORA", todaDistanceActual1),
+        addTextArrow(createValueText("TORA", toraDistanceActual1),
             runwayX1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
             runwayX2, colourTheme.getTORAarrow());
@@ -444,7 +451,7 @@ public abstract class VisualisationBase extends Canvas {
             runwayX2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 3),
             runwayX1 - leftStopwayLength, colourTheme.getASDAarrow());
-        addTextArrow(createValueText("TORA", todaDistanceActual2),
+        addTextArrow(createValueText("TORA", toraDistanceActual2),
             runwayX2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
             runwayX1, colourTheme.getTORAarrow());
@@ -854,6 +861,13 @@ public abstract class VisualisationBase extends Canvas {
      * @param runway the runway object
      */
     public void setInitialParameters(Runway runway) {
+        this.runway = runway;
+
+        // Switch the runway if necessary
+        if (isThresholdSwitched) {
+            runway = runway.getSwitchedThresholdRunway();
+        }
+
         // Get the 2 logical runway ID's
         var runway1ID = runway.getLogicId1();
         var runway2ID = runway.getLogicId2();
@@ -903,7 +917,7 @@ public abstract class VisualisationBase extends Canvas {
      * @param leftClearwayLength  the length of the left clearway
      * @param rightClearwayLength the length of the right clearway
      */
-    public void setInitialParameters(
+    protected void setInitialParameters(
         double actualRunwayLength,
         double actualRunwayWidth,
         String tDesignator1,
@@ -1001,11 +1015,25 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Set the new re-calculated parameters
      *
-     * @param runway   the runway object
-     * @param obstacle the obstacle
-     * @param blast    the blast protection
+     * @param runwayObstacle the runway obstacle object with the recalculated values
+     * @param blast          the blast protection
      */
-    public void setRecalculatedParameters(Runway runway, RunwayObstacle obstacle, double blast) {
+    public void setRecalculatedParameters(RunwayObstacle runwayObstacle, double blast) {
+        this.runway = runwayObstacle.getRecalculatedRw();
+        this.runwayObstacle = runwayObstacle;
+
+        // Find distances
+        var isLeftSide = runwayObstacle.getPositionL() < runwayObstacle.getPositionR();
+        var distanceFromStart =
+            runway.getDisThresh(runway.getLogicId2()) + runwayObstacle.getPositionL();
+
+        // Switch the runway if necessary
+        if (isThresholdSwitched) {
+            this.runway = runway.getSwitchedThresholdRunway();
+            isLeftSide = !isLeftSide;
+            distanceFromStart = actualRunwayLength - distanceFromStart;
+        }
+
         // Get the 2 logical runway ID's
         var runway1ID = runway.getLogicId1();
         var runway2ID = runway.getLogicId2();
@@ -1020,15 +1048,33 @@ public abstract class VisualisationBase extends Canvas {
             runway.getToda(runway2ID),
             runway.getAsda(runway2ID),
             runway.getLda(runway2ID),
-            obstacle.getObst().getSlope(),
+            runwayObstacle.getObst().getSlope(),
             runway.getStripL(),
             runway.getResaL(),
             blast,
-            runway.getDisThresh(runway2ID) + obstacle.getPositionL(),
-            obstacle.getDistCR(),
-            obstacle.getObst().getHeight(),
-            obstacle.getPositionL() < obstacle.getPositionR()
+            distanceFromStart,
+            runwayObstacle.getDistCR() * (isThresholdSwitched ? -1 : 1),
+            runwayObstacle.getObst().getHeight(),
+            isLeftSide
         );
+    }
+
+    /**
+     * Refresh the visualisation
+     */
+    protected void refresh() {
+        if (isLoadingScreen) {
+            return;
+        }
+
+        // Store the screen state temporarily
+        var tempScreenStore = isObstacleScreen;
+        setInitialParameters(this.runway);
+
+        // If obstacle screen
+        if (tempScreenStore) {
+            setRecalculatedParameters(this.runwayObstacle, this.blastProtectionActual);
+        }
     }
 
     /**
@@ -1056,7 +1102,7 @@ public abstract class VisualisationBase extends Canvas {
      * @param isObstacleOnLeftSide           indicates whether the obstacle is on the left of the
      *                                       runway (True) or on the right (False)
      */
-    public void setRecalculatedParameters(
+    protected void setRecalculatedParameters(
         double toraDistance1,
         double todaDistance1,
         double asdaDistance1,
@@ -1174,9 +1220,21 @@ public abstract class VisualisationBase extends Canvas {
      * @param rotateCompass whether to rotate the runway strip
      */
     public void setRotateCompass(boolean rotateCompass) {
-        isRotateCompass = rotateCompass;
+        this.isRotateCompass = rotateCompass;
 
         // Update canvas
         paint();
+    }
+
+    /**
+     * Set whether to switch the thresholds
+     *
+     * @param thresholdSwitched whether to switch threshold
+     */
+    public void setThresholdSwitched(boolean thresholdSwitched) {
+        this.isThresholdSwitched = thresholdSwitched;
+
+        // Refresh the canvas
+        refresh();
     }
 }

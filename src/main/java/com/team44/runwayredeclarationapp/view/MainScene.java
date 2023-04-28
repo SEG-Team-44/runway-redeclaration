@@ -254,12 +254,14 @@ public class MainScene extends BaseScene {
         var toggleMatchCompassHeading = new CheckMenuItem("Match Compass");
         var toggleColourBlindMode = new CheckMenuItem("Colour Blind Mode");
         var toggleWhiteArrows = new CheckMenuItem("Set White Arrows");
+        var toggleSwitchThresholds = new CheckMenuItem("Switch Thresholds");
         toggleShowValueMenuItem.setSelected(false);
         toggleMatchCompassHeading.setSelected(false);
         toggleColourBlindMode.setSelected(false);
         toggleWhiteArrows.setSelected(false);
+        toggleSwitchThresholds.setSelected(false);
         viewMenu.getItems().addAll(toggleShowValueMenuItem, toggleMatchCompassHeading,
-            toggleColourBlindMode, toggleWhiteArrows);
+            toggleColourBlindMode, toggleWhiteArrows, toggleSwitchThresholds);
 
         // Event handler for toggling the show value state
         toggleShowValueMenuItem.setOnAction(event -> {
@@ -312,6 +314,21 @@ public class MainScene extends BaseScene {
             } else {
                 callAllCanvasMethod((canvas) -> {
                     canvas.setWhiteArrow(false);
+                    return null;
+                });
+            }
+        });
+
+        // Event handler for toggling switching thresholds
+        toggleSwitchThresholds.setOnAction(event -> {
+            if (toggleSwitchThresholds.isSelected()) {
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setThresholdSwitched(true);
+                    return null;
+                });
+            } else {
+                callAllCanvasMethod((canvas) -> {
+                    canvas.setThresholdSwitched(false);
                     return null;
                 });
             }
@@ -547,7 +564,7 @@ public class MainScene extends BaseScene {
 
         // Update all canvas
         callAllCanvasMethod((canvas) -> {
-            canvas.setRecalculatedParameters(runway, runwayObstacle,
+            canvas.setRecalculatedParameters(runwayObstacle,
                 runwayObstacle.getBlastPro());
             return null;
         });
