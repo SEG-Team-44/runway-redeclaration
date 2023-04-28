@@ -307,6 +307,44 @@ public class Runway implements Cloneable {
     }
 
     /**
+     * Get a cloned version of this runway but with the logical runways switched
+     *
+     * @return the switched threshold runway
+     */
+    public Runway getSwitchedThresholdRunway() {
+        // Clone the runway
+        var runway = this.clone();
+
+        // Edit the degree and position
+        runway.setDegree(runway.getDegree2(), runway.getDegree1());
+        if (runway instanceof PRunway pRunway) {
+            pRunway.setPosition(pRunway.getPos2(), pRunway.getPos1());
+        }
+
+        // Switch the parameters
+        runway.updateParameters(new double[]{
+            runwayL, // runwayL
+            runwayW, // runwayW
+            stripL, // stripL
+            stripW, // stripW
+            clearwayW, // clearwayW
+            resaL, // resaL
+            tora2, // tora2
+            toda2, // toda2
+            asda2, // asda2
+            lda2, // lda2
+            tora1, // tora1
+            toda1, // toda1
+            asda1, // asda1
+            lda1, // lda1
+            disThresh2, // disThresh2
+            disThresh1, // disThresh1
+        });
+
+        return runway;
+    }
+
+    /**
      * Clone the runway object
      *
      * @return the cloned runway object

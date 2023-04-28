@@ -67,13 +67,6 @@ public class ColourTheme {
     private Color sideOnBottomBackground = Color.SADDLEBROWN;
 
     /**
-     * Custom colours for Colour Blind Mode
-     */
-    private Color topDownBackgroundCB = Color.valueOf("#90581C");
-    private Color sideOnTopBackgroundCB = Color.valueOf("#006CD1");
-    private Color sideOnBottomBackgroundCB = Color.valueOf("#000000");
-
-    /**
      * Create the default colour theme
      */
     public ColourTheme() {
@@ -83,33 +76,30 @@ public class ColourTheme {
     /**
      * Create a custom colour scheme
      *
-     * @param loadingScreen             the loading screen background colour
-     * @param text                      the text colour
-     * @param arrow                     the arrow colour
-     * @param ASDAarrow                 the ASDA arrow colour
-     * @param TODAarrow                 the TODA arrow colour
-     * @param TORAarrow                 the TORA arrow colour
-     * @param LDAarrow                  the LDA arrow colour
-     * @param Blastarrow                the Blast arrow colour
-     * @param SEarrow                   the SE arrow colour
-     * @param RESAarrow                 the RESA arrow colour
-     * @param Slopearrow                the Slope arrow colour
-     * @param DTarrow                   the DT arrow colour
-     * @param guideline                 the guideline colour
-     * @param runwayStrip               the runway strip colour
-     * @param stopway                   the stopway colour
-     * @param clearway                  the clearway colour
-     * @param colourKeyBox              the colour key box colour
-     * @param obstacle                  the obstacle colour
-     * @param thresholdMarkingLines     the threshold marking/lines colour
-     * @param topDownBackground         the top-down view background colour
-     * @param clearedGradedArea         the cleared and graded area colour
-     * @param tocsALSLine               the tocs line colour
-     * @param sideOnTopBackground       the side-on view top background colour (sky)
-     * @param sideOnBottomBackground    the side-on view bottom background colour (under runway)
-     * @param topDownBackgroundCB       the top-down view background colour (ColourBlind)
-     * @param sideOnTopBackgroundCB     the side-on view top background colour (ColourBlind)
-     * @param sideOnBottomBackgroundCB  the side-on view bottom background colour (ColourBlind)
+     * @param loadingScreen          the loading screen background colour
+     * @param text                   the text colour
+     * @param arrow                  the arrow colour
+     * @param ASDAarrow              the ASDA arrow colour
+     * @param TODAarrow              the TODA arrow colour
+     * @param TORAarrow              the TORA arrow colour
+     * @param LDAarrow               the LDA arrow colour
+     * @param Blastarrow             the Blast arrow colour
+     * @param SEarrow                the SE arrow colour
+     * @param RESAarrow              the RESA arrow colour
+     * @param Slopearrow             the Slope arrow colour
+     * @param DTarrow                the DT arrow colour
+     * @param guideline              the guideline colour
+     * @param runwayStrip            the runway strip colour
+     * @param stopway                the stopway colour
+     * @param clearway               the clearway colour
+     * @param colourKeyBox           the colour key box colour
+     * @param obstacle               the obstacle colour
+     * @param thresholdMarkingLines  the threshold marking/lines colour
+     * @param topDownBackground      the top-down view background colour
+     * @param clearedGradedArea      the cleared and graded area colour
+     * @param tocsALSLine            the tocs line colour
+     * @param sideOnTopBackground    the side-on view top background colour (sky)
+     * @param sideOnBottomBackground the side-on view bottom background colour (under runway)
      */
     public ColourTheme(Color loadingScreen, Color text,
         Color arrow, Color ASDAarrow, Color TODAarrow,
@@ -146,11 +136,11 @@ public class ColourTheme {
         this.tocsALSLine = tocsALSLine;
         this.sideOnTopBackground = sideOnTopBackground;
         this.sideOnBottomBackground = sideOnBottomBackground;
-        this.topDownBackgroundCB = topDownBackgroundCB;
-        this.sideOnTopBackgroundCB = sideOnTopBackgroundCB;
-        this.sideOnBottomBackgroundCB = sideOnBottomBackgroundCB;
     }
 
+    /**
+     * GETTERS
+     */
     public ColourTheme getDefault() {
         return new ColourTheme();
     }
@@ -251,15 +241,35 @@ public class ColourTheme {
         return sideOnBottomBackground;
     }
 
-    public Color getTopDownBackgroundCB() {
-        return topDownBackgroundCB;
+    /**
+     * SETTERS
+     */
+    public void setTopDownBackground(Color topDownBackground) {
+        this.topDownBackground = topDownBackground;
     }
 
-    public Color getSideOnTopBackgroundCB() {
-        return sideOnTopBackgroundCB;
+    public void setSideOnTopBackground(Color sideOnTopBackground) {
+        this.sideOnTopBackground = sideOnTopBackground;
     }
 
-    public Color getSideOnBottomBackgroundCB() {
-        return sideOnBottomBackgroundCB;
+    public void setSideOnBottomBackground(Color sideOnBottomBackground) {
+        this.sideOnBottomBackground = sideOnBottomBackground;
+    }
+
+    /**
+     * Get the theme for colour-blind mode
+     *
+     * @return the colour-blind theme
+     */
+    public static ColourTheme getColourBlindTheme() {
+        var theme = new ColourTheme();
+
+        // Change the colours
+        theme.setTopDownBackground(Color.valueOf("#90581C"));
+        theme.setSideOnTopBackground(Color.valueOf("#006CD1"));
+        theme.setSideOnBottomBackground(Color.valueOf("#000000"));
+
+        // Return the theme
+        return theme;
     }
 }

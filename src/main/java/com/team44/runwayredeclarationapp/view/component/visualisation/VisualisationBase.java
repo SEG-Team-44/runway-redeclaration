@@ -7,6 +7,7 @@ import com.team44.runwayredeclarationapp.model.theme.ColourTheme;
 import java.util.HashMap;
 import java.util.HashSet;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,10 +25,16 @@ public abstract class VisualisationBase extends Canvas {
     protected boolean isLoadingScreen = true;
     protected boolean isObstacleScreen = false;
     protected boolean isShowValues = false;
-    protected boolean iscbMode = false;
     protected boolean isWhiteArrow = false;
     protected boolean isShowKey = true;
     protected boolean isRotateCompass = false;
+    protected boolean isThresholdSwitched = false;
+
+    /**
+     * The runway and obstacle shown on the visualisation
+     */
+    protected Runway runway;
+    protected RunwayObstacle runwayObstacle;
 
     /**
      * Runway width and height
@@ -102,7 +109,7 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Indicating whether the obstacle is on the left (True) or the right (False)
      */
-    protected Boolean isObstacleOnLeftSide;
+    protected Boolean isObstacleOnLeftSide, isObstacleOnLeftSideActual;
 
 
     /**
@@ -184,11 +191,7 @@ public abstract class VisualisationBase extends Canvas {
         gc.translate(-getWidth() / 2, -getHeight() / 2);
 
         // Draw the new canvas
-        if (iscbMode) {
-            gc.setFill(colourTheme.getTopDownBackgroundCB());
-        } else {
-            gc.setFill(colourTheme.getTopDownBackground());
-        }
+        gc.setFill(colourTheme.getTopDownBackground());
         gc.fillRect(-width, -height, width * 3, height * 3);
 
         // Runway cords and info:
@@ -369,11 +372,11 @@ public abstract class VisualisationBase extends Canvas {
      */
     protected void drawTakeOffLandingDirection() {
         // Top arrow
-        addArrow("CornerArrow",5, 30, 70, 10);
+        addArrow(5, 30, 70, 10, colourTheme.getArrow());
         addText("Landing and Take-off in this direction", 13, 5, 15);
 
         // Bottom arrow
-        addArrow("CornerArrow",getWidth() - 25, getHeight() - 30, getWidth() - 90, 10);
+        addArrow(getWidth() - 25, getHeight() - 30, getWidth() - 90, 10, colourTheme.getArrow());
         addText("Landing and Take-off in this direction", 13, getWidth() - 230,
             getHeight() - 8);
     }
@@ -389,21 +392,11 @@ public abstract class VisualisationBase extends Canvas {
     }
 
     /**
-     * Set whether to show the canvas in colour blind mode
-     *
-     * @param cbMode whether to display colour blind mode
-     */
-    public void setColourBlindMode(boolean cbMode){
-        iscbMode = cbMode;
-        paint();
-    }
-
-    /**
      * Set whether to change arrow colours to white
      *
      * @param arrowColour whether to change arrow colours to white
      */
-    public void setWhiteArrow(boolean arrowColour){
+    public void setWhiteArrow(boolean arrowColour) {
         isWhiteArrow = arrowColour;
         paint();
     }
@@ -429,48 +422,48 @@ public abstract class VisualisationBase extends Canvas {
         addTextArrow(createValueText("TODA", todaDistanceActual1),
             runwayX1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 4),
-            runwayX2 + rightClearwayLength);
+            runwayX2 + rightClearwayLength, colourTheme.getTODAarrow());
         addTextArrow(createValueText("ASDA", asdaDistanceActual1),
             runwayX1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
-            runwayX2 + rightStopwayLength);
-        addTextArrow(createValueText("TORA", todaDistanceActual1),
+            runwayX2 + rightStopwayLength, colourTheme.getASDAarrow());
+        addTextArrow(createValueText("TORA", toraDistanceActual1),
             runwayX1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
-            runwayX2);
+            runwayX2, colourTheme.getTORAarrow());
         addTextArrow(createValueText("LDA", ldaDistanceActual1),
             runwayX1 + displacedThresholdL,
             runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
-            runwayX2);
+            runwayX2, colourTheme.getLDAarrow());
         if (displacedThresholdL > 0) {
             addTextArrow(createValueText("DT", displacedThresholdLActual),
                 runwayX1,
                 runwayY1 - arrowsFromRunwayOffset,
-                runwayX1 + displacedThresholdL);
+                runwayX1 + displacedThresholdL, colourTheme.getDTarrow());
         }
 
         // Landing/takeoff to the left (logical runway 2)
         addTextArrow(createValueText("TODA", todaDistanceActual2),
             runwayX2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 4),
-            runwayX1 - leftClearwayLength);
+            runwayX1 - leftClearwayLength, colourTheme.getTODAarrow());
         addTextArrow(createValueText("ASDA", asdaDistanceActual2),
             runwayX2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 3),
-            runwayX1 - leftStopwayLength);
-        addTextArrow(createValueText("TORA", todaDistanceActual2),
+            runwayX1 - leftStopwayLength, colourTheme.getASDAarrow());
+        addTextArrow(createValueText("TORA", toraDistanceActual2),
             runwayX2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
-            runwayX1);
+            runwayX1, colourTheme.getTORAarrow());
         addTextArrow(createValueText("LDA", ldaDistanceActual2),
             runwayX2 - displacedThresholdR,
             runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
-            runwayX1);
+            runwayX1, colourTheme.getLDAarrow());
         if (displacedThresholdR > 0) {
             addTextArrow(createValueText("DT", displacedThresholdRActual),
                 runwayX2,
                 runwayY2 + arrowsFromRunwayOffset,
-                runwayX2 - displacedThresholdR); // Displaced Right
+                runwayX2 - displacedThresholdR, colourTheme.getDTarrow()); // Displaced Right
         }
     }
 
@@ -494,7 +487,7 @@ public abstract class VisualisationBase extends Canvas {
         addTextArrow(createValueText("Blast", blastProtectionActual),
             obstacleCoord,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
-            blastEndCoord);
+            blastEndCoord, colourTheme.getBlastarrow());
 
         var slopeEndCoord = obstacleCoord + slope;
 
@@ -502,33 +495,33 @@ public abstract class VisualisationBase extends Canvas {
         addTextArrow(createValueText("Slope", slopeActual),
             obstacleCoord,
             runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
-            slopeEndCoord);
+            slopeEndCoord, colourTheme.getSlopearrow());
         addTextArrow(createValueText("SE", stripEndActual),
             slopeEndCoord,
             runwayY1 - arrowsFromRunwayOffset,
-            stripEndCoord1);
+            stripEndCoord1, colourTheme.getSEarrow());
 
         addTextArrow(createValueText("TODA", todaDistanceActual1),
             blastEndCoord,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 4),
-            blastEndCoord + todaDistance1);
+            blastEndCoord + todaDistance1, colourTheme.getTODAarrow());
         addTextArrow(createValueText("ASDA", asdaDistanceActual1),
             blastEndCoord,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
-            blastEndCoord + asdaDistance1);
+            blastEndCoord + asdaDistance1, colourTheme.getASDAarrow());
         addTextArrow(createValueText("TORA", toraDistanceActual1),
             blastEndCoord,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
-            blastEndCoord + toraDistance1);
+            blastEndCoord + toraDistance1, colourTheme.getTORAarrow());
         addTextArrow(createValueText("LDA", ldaDistanceActual1),
             stripEndCoord1,
             runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
-            stripEndCoord1 + ldaDistance1);
+            stripEndCoord1 + ldaDistance1, colourTheme.getLDAarrow());
         if (displacedThresholdL > 0) {
             addTextArrow(createValueText("DT", displacedThresholdLActual),
                 runwayX1,
                 runwayY1 - arrowsFromRunwayOffset,
-                runwayX1 + displacedThresholdL); // Displaced Left
+                runwayX1 + displacedThresholdL, colourTheme.getDTarrow()); // Displaced Left
         }
 
         // Landing/takeoff to the left (logical runway 2)
@@ -538,42 +531,42 @@ public abstract class VisualisationBase extends Canvas {
         addTextArrow(createValueText("SE", stripEndActual),
             lda2EndCoord,
             runwayY2 + arrowsFromRunwayOffset,
-            lda2EndCoord - stripEnd);
+            lda2EndCoord - stripEnd, colourTheme.getSEarrow());
         addTextArrow(createValueText("RESA", resaActual),
             lda2EndCoord - stripEnd,
             runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
-            lda2EndCoord - stripEnd - resa);
+            lda2EndCoord - stripEnd - resa, colourTheme.getRESAarrow());
 
         addTextArrow(createValueText("SE", stripEndActual),
             tora2EndCoord,
             runwayY2 + arrowsFromRunwayOffset,
-            tora2EndCoord - stripEnd);
+            tora2EndCoord - stripEnd, colourTheme.getSEarrow());
         addTextArrow(createValueText("Slope", slopeActual),
             tora2EndCoord - stripEnd,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
-            tora2EndCoord - stripEnd - slope);
+            tora2EndCoord - stripEnd - slope, colourTheme.getSlopearrow());
 
         addTextArrow(createValueText("TODA", todaDistanceActual2),
             runwayX2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 4),
-            runwayX2 - todaDistance2);
+            runwayX2 - todaDistance2, colourTheme.getTODAarrow());
         addTextArrow(createValueText("ASDA", asdaDistanceActual2),
             runwayX2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 3),
-            runwayX2 - asdaDistance2);
+            runwayX2 - asdaDistance2, colourTheme.getASDAarrow());
         addTextArrow(createValueText("TORA", toraDistanceActual2),
             runwayX2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
-            tora2EndCoord);
+            tora2EndCoord, colourTheme.getTORAarrow());
         addTextArrow(createValueText("LDA", ldaDistanceActual2),
             runwayX2 - displacedThresholdR,
             runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
-            lda2EndCoord);
+            lda2EndCoord, colourTheme.getLDAarrow());
         if (displacedThresholdR > 0) {
             addTextArrow(createValueText("DT", displacedThresholdRActual),
                 runwayX2,
                 runwayY2 + arrowsFromRunwayOffset,
-                runwayX2 - displacedThresholdR); // Displaced Right
+                runwayX2 - displacedThresholdR, colourTheme.getDTarrow()); // Displaced Right
         }
     }
 
@@ -597,43 +590,43 @@ public abstract class VisualisationBase extends Canvas {
         addTextArrow(createValueText("SE", stripEndActual),
             toraEndCoord,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
-            stripEndCoord1);
+            stripEndCoord1, colourTheme.getSEarrow());
         addTextArrow(createValueText("Slope", slopeActual),
             stripEndCoord1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
-            stripEndCoord1 + slope);
+            stripEndCoord1 + slope, colourTheme.getSlopearrow());
 
         var lda1EndCoord = runwayX1 + displacedThresholdL + ldaDistance1;
         addTextArrow(createValueText("SE", stripEndActual),
             lda1EndCoord,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
-            lda1EndCoord + stripEnd);
+            lda1EndCoord + stripEnd, colourTheme.getSEarrow());
         addTextArrow(createValueText("RESA", resaActual),
             lda1EndCoord + stripEnd,
             runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
-            lda1EndCoord + stripEnd + resa);
+            lda1EndCoord + stripEnd + resa, colourTheme.getRESAarrow());
 
         addTextArrow(createValueText("TODA", todaDistanceActual1),
             runwayX1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 4),
-            runwayX1 + todaDistance1);
+            runwayX1 + todaDistance1, colourTheme.getTODAarrow());
         addTextArrow(createValueText("ASDA", asdaDistanceActual1),
             runwayX1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 3),
-            runwayX1 + asdaDistance1);
+            runwayX1 + asdaDistance1, colourTheme.getASDAarrow());
         addTextArrow(createValueText("TORA", toraDistanceActual1),
             runwayX1,
             runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
-            toraEndCoord);
+            toraEndCoord, colourTheme.getTORAarrow());
         addTextArrow(createValueText("LDA", ldaDistanceActual1),
             runwayX1 + displacedThresholdL,
             runwayY1 - arrowsFromRunwayOffset - arrowsGapBetween,
-            lda1EndCoord);
+            lda1EndCoord, colourTheme.getLDAarrow());
         if (displacedThresholdL > 0) {
             addTextArrow(createValueText("DT", displacedThresholdLActual),
                 runwayX1,
                 runwayY1 - arrowsFromRunwayOffset,
-                runwayX1 + displacedThresholdL); // Displaced Left
+                runwayX1 + displacedThresholdL, colourTheme.getDTarrow()); // Displaced Left
         }
 
         // Landing/takeoff to the left (logical runway 2)
@@ -641,43 +634,43 @@ public abstract class VisualisationBase extends Canvas {
         addTextArrow(createValueText("Slope", slopeActual),
             obstacleCoord,
             runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
-            obstacleCoord - slope);
+            obstacleCoord - slope, colourTheme.getSlopearrow());
         addTextArrow(createValueText("SE", stripEndActual),
             obstacleCoord - slope,
             runwayY2 + arrowsFromRunwayOffset,
-            stripEndStartCoord1);
+            stripEndStartCoord1, colourTheme.getSEarrow());
 
         var stripEndStartCoord2 = obstacleCoord - resa - stripEnd;
         addTextArrow(createValueText("RESA", resaActual),
             obstacleCoord,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
-            obstacleCoord - resa);
+            obstacleCoord - resa, colourTheme.getRESAarrow());
         addTextArrow(createValueText("SE", stripEndActual),
             obstacleCoord - resa,
             runwayY2 + arrowsFromRunwayOffset,
-            stripEndStartCoord2);
+            stripEndStartCoord2, colourTheme.getSEarrow());
 
         addTextArrow(createValueText("TODA", todaDistanceActual1),
             stripEndStartCoord2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 4),
-            runwayX1 - leftClearwayLength);
+            runwayX1 - leftClearwayLength, colourTheme.getTODAarrow());
         addTextArrow(createValueText("ASDA", asdaDistanceActual2),
             stripEndStartCoord2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 3),
-            runwayX1 - leftStopwayLength);
+            runwayX1 - leftStopwayLength, colourTheme.getASDAarrow());
         addTextArrow(createValueText("TORA", toraDistanceActual2),
             stripEndStartCoord2,
             runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
-            runwayX1);
+            runwayX1, colourTheme.getTORAarrow());
         addTextArrow(createValueText("LDA", ldaDistanceActual2),
             stripEndStartCoord1,
             runwayY2 + arrowsFromRunwayOffset + arrowsGapBetween,
-            stripEndStartCoord1 - ldaDistance2);
+            stripEndStartCoord1 - ldaDistance2, colourTheme.getLDAarrow());
         if (displacedThresholdR > 0) {
             addTextArrow(createValueText("DT", displacedThresholdRActual),
                 runwayX2,
                 runwayY2 + arrowsFromRunwayOffset,
-                runwayX2 - displacedThresholdR); // Displaced Right
+                runwayX2 - displacedThresholdR, colourTheme.getDTarrow()); // Displaced Right
         }
     }
 
@@ -685,18 +678,20 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Add an arrow with an attached text
      *
-     * @param text the text for the arrow
-     * @param x1   the start x coordinate
-     * @param y1   the start (and finish) y coordinate
-     * @param x2   the finish x coordinate
+     * @param text  the text for the arrow
+     * @param x1    the start x coordinate
+     * @param y1    the start (and finish) y coordinate
+     * @param x2    the finish x coordinate
+     * @param color the colour of the text and arrow
      */
-    protected void addTextArrow(String text, double x1, double y1, double x2) {
+    protected void addTextArrow(String text, double x1, double y1, double x2, Color color) {
         // Set how far into the arrow the text should be
         double textOnLinePercentage = x1 > x2 ? 0.5 : 0.1;
 
         // Draw the text and arrow separately
-        addText(text, 12, Math.min(x1, x2) + (Math.abs(x1 - x2) * textOnLinePercentage), y1 - 3);
-        addArrow(text, x1, y1, x2);
+        addText(text, 12, Math.min(x1, x2) + (Math.abs(x1 - x2) * textOnLinePercentage), y1 - 3,
+            color);
+        addArrow(x1, y1, x2, color);
 
         // Add the coordinates to the array of guideline coords
         if (x2 > x1) {
@@ -717,7 +712,7 @@ public abstract class VisualisationBase extends Canvas {
      * @param y    the y-coordinate
      */
     protected void addText(String text, int size, double x, double y) {
-        addText(text, size, x, y, 0);
+        addText(text, size, x, y, 0, colourTheme.getText());
     }
 
     /**
@@ -730,54 +725,41 @@ public abstract class VisualisationBase extends Canvas {
      * @param rotate the degree to rotate by
      */
     protected void addText(String text, int size, double x, double y, double rotate) {
+        addText(text, size, x, y, rotate, colourTheme.getText());
+    }
+
+    /**
+     * Add text to the canvas
+     *
+     * @param text  the text to add
+     * @param size  the size of the text
+     * @param x     the x-coordinate
+     * @param y     the y-coordinate
+     * @param color the colour of the text
+     */
+    protected void addText(String text, int size, double x, double y, Color color) {
+        addText(text, size, x, y, 0, color);
+    }
+
+    /**
+     * Add text to the canvas
+     *
+     * @param text   the text to add
+     * @param size   the size of the text
+     * @param x      the x-coordinate
+     * @param y      the y-coordinate
+     * @param rotate the degree to rotate by
+     * @param color  the colour of the text
+     */
+    protected void addText(String text, int size, double x, double y, double rotate, Color color) {
         var gc = getGraphicsContext2D();
 
         // Set properties
         gc.setLineWidth(0.7);
-        if (iscbMode || isWhiteArrow) {
-            if (text.contains("ASDA")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("TORA")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("TODA")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("LDA")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("SE")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("RESA")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("Slope")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("DT")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("Blast")) {
-                gc.setFill(colourTheme.getText());
-            } else if (text.contains("Corner")) {
-                gc.setFill(colourTheme.getText());
-            }
+        if (isWhiteArrow) {
+            gc.setFill(Color.WHITE);
         } else {
-            if (text.contains("ASDA")) {
-                gc.setFill(colourTheme.getASDAarrow());
-            } else if (text.contains("TORA")) {
-                gc.setFill(colourTheme.getTORAarrow());
-            } else if (text.contains("TODA")) {
-                gc.setFill(colourTheme.getTODAarrow());
-            } else if (text.contains("LDA")) {
-                gc.setFill(colourTheme.getLDAarrow());
-            } else if (text.contains("SE")) {
-                gc.setFill(colourTheme.getSEarrow());
-            } else if (text.contains("RESA")) {
-                gc.setFill(colourTheme.getRESAarrow());
-            } else if (text.contains("Slope")) {
-                gc.setFill(colourTheme.getSlopearrow());
-            } else if (text.contains("DT")) {
-                gc.setFill(colourTheme.getDTarrow());
-            } else if (text.contains("Blast")) {
-                gc.setFill(colourTheme.getBlastarrow());
-            } else if (text.contains("Corner")) {
-                gc.setFill(colourTheme.getText());
-            }
+            gc.setFill(color);
         }
         gc.setFont(new Font("Helvetica", size));
 
@@ -792,92 +774,46 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Add a horizontal arrow to the canvas
      *
-     * @param text  the Parameter the arrow represents
-     * @param x1    the start x coordinate
-     * @param y1    the start (and finish) y coordinate
-     * @param x2    the finish x coordinate
+     * @param x1 the start x coordinate
+     * @param y1 the start (and finish) y coordinate
+     * @param x2 the finish x coordinate
      */
-    protected void addArrow(String text, double x1, double y1, double x2) {
-        addArrow(text, x1, y1, x2, 3);
+    protected void addArrow(double x1, double y1, double x2) {
+        addArrow(x1, y1, x2, 3, colourTheme.getArrow());
     }
 
     /**
      * Add a horizontal arrow to the canvas
      *
-     * @param text            the Parameter the arrow represents
+     * @param x1    the start x coordinate
+     * @param y1    the start (and finish) y coordinate
+     * @param x2    the finish x coordinate
+     * @param color
+     */
+    protected void addArrow(double x1, double y1, double x2, Color color) {
+        addArrow(x1, y1, x2, 3, color);
+    }
+
+    /**
+     * Add a horizontal arrow to the canvas
+     *
      * @param x1              the start x coordinate
      * @param y1              the start (and finish) y coordinate
      * @param x2              the finish x coordinate
      * @param arrowPointWidth the width of the arrowhead
+     * @param color           the colour of the arrow
      */
-    protected void addArrow(String text, double x1, double y1, double x2, double arrowPointWidth) {
+    protected void addArrow(double x1, double y1, double x2, double arrowPointWidth,
+        Color color) {
         var gc = getGraphicsContext2D();
 
         // Set the pen properties
-        if (iscbMode || isWhiteArrow) {
-            if (text.contains("ASDA")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("TORA")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("TODA")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("LDA")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("SE")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("RESA")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("Slope")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("DT")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("Blast")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            } else if (text.contains("Corner")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            }
+        if (isWhiteArrow) {
+            gc.setFill(Color.WHITE);
+            gc.setStroke(Color.WHITE);
         } else {
-            if (text.contains("ASDA")) {
-                gc.setFill(colourTheme.getASDAarrow());
-                gc.setStroke(colourTheme.getASDAarrow());
-            } else if (text.contains("TORA")) {
-                gc.setFill(colourTheme.getTORAarrow());
-                gc.setStroke(colourTheme.getTORAarrow());
-            } else if (text.contains("TODA")) {
-                gc.setFill(colourTheme.getTODAarrow());
-                gc.setStroke(colourTheme.getTODAarrow());
-            } else if (text.contains("LDA")) {
-                gc.setFill(colourTheme.getLDAarrow());
-                gc.setStroke(colourTheme.getLDAarrow());
-            } else if (text.contains("SE")) {
-                gc.setFill(colourTheme.getSEarrow());
-                gc.setStroke(colourTheme.getSEarrow());
-            } else if (text.contains("RESA")) {
-                gc.setFill(colourTheme.getRESAarrow());
-                gc.setStroke(colourTheme.getRESAarrow());
-            } else if (text.contains("Slope")) {
-                gc.setFill(colourTheme.getSlopearrow());
-                gc.setStroke(colourTheme.getSlopearrow());
-            } else if (text.contains("DT")) {
-                gc.setFill(colourTheme.getDTarrow());
-                gc.setStroke(colourTheme.getDTarrow());
-            } else if (text.contains("Blast")) {
-                gc.setFill(colourTheme.getBlastarrow());
-                gc.setStroke(colourTheme.getBlastarrow());
-            } else if (text.contains("Corner")) {
-                gc.setFill(colourTheme.getArrow());
-                gc.setStroke(colourTheme.getArrow());
-            }
+            gc.setFill(color);
+            gc.setStroke(color);
         }
         gc.setLineWidth(arrowPointWidth / 3);
         gc.setLineDashes();
@@ -925,6 +861,13 @@ public abstract class VisualisationBase extends Canvas {
      * @param runway the runway object
      */
     public void setInitialParameters(Runway runway) {
+        this.runway = runway;
+
+        // Switch the runway if necessary
+        if (isThresholdSwitched) {
+            runway = runway.getSwitchedThresholdRunway();
+        }
+
         // Get the 2 logical runway ID's
         var runway1ID = runway.getLogicId1();
         var runway2ID = runway.getLogicId2();
@@ -974,7 +917,7 @@ public abstract class VisualisationBase extends Canvas {
      * @param leftClearwayLength  the length of the left clearway
      * @param rightClearwayLength the length of the right clearway
      */
-    public void setInitialParameters(
+    protected void setInitialParameters(
         double actualRunwayLength,
         double actualRunwayWidth,
         String tDesignator1,
@@ -1072,11 +1015,25 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * Set the new re-calculated parameters
      *
-     * @param runway   the runway object
-     * @param obstacle the obstacle
-     * @param blast    the blast protection
+     * @param runwayObstacle the runway obstacle object with the recalculated values
+     * @param blast          the blast protection
      */
-    public void setRecalculatedParameters(Runway runway, RunwayObstacle obstacle, double blast) {
+    public void setRecalculatedParameters(RunwayObstacle runwayObstacle, double blast) {
+        this.runway = runwayObstacle.getRecalculatedRw();
+        this.runwayObstacle = runwayObstacle;
+
+        // Find distances
+        var isLeftSide = runwayObstacle.getPositionL() < runwayObstacle.getPositionR();
+        var distanceFromStart =
+            runway.getDisThresh(runway.getLogicId2()) + runwayObstacle.getPositionL();
+
+        // Switch the runway if necessary
+        if (isThresholdSwitched) {
+            this.runway = runway.getSwitchedThresholdRunway();
+            isLeftSide = !isLeftSide;
+            distanceFromStart = actualRunwayLength - distanceFromStart;
+        }
+
         // Get the 2 logical runway ID's
         var runway1ID = runway.getLogicId1();
         var runway2ID = runway.getLogicId2();
@@ -1091,15 +1048,33 @@ public abstract class VisualisationBase extends Canvas {
             runway.getToda(runway2ID),
             runway.getAsda(runway2ID),
             runway.getLda(runway2ID),
-            obstacle.getObst().getSlope(),
+            runwayObstacle.getObst().getSlope(),
             runway.getStripL(),
             runway.getResaL(),
             blast,
-            runway.getDisThresh(runway2ID) + obstacle.getPositionL(),
-            obstacle.getDistCR(),
-            obstacle.getObst().getHeight(),
-            obstacle.getPositionL() < obstacle.getPositionR()
+            distanceFromStart,
+            runwayObstacle.getDistCR() * (isThresholdSwitched ? -1 : 1),
+            runwayObstacle.getObst().getHeight(),
+            isLeftSide
         );
+    }
+
+    /**
+     * Refresh the visualisation
+     */
+    protected void refresh() {
+        if (isLoadingScreen) {
+            return;
+        }
+
+        // Store the screen state temporarily
+        var tempScreenStore = isObstacleScreen;
+        setInitialParameters(this.runway);
+
+        // If obstacle screen
+        if (tempScreenStore) {
+            setRecalculatedParameters(this.runwayObstacle, this.blastProtectionActual);
+        }
     }
 
     /**
@@ -1127,7 +1102,7 @@ public abstract class VisualisationBase extends Canvas {
      * @param isObstacleOnLeftSide           indicates whether the obstacle is on the left of the
      *                                       runway (True) or on the right (False)
      */
-    public void setRecalculatedParameters(
+    protected void setRecalculatedParameters(
         double toraDistance1,
         double todaDistance1,
         double asdaDistance1,
@@ -1209,6 +1184,7 @@ public abstract class VisualisationBase extends Canvas {
      */
     public void setColourTheme(ColourTheme colourTheme) {
         this.colourTheme = colourTheme;
+        paint();
     }
 
     /**
@@ -1244,9 +1220,21 @@ public abstract class VisualisationBase extends Canvas {
      * @param rotateCompass whether to rotate the runway strip
      */
     public void setRotateCompass(boolean rotateCompass) {
-        isRotateCompass = rotateCompass;
+        this.isRotateCompass = rotateCompass;
 
         // Update canvas
         paint();
+    }
+
+    /**
+     * Set whether to switch the thresholds
+     *
+     * @param thresholdSwitched whether to switch threshold
+     */
+    public void setThresholdSwitched(boolean thresholdSwitched) {
+        this.isThresholdSwitched = thresholdSwitched;
+
+        // Refresh the canvas
+        refresh();
     }
 }
