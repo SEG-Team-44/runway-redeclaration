@@ -13,6 +13,7 @@ import com.team44.runwayredeclarationapp.utility.xml.XMLWrapper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import org.xml.sax.SAXException;
 
@@ -364,17 +365,27 @@ public class FileController {
             // Validate the airport name
             errors.addAll(ValidationController.validateAirport(airport.getName()));
 
+            Iterator<Runway> runwayIterator = airport.getRunways().iterator();
+            var tempRunwaysStore = new ArrayList<>(airport.getRunways());
+
             // Validate the runways
-            for (Runway runway : airport.getRunways()) {
+            while (runwayIterator.hasNext()) {
+                var runway = runwayIterator.next();
                 var isParallel = runway instanceof PRunway;
                 var pos1 = isParallel ? ((PRunway) runway).getPos1() : null;
                 var pos2 = isParallel ? ((PRunway) runway).getPos2() : null;
+
+                // Get the airport object but without this specific runway
+                runwayIterator.remove();
 
                 var validationErrors = ValidationController.validateRunway(pos1, pos2,
                     runway.getDegree1(), runway.getDegree2(), runway.getParameters(), airport);
 
                 errors.addAll(validationErrors);
             }
+
+            // Add back the removed runways
+            airport.setRunways(tempRunwaysStore);
         }
 
         // Validate the list of obstacles

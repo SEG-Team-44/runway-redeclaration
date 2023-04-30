@@ -121,7 +121,7 @@ public class Runway implements Cloneable {
      * @param degree degree of a runway
      * @return degree in string and in correct format
      */
-    public String getDegreeInString(int degree) {
+    public static String getDegreeInString(int degree) {
         String newDegree;
 
         if (degree < 10) {
@@ -291,7 +291,7 @@ public class Runway implements Cloneable {
      * @return the physical id string
      */
     public static String createPhyId(int degree1, int degree2) {
-        return String.valueOf(degree1) + degree2;
+        return getDegreeInString(degree1) + "/" + getDegreeInString(degree2);
     }
 
     /**

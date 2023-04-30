@@ -46,6 +46,19 @@ public class PRunway extends Runway {
     }
 
     /**
+     * Generate a physical ID given both of the degree values
+     *
+     * @param degree1 the degree for logical runway 1
+     * @param degree2 the degree for logical runway 2
+     * @param pos1    the position of logical runway 1
+     * @param pos2    the position of logical runway 2
+     * @return the physical id string
+     */
+    public static String createPhyId(int degree1, int degree2, char pos1, char pos2) {
+        return getDegreeInString(degree1) + pos1 + "/" + getDegreeInString(degree2) + pos2;
+    }
+
+    /**
      * Set the logical ids for the 2 logical runways, insert the position characters into the ids
      * generated in Runway
      */

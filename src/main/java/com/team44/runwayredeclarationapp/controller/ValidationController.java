@@ -1,6 +1,7 @@
 package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,14 +128,19 @@ public class ValidationController {
             }
 
             //insert position chars into the id if needed
-            phyId = phyId.substring(0, 2) + pos1 + phyId.substring(2) + pos2;
+            phyId = PRunway.createPhyId(degree1, degree2, pos1, pos2);
         }
 
         //loop through current runways logged in the airport, return false if the runway already exist in the system
+        var count = 0;
         for (Runway runway : airport.getRunways()) {
             if (runway.getPhyId().equals(phyId)) {
-                errors.add("This runway already exists.");
+                count += 1;
             }
+        }
+        if (count >= 1) {
+            errors.add(
+                "Duplicate runway detected: " + phyId + " (Airport: " + airport.getName() + ")");
         }
 
         //check if all numerical parameter inputs are valid
