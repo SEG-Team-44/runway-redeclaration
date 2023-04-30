@@ -33,7 +33,7 @@ public abstract class VisualisationBase extends Canvas {
     /**
      * The runway and obstacle shown on the visualisation
      */
-    protected Runway runway;
+    protected Runway runway, originalRunway, switchedRunway;
     protected RunwayObstacle runwayObstacle;
 
     /**
@@ -862,6 +862,8 @@ public abstract class VisualisationBase extends Canvas {
      */
     public void setInitialParameters(Runway runway) {
         this.runway = runway;
+        this.originalRunway = runway;
+        this.switchedRunway = runway.getSwitchedThresholdRunway();
 
         // Switch the runway if necessary
         if (isThresholdSwitched) {
@@ -877,13 +879,13 @@ public abstract class VisualisationBase extends Canvas {
             runway.getRunwayL(),
             runway.getRunwayW(),
             runway1ID,
-            runway.getDegreeInString(runway.getDegree1()),
+            Runway.getDegreeInString(runway.getDegree1()),
             runway.getTora(runway1ID),
             runway.getToda(runway1ID),
             runway.getAsda(runway1ID),
             runway.getLda(runway1ID),
             runway2ID,
-            runway.getDegreeInString(runway.getDegree2()),
+            Runway.getDegreeInString(runway.getDegree2()),
             runway.getTora(runway2ID),
             runway.getToda(runway2ID),
             runway.getAsda(runway2ID),
@@ -1069,7 +1071,38 @@ public abstract class VisualisationBase extends Canvas {
 
         // Store the screen state temporarily
         var tempScreenStore = isObstacleScreen;
-        setInitialParameters(this.runway);
+
+        // Select which runway to display
+        var runwayToDisplay = isThresholdSwitched ? switchedRunway : originalRunway;
+        System.out.println(isThresholdSwitched);
+
+        // Get logical ids
+        var runway1ID = runwayToDisplay.getLogicId1();
+        var runway2ID = runwayToDisplay.getLogicId2();
+
+        // Update the parameters
+        setInitialParameters(
+            runwayToDisplay.getRunwayL(),
+            runwayToDisplay.getRunwayW(),
+            runway1ID,
+            Runway.getDegreeInString(runwayToDisplay.getDegree1()),
+            runwayToDisplay.getTora(runway1ID),
+            runwayToDisplay.getToda(runway1ID),
+            runwayToDisplay.getAsda(runway1ID),
+            runwayToDisplay.getLda(runway1ID),
+            runway2ID,
+            Runway.getDegreeInString(runwayToDisplay.getDegree2()),
+            runwayToDisplay.getTora(runway2ID),
+            runwayToDisplay.getToda(runway2ID),
+            runwayToDisplay.getAsda(runway2ID),
+            runwayToDisplay.getLda(runway2ID),
+            runwayToDisplay.getDisThresh(runway2ID),
+            runwayToDisplay.getDisThresh(runway1ID),
+            runwayToDisplay.getStopwayL(runway2ID),
+            runwayToDisplay.getStopwayL(runway1ID),
+            runwayToDisplay.getClearwayL(runway2ID),
+            runwayToDisplay.getClearwayL(runway1ID)
+        );
 
         // If obstacle screen
         if (tempScreenStore) {
