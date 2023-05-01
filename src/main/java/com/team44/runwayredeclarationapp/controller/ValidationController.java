@@ -192,6 +192,15 @@ public class ValidationController {
             parametersList.add(par);
         }
 
+        var parameterNames = new String[]{
+            "Runway Length - runwayL", "Runway Width - runwayW",
+            "Strip Length - stripL", "Strip Width - stripW",
+            "Clearway Width - clearwayW", "RESA - resaL",
+            "TORA - tora1", "TODA - toda1", "ASDA - asda1", "LDA - lda1",
+            "TORA - tora2", "TODA - toda2", "ASDA - asda2", "LDA - lda2",
+            "Displaced Threshold - disThresh1", "Displaced Threshold - disThresh2"
+        };
+
         // Validate parameter lengths to 2 dp and upper bound
         for (double parameter : parameters) {
             if (!String.valueOf(parameter).matches(twoDpRegex)) {
@@ -205,13 +214,12 @@ public class ValidationController {
         }
 
         //return false if any of the physical parameters is 0
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 14; i++) {
             if (parametersList.get(i) < 1) {
-                errors.add("Runway physical parameters cannot be less than or equal to 0.");
+                errors.add("Runway parameter (" + parameterNames[i]
+                    + ") cannot be less than or equal to 0.");
             }
         }
-
-        // todo:: tora,toda,asda,lda lower bound 0
 
         //return false if any of the 2 TORA > runway length
         if (parametersList.get(6) > parametersList.get(0)

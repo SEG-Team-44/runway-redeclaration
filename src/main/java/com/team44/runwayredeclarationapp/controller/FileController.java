@@ -115,7 +115,6 @@ public class FileController {
      * @param file the file to save to
      */
     public void exportXMLFile(Airport[] airports, Obstacle[] obstacles, File file) {
-        // todo check file exists?
         xmlHandler.saveToXML(airports, obstacles, file);
     }
 
