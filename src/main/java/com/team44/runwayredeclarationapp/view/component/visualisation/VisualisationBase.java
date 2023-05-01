@@ -1074,7 +1074,6 @@ public abstract class VisualisationBase extends Canvas {
 
         // Select which runway to display
         var runwayToDisplay = isThresholdSwitched ? switchedRunway : originalRunway;
-        System.out.println(isThresholdSwitched);
 
         // Get logical ids
         var runway1ID = runwayToDisplay.getLogicId1();

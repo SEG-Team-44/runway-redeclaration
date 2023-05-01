@@ -788,6 +788,15 @@ public class MainScene extends BaseScene {
     }
 
     /**
+     * Get the observable property for the selected runway (combobox)
+     *
+     * @return the observable property
+     */
+    public ObjectProperty<Runway> getSelectedRunwayProperty() {
+        return runwayTitlePane.getRunwaySelectComboBox().valueProperty();
+    }
+
+    /**
      * Call a specific method on all the visualisation canvas'
      *
      * @param canvasMethod the method to call

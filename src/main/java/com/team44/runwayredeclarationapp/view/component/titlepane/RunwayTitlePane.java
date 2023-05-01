@@ -193,6 +193,15 @@ public class RunwayTitlePane extends TitledPane {
     }
 
     /**
+     * Get the combobox to select the runway
+     *
+     * @return the combobox
+     */
+    public SelectComboBox<Runway> getRunwaySelectComboBox() {
+        return runwaySelectComboBox;
+    }
+
+    /**
      * Clear all the inputs
      */
     public void clearInputs() {

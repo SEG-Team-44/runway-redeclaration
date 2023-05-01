@@ -87,15 +87,32 @@ public class ValidationController {
      * @param pos1       position character input by the user
      * @param pos2       the other position character input by the user
      * @param degree1    degree of one logical runway
-     * @param degree2    degree of the other logical runway // * @param textFields   contains all
-     *                   numerical inputs
+     * @param degree2    degree of the other logical runway
      * @param parameters the runway parameters
      * @param airport    the airport that the runway is in
      * @return the list of errors
      */
+    public static List<String> validateRunway(Character pos1, Character pos2,
+        int degree1, int degree2, double[] parameters, Airport airport) {
+        return validateRunway(pos1, pos2, degree1, degree2, parameters, airport, false);
+    }
+
+    /**
+     * Validate the inputs when a user add a new runway to the system
+     *
+     * @param pos1                   position character input by the user
+     * @param pos2                   the other position character input by the user
+     * @param degree1                degree of one logical runway
+     * @param degree2                degree of the other logical runway
+     * @param parameters             the runway parameters
+     * @param airport                the airport that the runway is in
+     * @param runwayAlreadyInAirport whether the runway has been already added to the airport
+     * @return the list of errors
+     */
     public static List<String> validateRunway(
         Character pos1, Character pos2,
-        int degree1, int degree2, double[] parameters, Airport airport) {
+        int degree1, int degree2, double[] parameters, Airport airport,
+        boolean runwayAlreadyInAirport) {
 
         // Create list of errors
         List<String> errors = new ArrayList<>();
@@ -138,7 +155,7 @@ public class ValidationController {
                 count += 1;
             }
         }
-        if (count >= 1) {
+        if (count > (runwayAlreadyInAirport ? 1 : 0)) {
             errors.add(
                 "Duplicate runway detected: " + phyId + " (Airport: " + airport.getName() + ")");
         }
