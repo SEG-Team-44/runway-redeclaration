@@ -1,6 +1,7 @@
 package com.team44.runwayredeclarationapp.controller;
 
 import com.team44.runwayredeclarationapp.model.Airport;
+import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,14 @@ public class ValidationController {
      * Lower and upper bounds for runway numerical inputs
      */
     private static final int runwayParametersUpperBound = 20000;
+
+    /**
+     * Lower and upper bounds for obstacle information numerical inputs
+     */
+    private static final int obstacleFromCentrelineLowerBound = -500;
+    private static final int obstacleFromCentrelineUpperBound = 500;
+    private static final int blastProtectionLowerBound = 0;
+    private static final int blastProtectionUpperBound = 5000;
 
 
     /**
@@ -86,15 +95,32 @@ public class ValidationController {
      * @param pos1       position character input by the user
      * @param pos2       the other position character input by the user
      * @param degree1    degree of one logical runway
-     * @param degree2    degree of the other logical runway // * @param textFields   contains all
-     *                   numerical inputs
+     * @param degree2    degree of the other logical runway
      * @param parameters the runway parameters
      * @param airport    the airport that the runway is in
      * @return the list of errors
      */
+    public static List<String> validateRunway(Character pos1, Character pos2,
+        int degree1, int degree2, double[] parameters, Airport airport) {
+        return validateRunway(pos1, pos2, degree1, degree2, parameters, airport, false);
+    }
+
+    /**
+     * Validate the inputs when a user add a new runway to the system
+     *
+     * @param pos1                   position character input by the user
+     * @param pos2                   the other position character input by the user
+     * @param degree1                degree of one logical runway
+     * @param degree2                degree of the other logical runway
+     * @param parameters             the runway parameters
+     * @param airport                the airport that the runway is in
+     * @param runwayAlreadyInAirport whether the runway has been already added to the airport
+     * @return the list of errors
+     */
     public static List<String> validateRunway(
         Character pos1, Character pos2,
-        int degree1, int degree2, double[] parameters, Airport airport) {
+        int degree1, int degree2, double[] parameters, Airport airport,
+        boolean runwayAlreadyInAirport) {
 
         // Create list of errors
         List<String> errors = new ArrayList<>();
@@ -127,14 +153,19 @@ public class ValidationController {
             }
 
             //insert position chars into the id if needed
-            phyId = phyId.substring(0, 2) + pos1 + phyId.substring(2) + pos2;
+            phyId = PRunway.createPhyId(degree1, degree2, pos1, pos2);
         }
 
         //loop through current runways logged in the airport, return false if the runway already exist in the system
+        var count = 0;
         for (Runway runway : airport.getRunways()) {
             if (runway.getPhyId().equals(phyId)) {
-                errors.add("This runway already exists.");
+                count += 1;
             }
+        }
+        if (count > (runwayAlreadyInAirport ? 1 : 0)) {
+            errors.add(
+                "Duplicate runway detected: " + phyId + " (Airport: " + airport.getName() + ")");
         }
 
         //check if all numerical parameter inputs are valid
@@ -208,6 +239,55 @@ public class ValidationController {
             parametersList.get(15) < 0 || parametersList.get(15) > parametersList.get(10)) {
             errors.add(
                 "Displaced threshold must be in the range 0 to its corresponding TORA value.");
+        }
+
+        return errors;
+    }
+
+    /**
+     * Validate the obstacle information inputs such as the distance from the left, right,
+     * centre-line and blast protection
+     *
+     * @param selectedRunway         the selected runway
+     * @param distanceFromLeft       the distance of the obstacle from the left threshold
+     * @param distanceFromRight      the distance of the obstacle from the right threshold
+     * @param distanceFromCentreline the distance of the obstacle from the centreline
+     * @param blastProtection        the blast protection of the airplane
+     * @return the list of errors
+     */
+    public static List<String> validateObstacleInformationInputs(Runway selectedRunway,
+        double distanceFromLeft, double distanceFromRight, double distanceFromCentreline,
+        double blastProtection) {
+        // Create list of errors
+        List<String> errors = new ArrayList<>();
+
+        // Get logic ids
+        var runway1 = selectedRunway.getLogicId1();
+        var runway2 = selectedRunway.getLogicId2();
+
+        // Distance bounds
+        if (distanceFromCentreline >= obstacleFromCentrelineUpperBound) {
+            errors.add("Obstacle distance from centreline (" + distanceFromCentreline
+                + ") must be less than 500m.");
+        } else if (distanceFromCentreline <= obstacleFromCentrelineLowerBound) {
+            errors.add("Obstacle distance from centreline (" + distanceFromCentreline
+                + ") must be greater than -500m.");
+        }
+
+        // Blast protection bounds
+        if (blastProtection >= blastProtectionUpperBound) {
+            errors.add("Blast protection (" + blastProtection + ") must be under 5000m.");
+        } else if (blastProtection < blastProtectionLowerBound) {
+            errors.add(
+                "Blast protection (" + blastProtection + ") must be greater than or equal to 0m.");
+        }
+
+        // Distances add up to total length
+        if ((distanceFromLeft + distanceFromRight + selectedRunway.getDisThresh(runway1)
+            + selectedRunway.getDisThresh(runway2) != selectedRunway.getRunwayL())) {
+            errors.add("Obstacle distance from left (" + distanceFromLeft + ") and right ("
+                + distanceFromRight + ") of thresholds do not match the total runway length ("
+                + selectedRunway.getRunwayL() + ")");
         }
 
         return errors;

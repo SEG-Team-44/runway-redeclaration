@@ -154,9 +154,17 @@ public class DataController {
         Character pos2,
         int degree1, int degree2, double[] parameters) {
 
+        // Check if logic id has been changed
+        String newID;
+        if (runway instanceof PRunway) {
+            newID = PRunway.createPhyId(degree1, degree2, pos1, pos2);
+        } else {
+            newID = Runway.createPhyId(degree1, degree2);
+        }
+
         // Validate the runway inputs
         var validationErrors = ValidationController.validateRunway(
-            pos1, pos2, degree1, degree2, parameters, airport);
+            pos1, pos2, degree1, degree2, parameters, airport, newID.equals(runway.getPhyId()));
 
         // Check there are no errors
         if (validationErrors.size() == 0) {
@@ -166,8 +174,6 @@ public class DataController {
             // Log the action
             logAction("Runway Edited",
                 "Runway (" + runway.getPhyId() + ") has been successfully edited.");
-
-            // todo:: update the observable list
         }
 
         // Return the edited runway and errors

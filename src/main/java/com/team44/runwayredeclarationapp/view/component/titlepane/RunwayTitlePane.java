@@ -7,7 +7,6 @@ import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.RunwayInfoGrids;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
-import java.util.Objects;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
@@ -107,15 +106,15 @@ public class RunwayTitlePane extends TitledPane {
                     mainScene.getAirport());
 
                 // Set the runway listener to update
-                modifyPage.setNewRunwayListener(runway -> {
+                modifyPage.setNewRunwayListener((oldRunway, newRunway) -> {
                     var selectedRunway = runwaySelectComboBox.getValue();
                     // Only update the gui if the selected runway was the one modified
-                    if (selectedRunway != null && Objects.equals(runway.getPhyId(),
-                        selectedRunway.getPhyId())) {
-
-                        mainScene.updateInitialRunway(runway);
-                        runwaySelectComboBox.setValue(runway);
-                        runwayInfoGrids.setRunway(runway);
+                    if (oldRunway.equals(selectedRunway)) {
+                        mainScene.updateInitialRunway(newRunway);
+                        // Clear and set the combobox
+                        runwaySelectComboBox.getSelectionModel().clearSelection();
+                        runwaySelectComboBox.setValue(newRunway);
+                        runwayInfoGrids.setRunway(newRunway);
                     }
                 });
             }
@@ -190,6 +189,15 @@ public class RunwayTitlePane extends TitledPane {
      */
     public Runway getSelectedRunway() {
         return runwaySelectComboBox.getValue();
+    }
+
+    /**
+     * Get the combobox to select the runway
+     *
+     * @return the combobox
+     */
+    public SelectComboBox<Runway> getRunwaySelectComboBox() {
+        return runwaySelectComboBox;
     }
 
     /**

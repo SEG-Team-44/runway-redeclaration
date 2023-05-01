@@ -168,4 +168,11 @@ public class SelectWindow<T> extends Stage {
             }
         });
     }
+
+    /**
+     * Refresh the list of options
+     */
+    public void refresh() {
+        options.refresh();
+    }
 }

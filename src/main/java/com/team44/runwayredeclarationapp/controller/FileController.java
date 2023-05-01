@@ -370,8 +370,10 @@ public class FileController {
                 var pos1 = isParallel ? ((PRunway) runway).getPos1() : null;
                 var pos2 = isParallel ? ((PRunway) runway).getPos2() : null;
 
+                // Validate
                 var validationErrors = ValidationController.validateRunway(pos1, pos2,
-                    runway.getDegree1(), runway.getDegree2(), runway.getParameters(), airport);
+                    runway.getDegree1(), runway.getDegree2(), runway.getParameters(), airport,
+                    true);
 
                 errors.addAll(validationErrors);
             }

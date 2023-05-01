@@ -1,7 +1,7 @@
 package com.team44.runwayredeclarationapp.ui.obstacle;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
-import com.team44.runwayredeclarationapp.event.AddObstacleListener;
+import com.team44.runwayredeclarationapp.event.EditObstacleListener;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
 import javafx.stage.Stage;
@@ -22,7 +22,7 @@ public class ModifyObstacleWindow {
     /**
      * The listener called when an obstacle has been successfully edited
      */
-    private AddObstacleListener editObstacleListener;
+    private EditObstacleListener editObstacleListener;
 
     /**
      * Initialising the stage
@@ -66,12 +66,13 @@ public class ModifyObstacleWindow {
      * @param obstacle the obstacle selected
      */
     private void showModifyScene(Obstacle obstacle) {
+        var initialObstacle = obstacle.clone();
         var modifyWindow = new AddObstacleWindow(stage, dataController, obstacle);
 
         // Call listener
         modifyWindow.setAddObstacleListener(modifiedObstacle -> {
             if (editObstacleListener != null) {
-                editObstacleListener.addObstacle(modifiedObstacle);
+                editObstacleListener.editObstacle(initialObstacle, modifiedObstacle);
             }
         });
     }
@@ -81,7 +82,7 @@ public class ModifyObstacleWindow {
      *
      * @param editObstacleListener the listener
      */
-    public void setEditAirportListener(AddObstacleListener editObstacleListener) {
+    public void setEditObstacleListener(EditObstacleListener editObstacleListener) {
         this.editObstacleListener = editObstacleListener;
     }
 

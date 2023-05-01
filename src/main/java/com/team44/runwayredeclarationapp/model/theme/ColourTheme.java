@@ -7,6 +7,8 @@ import javafx.scene.paint.Color;
  */
 public class ColourTheme {
 
+    private String themeName = "Default";
+
     /**
      * Loading screen colours
      */
@@ -61,7 +63,6 @@ public class ColourTheme {
     /**
      * Custom colours for side-on view
      */
-    //private Color tocsALSLine = Color.WHITE;
     private Color tocsALSLine = Color.valueOf("#FFFEB3");
     private Color sideOnTopBackground = Color.DARKSLATEBLUE;
     private Color sideOnBottomBackground = Color.SADDLEBROWN;
@@ -76,6 +77,7 @@ public class ColourTheme {
     /**
      * Create a custom colour scheme
      *
+     * @param themeName              the name of the custom colour theme
      * @param loadingScreen          the loading screen background colour
      * @param text                   the text colour
      * @param arrow                  the arrow colour
@@ -101,7 +103,7 @@ public class ColourTheme {
      * @param sideOnTopBackground    the side-on view top background colour (sky)
      * @param sideOnBottomBackground the side-on view bottom background colour (under runway)
      */
-    public ColourTheme(Color loadingScreen, Color text,
+    public ColourTheme(String themeName, Color loadingScreen, Color text,
         Color arrow, Color ASDAarrow, Color TODAarrow,
         Color TORAarrow, Color LDAarrow,
         Color Blastarrow, Color SEarrow, Color RESAarrow,
@@ -110,8 +112,8 @@ public class ColourTheme {
         Color clearway, Color colourKeyBox,
         Color obstacle, Color thresholdMarkingLines,
         Color topDownBackground, Color clearedGradedArea, Color tocsALSLine,
-        Color sideOnTopBackground, Color sideOnBottomBackground,
-        Color topDownBackgroundCB, Color sideOnTopBackgroundCB, Color sideOnBottomBackgroundCB) {
+        Color sideOnTopBackground, Color sideOnBottomBackground) {
+        this.themeName = themeName;
         this.loadingScreen = loadingScreen;
         this.text = text;
         this.arrow = arrow;
@@ -141,6 +143,10 @@ public class ColourTheme {
     /**
      * GETTERS
      */
+    public String getThemeName() {
+        return themeName;
+    }
+
     public ColourTheme getDefault() {
         return new ColourTheme();
     }
@@ -244,6 +250,10 @@ public class ColourTheme {
     /**
      * SETTERS
      */
+    public void setThemeName(String themeName) {
+        this.themeName = themeName;
+    }
+
     public void setTopDownBackground(Color topDownBackground) {
         this.topDownBackground = topDownBackground;
     }
@@ -265,11 +275,81 @@ public class ColourTheme {
         var theme = new ColourTheme();
 
         // Change the colours
+        theme.setThemeName("Colour Blind");
         theme.setTopDownBackground(Color.valueOf("#90581C"));
         theme.setSideOnTopBackground(Color.valueOf("#006CD1"));
         theme.setSideOnBottomBackground(Color.valueOf("#000000"));
 
         // Return the theme
         return theme;
+    }
+
+    /**
+     * Get the theme for dark mode
+     *
+     * @return the dark mode theme
+     */
+    public static ColourTheme getDarkModeTheme() {
+        return new ColourTheme("Dark",
+            Color.web("#1C1C1C"), // loadingScreen
+            Color.WHITE, // text
+            Color.WHITE, // arrow
+            Color.valueOf("#007FFF"), // ASDAarrow
+            Color.valueOf("#00FF7F"), // TODAarrow
+            Color.valueOf("#FFA500"), // TORAarrow
+            Color.valueOf("#FFD700"), // LDAarrow
+            Color.valueOf("#FF69B4"), // Blastarrow
+            Color.valueOf("#FF6347"), // SEarrow
+            Color.valueOf("#FFFF00"), // RESAarrow
+            Color.valueOf("#DA70D6"), // Slopearrow
+            Color.valueOf("#00FF00"), // DTarrow
+            Color.WHITE, // guideline
+            Color.DIMGRAY, // runwayStrip
+            Color.DARKSLATEGRAY, // stopway
+            Color.WHITE, // clearway
+            Color.web("#1C1C1C"), // colourKeyBox
+            Color.RED, // obstacle
+            Color.WHITE, // thresholdMarkingLines
+            Color.web("#2B2B2B"), // topDownBackground
+            Color.valueOf("#6A5ACD"), // clearedGradedArea
+            Color.valueOf("#FFD700"), // tocsALSLine
+            Color.web("#1C1C1C"), // sideOnTopBackground
+            Color.web("#363636") // sideOnBottomBackground
+        );
+    }
+
+    /**
+     * Get the theme for high contrast mode
+     *
+     * @return the high contrast mode theme
+     */
+    public static ColourTheme getHighContrastTheme() {
+        return new ColourTheme(
+            "High Contrast",
+            Color.BLACK, // Loading screen
+            Color.WHITE, // Text
+            Color.WHITE, // Arrow
+            Color.YELLOW, // ASDAarrow
+            Color.ORANGE, // TODAarrow
+            Color.RED, // TORAarrow
+            Color.WHITE, // LDAarrow
+            Color.PINK, // Blastarrow
+            Color.YELLOW, // SEarrow
+            Color.ORANGE, // RESAarrow
+            Color.PINK, // Slopearrow
+            Color.LIME, // DTarrow
+            Color.WHITE, // guideline
+            Color.DARKGRAY, // runwayStrip
+            Color.YELLOW, // stopway
+            Color.LIGHTGRAY, // clearway
+            Color.WHITE, // colourKeyBox
+            Color.YELLOW, // obstacle
+            Color.WHITE, // thresholdMarkingLines
+            Color.BLACK, // topDownBackground
+            Color.rgb(70, 112, 70), // clearedGradedArea
+            Color.YELLOW, // tocsALSLine
+            Color.BLACK, // sideOnTopBackground
+            Color.rgb(40, 40, 40) // sideOnBottomBackground
+        );
     }
 }

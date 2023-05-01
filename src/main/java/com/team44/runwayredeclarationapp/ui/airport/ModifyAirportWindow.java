@@ -1,7 +1,7 @@
 package com.team44.runwayredeclarationapp.ui.airport;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
-import com.team44.runwayredeclarationapp.event.AddAirportListener;
+import com.team44.runwayredeclarationapp.event.EditAirportListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
 import javafx.stage.Stage;
@@ -23,7 +23,7 @@ public class ModifyAirportWindow {
     /**
      * The listener called when an airport has been successfully edited
      */
-    private AddAirportListener editAirportListener;
+    private EditAirportListener editAirportListener;
 
     /**
      * Create the select and edit airport modal windows
@@ -67,12 +67,13 @@ public class ModifyAirportWindow {
      * @param airport the airport to be edited
      */
     private void showModifyScene(Airport airport) {
+        var initialAirport = airport.clone();
         var modifyWindow = new AddAirportWindow(stage, dataController, airport);
 
         // Call listener
         modifyWindow.setAddAirportListener(modifiedAirport -> {
             if (editAirportListener != null) {
-                editAirportListener.addAirport(modifiedAirport);
+                editAirportListener.editAirport(initialAirport, modifiedAirport);
             }
         });
     }
@@ -82,7 +83,7 @@ public class ModifyAirportWindow {
      *
      * @param editAirportListener the listener
      */
-    public void setEditAirportListener(AddAirportListener editAirportListener) {
+    public void setEditAirportListener(EditAirportListener editAirportListener) {
         this.editAirportListener = editAirportListener;
     }
 

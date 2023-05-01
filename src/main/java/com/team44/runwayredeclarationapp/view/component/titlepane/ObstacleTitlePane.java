@@ -7,6 +7,7 @@ import com.team44.runwayredeclarationapp.view.MainScene;
 import com.team44.runwayredeclarationapp.view.component.alert.ErrorListAlert;
 import com.team44.runwayredeclarationapp.view.component.inputs.DoubleField;
 import com.team44.runwayredeclarationapp.view.component.inputs.SelectComboBox;
+import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
@@ -14,6 +15,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import javafx.util.StringConverter;
 
 /**
  * The Titled Pane for selecting the obstacle
@@ -29,8 +31,12 @@ public class ObstacleTitlePane extends TitledPane {
     private final DoubleField obstacleLeftThresholdInput;
     private final DoubleField obstacleRightThresholdInput;
     private final DoubleField obstacleFromCentrelineThresholdInput;
-
     private final DoubleField blastProtection;
+
+    /**
+     * Store the previously selected obstacle
+     */
+    private Obstacle previouslySelectedObstacle = null;
 
     /**
      * Create the titled pane
@@ -62,11 +68,22 @@ public class ObstacleTitlePane extends TitledPane {
         obstacleSelectComboBox.setPromptText("Select Obstacle");
         obstacleSelectComboBox.setMaxWidth(Double.MAX_VALUE);
 
+        // Combobox selection event
+        obstacleSelectComboBox.valueProperty().addListener((obs, oldObstacle, newObstacle) -> {
+            if (newObstacle != null) {
+                this.previouslySelectedObstacle = newObstacle;
+            }
+        });
+
         // Obstacle inputs
         obstacleLeftThresholdInput = new DoubleField();
         obstacleLeftThresholdInput.setAllowNegative(true);
+        obstacleLeftThresholdInput.setDisable(true);
+
         obstacleRightThresholdInput = new DoubleField();
         obstacleRightThresholdInput.setAllowNegative(true);
+        obstacleRightThresholdInput.setDisable(true);
+
         obstacleFromCentrelineThresholdInput = new DoubleField();
         obstacleFromCentrelineThresholdInput.setAllowNegative(true);
         blastProtection = new DoubleField();
@@ -82,22 +99,99 @@ public class ObstacleTitlePane extends TitledPane {
         var editObstacleBtn = new Button("Edit Obstacle");
         editObstacleBtn.setMaxWidth(Double.MAX_VALUE);
 
+        // Runway selection event for left/right distance inputs
+        mainScene.getSelectedRunwayProperty().addListener((obs, oldRunway, newRunway) -> {
+            if (oldRunway != null && oldRunway.equals(newRunway)) {
+                return;
+            } else {
+                // Clear input if runway changed
+                obstacleLeftThresholdInput.clear();
+                obstacleRightThresholdInput.clear();
+            }
+
+            // Disable button if no runway selected
+            if (newRunway == null) {
+                obstacleLeftThresholdInput.setDisable(true);
+                obstacleRightThresholdInput.setDisable(true);
+            } else {
+                // A runway has been selected
+                obstacleLeftThresholdInput.setDisable(false);
+                obstacleRightThresholdInput.setDisable(false);
+
+                // Get the logical ids
+                var runway1 = newRunway.getLogicId1();
+                var runway2 = newRunway.getLogicId2();
+
+                // Unbind any previous bindings
+                obstacleLeftThresholdInput.textProperty()
+                    .unbindBidirectional(obstacleRightThresholdInput.textProperty());
+
+                // Create the converter for automatically setting left/right distance inputs
+                var converter = new StringConverter<String>() {
+                    /**
+                     * Input left
+                     */
+                    @Override
+                    public String toString(String value) {
+                        if (value.isEmpty() || value.equals("-")) {
+                            return "";
+                        } else {
+                            // todo not int
+                            var intValue = Double.parseDouble(value);
+                            var newValue =
+                                newRunway.getRunwayL() - newRunway.getDisThresh(runway1)
+                                    - newRunway.getDisThresh(runway2)
+                                    - intValue;
+                            return Double.toString(newValue);
+                        }
+                    }
+
+                    /**
+                     * Input right
+                     */
+                    @Override
+                    public String fromString(String value) {
+                        if (value.isEmpty() || value.equals("-")) {
+                            return "";
+                        } else {
+                            double intValue = Double.parseDouble(value);
+                            var newValue =
+                                newRunway.getRunwayL() - newRunway.getDisThresh(runway1)
+                                    - newRunway.getDisThresh(runway2)
+                                    - intValue;
+                            return Double.toString(newValue);
+                        }
+                    }
+                };
+
+                // Create binding for the inputs
+                Bindings.bindBidirectional(obstacleLeftThresholdInput.textProperty(),
+                    obstacleRightThresholdInput.textProperty(), converter);
+            }
+        });
+
         // Button events
         editObstacleBtn.setOnAction(event -> {
+            // Open modify window
             ModifyObstacleWindow modifyObstacleWindow = new ModifyObstacleWindow(
                 mainScene.getMainWindow().getStage(),
                 mainScene.getDataController());
 
             // Set the listener
-            modifyObstacleWindow.setEditAirportListener(obstacleSelectComboBox::setValue);
+            modifyObstacleWindow.setEditObstacleListener((initialObstacle, modifiedObstacle) -> {
+                if (initialObstacle.equals(previouslySelectedObstacle)) {
+                    // Set the modified obstacle to the combobox
+                    obstacleSelectComboBox.setValue(modifiedObstacle);
+                }
+            });
         });
+
         addObstacleBtn.setOnAction(event -> {
             AddObstacleWindow addObstacleWindow = new AddObstacleWindow(
                 mainScene.getMainWindow().getStage(),
                 mainScene.getDataController());
 
             // Set the listener
-            // todo:: only replace (setValue) if currently selected, as done in RunwayTitlePane
             addObstacleWindow.setAddObstacleListener(obstacleSelectComboBox::setValue);
         });
 
@@ -212,7 +306,6 @@ public class ObstacleTitlePane extends TitledPane {
             errorListAlert.addError(
                 "Blast protection cannot be empty and must be a non-negative numerical value.");
         }
-        // todo:: check if threshL and threshR add up to runway length
 
         // Show the error
         var numberOfErrors = errorListAlert.getErrors().size();

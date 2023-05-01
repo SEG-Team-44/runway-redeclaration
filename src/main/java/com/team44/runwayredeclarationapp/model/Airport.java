@@ -6,7 +6,10 @@ import java.util.Objects;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class Airport {
+/**
+ * The class representing an airport containing runways
+ */
+public class Airport implements Cloneable {
 
     /**
      * Name of airport
@@ -121,5 +124,14 @@ public class Airport {
     @Override
     public int hashCode() {
         return Objects.hash(name, runways);
+    }
+
+    @Override
+    public Airport clone() {
+        try {
+            return (Airport) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
