@@ -39,11 +39,14 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -212,6 +215,7 @@ public class MainScene extends BaseScene {
         var fileMenu = new Menu("File");
         var menuItemSave = new MenuItem("Save");
         var menuItemResetState = new MenuItem("Reset");
+        var fileMenuSeparator = new SeparatorMenuItem();
         var menuItemViewLog = new MenuItem("View Log");
 
         // Save keyboard shortcut
@@ -246,22 +250,53 @@ public class MainScene extends BaseScene {
             new ViewLogWindow(getMainWindow().getStage(), dataController);
         });
 
-        fileMenu.getItems().addAll(menuItemSave, menuItemResetState, menuItemViewLog);
+        fileMenu.getItems()
+            .addAll(menuItemSave, menuItemResetState, fileMenuSeparator, menuItemViewLog);
 
         // Menu for view
         var viewMenu = new Menu("View");
+        var themeMenu = new Menu("Themes");
         var toggleShowValueMenuItem = new CheckMenuItem("Show Values");
         var toggleMatchCompassHeading = new CheckMenuItem("Match Compass");
-        var toggleColourBlindMode = new CheckMenuItem("Colour Blind Mode");
         var toggleWhiteArrows = new CheckMenuItem("Set White Arrows");
         var toggleSwitchThresholds = new CheckMenuItem("Switch Thresholds");
         toggleShowValueMenuItem.setSelected(false);
         toggleMatchCompassHeading.setSelected(false);
-        toggleColourBlindMode.setSelected(false);
         toggleWhiteArrows.setSelected(false);
         toggleSwitchThresholds.setSelected(false);
-        viewMenu.getItems().addAll(toggleShowValueMenuItem, toggleMatchCompassHeading,
-            toggleColourBlindMode, toggleWhiteArrows, toggleSwitchThresholds);
+        viewMenu.getItems().addAll(themeMenu, toggleShowValueMenuItem, toggleMatchCompassHeading,
+            toggleWhiteArrows, toggleSwitchThresholds);
+
+        // Themes toggle
+        // List of themes available
+        var themes = new ColourTheme[]{
+            ColourTheme.getColourBlindTheme(),
+            ColourTheme.getDarkModeTheme(),
+            ColourTheme.getHighContrastTheme()};
+        ToggleGroup themesToggleGroup = new ToggleGroup();
+
+        // Default theme button
+        var defaultColourThemeButton = new RadioMenuItem(new ColourTheme().getThemeName());
+        defaultColourThemeButton.setToggleGroup(themesToggleGroup);
+        defaultColourThemeButton.setSelected(true);
+        themeMenu.getItems().add(defaultColourThemeButton);
+        defaultColourThemeButton.setOnAction(event -> callAllCanvasMethod((canvas) -> {
+            canvas.setColourTheme(new ColourTheme());
+            return null;
+        }));
+
+        // Add the rest of the themes
+        for (ColourTheme theme : themes) {
+            var radioButton = new RadioMenuItem(theme.getThemeName());
+            radioButton.setToggleGroup(themesToggleGroup);
+            themeMenu.getItems().add(radioButton);
+
+            // Event handler for the button to change the theme
+            radioButton.setOnAction(event -> callAllCanvasMethod((canvas) -> {
+                canvas.setColourTheme(theme);
+                return null;
+            }));
+        }
 
         // Event handler for toggling the show value state
         toggleShowValueMenuItem.setOnAction(event -> {
@@ -286,21 +321,6 @@ public class MainScene extends BaseScene {
             } else {
                 topDownCanvas.setRotateCompass(false);
                 mapCanvas.setRotateCompass(false);
-            }
-        });
-
-        // Event handler for toggling colour blind mode
-        toggleColourBlindMode.setOnAction(event -> {
-            if (toggleColourBlindMode.isSelected()) {
-                callAllCanvasMethod((canvas) -> {
-                    canvas.setColourTheme(ColourTheme.getColourBlindTheme());
-                    return null;
-                });
-            } else {
-                callAllCanvasMethod((canvas) -> {
-                    canvas.setColourTheme(new ColourTheme());
-                    return null;
-                });
             }
         });
 
