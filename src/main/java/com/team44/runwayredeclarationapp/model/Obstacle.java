@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * The class is responsible for creating Obstacles
  */
-public class Obstacle {
+public class Obstacle implements Cloneable {
 
     private String obstName;
     private double height;
@@ -56,6 +56,15 @@ public class Obstacle {
     @Override
     public int hashCode() {
         return Objects.hash(obstName, height);
+    }
+
+    @Override
+    public Obstacle clone() {
+        try {
+            return (Obstacle) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }
 

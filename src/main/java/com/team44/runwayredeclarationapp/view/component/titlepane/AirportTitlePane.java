@@ -21,6 +21,11 @@ public class AirportTitlePane extends TitledPane {
      */
     private final SelectComboBox<Airport> airportSelectComboBox;
 
+    /**
+     * Store the previously selected airport
+     */
+    private Airport previouslySelectedAirport = null;
+
 
     /**
      * Create the titled pane
@@ -60,6 +65,13 @@ public class AirportTitlePane extends TitledPane {
         });
         airportSelectComboBox.valueProperty().bindBidirectional(mainScene.getAirportProperty());
 
+        // Combobox selection event
+        airportSelectComboBox.valueProperty().addListener((obs, oldAirport, newAirport) -> {
+            if (newAirport != null) {
+                this.previouslySelectedAirport = newAirport;
+            }
+        });
+
         //Add airport button
         Button addAirportBtn = new Button("Add Airport");
         addAirportBtn.setMaxWidth(Double.MAX_VALUE);
@@ -85,7 +97,13 @@ public class AirportTitlePane extends TitledPane {
                     mainScene.getMainWindow().getStage(),
                     mainScene.getDataController());
 
-                modifyPage.setEditAirportListener(airportSelectComboBox::setValue);
+                // Set the successful edit listener
+                modifyPage.setEditAirportListener((initialAirport, modifiedAirport) -> {
+                    if (initialAirport.equals(previouslySelectedAirport)) {
+                        // Set the modified airport to the combobox
+                        airportSelectComboBox.setValue(modifiedAirport);
+                    }
+                });
             }
         });
 

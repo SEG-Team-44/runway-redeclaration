@@ -174,8 +174,6 @@ public class DataController {
             // Log the action
             logAction("Runway Edited",
                 "Runway (" + runway.getPhyId() + ") has been successfully edited.");
-
-            // todo:: update the observable list
         }
 
         // Return the edited runway and errors

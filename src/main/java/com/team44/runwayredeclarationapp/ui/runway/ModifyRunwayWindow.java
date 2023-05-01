@@ -1,7 +1,7 @@
 package com.team44.runwayredeclarationapp.ui.runway;
 
 import com.team44.runwayredeclarationapp.controller.DataController;
-import com.team44.runwayredeclarationapp.event.SetRunwayListener;
+import com.team44.runwayredeclarationapp.event.EditRunwayListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
@@ -20,11 +20,12 @@ public class ModifyRunwayWindow {
     /**
      * The listener that is called when the runway has been successfully modified
      */
-    private SetRunwayListener setRunwayListener;
+    private EditRunwayListener setRunwayListener;
     /**
      * The data controller to modify the runway
      */
     private final DataController dataController;
+    private SelectWindow<Runway> selectRunwayWindow;
 
     /**
      * Initialising the stage
@@ -48,7 +49,7 @@ public class ModifyRunwayWindow {
      */
     private void showOptionScene(Airport airport) {
         //listing all runways recorded in the system
-        var selectRunwayWindow = new SelectWindow<Runway>(parent, "Runway To Edit",
+        selectRunwayWindow = new SelectWindow<>(parent, "Runway To Edit",
             airport.getRunwayObservableList());
         selectRunwayWindow.setStringMethod(Runway::getPhyId);
 
@@ -74,7 +75,12 @@ public class ModifyRunwayWindow {
         var addRunwayWindow = new AddRunwayWindow(parent, dataController, airport, runway);
 
         // Set the successfully modified listener
-        addRunwayWindow.setNewRunwayListener(setRunwayListener);
+        addRunwayWindow.setNewRunwayListener(newRunway -> {
+            setRunwayListener.editRunway(runway, newRunway);
+
+            // Refresh the selection window
+            selectRunwayWindow.refresh();
+        });
     }
 
     /**
@@ -92,7 +98,7 @@ public class ModifyRunwayWindow {
      *
      * @param setRunwayListener the listener
      */
-    public void setNewRunwayListener(SetRunwayListener setRunwayListener) {
+    public void setNewRunwayListener(EditRunwayListener setRunwayListener) {
         this.setRunwayListener = setRunwayListener;
     }
 }

@@ -31,8 +31,12 @@ public class ObstacleTitlePane extends TitledPane {
     private final DoubleField obstacleLeftThresholdInput;
     private final DoubleField obstacleRightThresholdInput;
     private final DoubleField obstacleFromCentrelineThresholdInput;
-
     private final DoubleField blastProtection;
+
+    /**
+     * Store the previously selected obstacle
+     */
+    private Obstacle previouslySelectedObstacle = null;
 
     /**
      * Create the titled pane
@@ -63,6 +67,13 @@ public class ObstacleTitlePane extends TitledPane {
         obstacleSelectComboBox.setStringMethod(Obstacle::getObstName);
         obstacleSelectComboBox.setPromptText("Select Obstacle");
         obstacleSelectComboBox.setMaxWidth(Double.MAX_VALUE);
+
+        // Combobox selection event
+        obstacleSelectComboBox.valueProperty().addListener((obs, oldObstacle, newObstacle) -> {
+            if (newObstacle != null) {
+                this.previouslySelectedObstacle = newObstacle;
+            }
+        });
 
         // Obstacle inputs
         obstacleLeftThresholdInput = new DoubleField();
@@ -160,20 +171,26 @@ public class ObstacleTitlePane extends TitledPane {
 
         // Button events
         editObstacleBtn.setOnAction(event -> {
+            // Open modify window
             ModifyObstacleWindow modifyObstacleWindow = new ModifyObstacleWindow(
                 mainScene.getMainWindow().getStage(),
                 mainScene.getDataController());
 
             // Set the listener
-            modifyObstacleWindow.setEditAirportListener(obstacleSelectComboBox::setValue);
+            modifyObstacleWindow.setEditObstacleListener((initialObstacle, modifiedObstacle) -> {
+                if (initialObstacle.equals(previouslySelectedObstacle)) {
+                    // Set the modified obstacle to the combobox
+                    obstacleSelectComboBox.setValue(modifiedObstacle);
+                }
+            });
         });
+
         addObstacleBtn.setOnAction(event -> {
             AddObstacleWindow addObstacleWindow = new AddObstacleWindow(
                 mainScene.getMainWindow().getStage(),
                 mainScene.getDataController());
 
             // Set the listener
-            // todo:: only replace (setValue) if currently selected, as done in RunwayTitlePane
             addObstacleWindow.setAddObstacleListener(obstacleSelectComboBox::setValue);
         });
 
@@ -288,7 +305,6 @@ public class ObstacleTitlePane extends TitledPane {
             errorListAlert.addError(
                 "Blast protection cannot be empty and must be a non-negative numerical value.");
         }
-        // todo:: check if threshL and threshR add up to runway length
 
         // Show the error
         var numberOfErrors = errorListAlert.getErrors().size();
