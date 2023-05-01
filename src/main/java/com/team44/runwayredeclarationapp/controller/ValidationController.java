@@ -31,6 +31,14 @@ public class ValidationController {
      */
     private static final int runwayParametersUpperBound = 20000;
 
+    /**
+     * Lower and upper bounds for obstacle information numerical inputs
+     */
+    private static final int obstacleFromCentrelineLowerBound = -500;
+    private static final int obstacleFromCentrelineUpperBound = 500;
+    private static final int blastProtectionLowerBound = 0;
+    private static final int blastProtectionUpperBound = 5000;
+
 
     /**
      * Validate the inputs of an airport
@@ -231,6 +239,55 @@ public class ValidationController {
             parametersList.get(15) < 0 || parametersList.get(15) > parametersList.get(10)) {
             errors.add(
                 "Displaced threshold must be in the range 0 to its corresponding TORA value.");
+        }
+
+        return errors;
+    }
+
+    /**
+     * Validate the obstacle information inputs such as the distance from the left, right,
+     * centre-line and blast protection
+     *
+     * @param selectedRunway         the selected runway
+     * @param distanceFromLeft       the distance of the obstacle from the left threshold
+     * @param distanceFromRight      the distance of the obstacle from the right threshold
+     * @param distanceFromCentreline the distance of the obstacle from the centreline
+     * @param blastProtection        the blast protection of the airplane
+     * @return the list of errors
+     */
+    public static List<String> validateObstacleInformationInputs(Runway selectedRunway,
+        double distanceFromLeft, double distanceFromRight, double distanceFromCentreline,
+        double blastProtection) {
+        // Create list of errors
+        List<String> errors = new ArrayList<>();
+
+        // Get logic ids
+        var runway1 = selectedRunway.getLogicId1();
+        var runway2 = selectedRunway.getLogicId2();
+
+        // Distance bounds
+        if (distanceFromCentreline >= obstacleFromCentrelineUpperBound) {
+            errors.add("Obstacle distance from centreline (" + distanceFromCentreline
+                + ") must be less than 500m.");
+        } else if (distanceFromCentreline <= obstacleFromCentrelineLowerBound) {
+            errors.add("Obstacle distance from centreline (" + distanceFromCentreline
+                + ") must be greater than -500m.");
+        }
+
+        // Blast protection bounds
+        if (blastProtection >= blastProtectionUpperBound) {
+            errors.add("Blast protection (" + blastProtection + ") must be under 5000m.");
+        } else if (blastProtection < blastProtectionLowerBound) {
+            errors.add(
+                "Blast protection (" + blastProtection + ") must be greater than or equal to 0m.");
+        }
+
+        // Distances add up to total length
+        if ((distanceFromLeft + distanceFromRight + selectedRunway.getDisThresh(runway1)
+            + selectedRunway.getDisThresh(runway2) != selectedRunway.getRunwayL())) {
+            errors.add("Obstacle distance from left (" + distanceFromLeft + ") and right ("
+                + distanceFromRight + ") of thresholds do not match the total runway length ("
+                + selectedRunway.getRunwayL() + ")");
         }
 
         return errors;

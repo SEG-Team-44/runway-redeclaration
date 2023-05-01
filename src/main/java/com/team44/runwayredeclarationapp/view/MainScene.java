@@ -3,6 +3,7 @@ package com.team44.runwayredeclarationapp.view;
 import com.team44.runwayredeclarationapp.controller.DataController;
 import com.team44.runwayredeclarationapp.controller.FileController;
 import com.team44.runwayredeclarationapp.controller.RecalculationController;
+import com.team44.runwayredeclarationapp.controller.ValidationController;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Obstacle;
 import com.team44.runwayredeclarationapp.model.PRunway;
@@ -514,6 +515,19 @@ public class MainScene extends BaseScene {
         var recalculateBtn = new Button("Recalculate");
         recalculateBtn.getStyleClass().add("recalculate-btn");
         recalculateBtn.setOnAction(event -> {
+            // Validate obstacle info inputs
+            var validateObstacleInputs = ValidationController.validateObstacleInformationInputs(
+                runwayTitlePane.getSelectedRunway(), obstacleTitlePane.getObstacleLeftThreshold(),
+                obstacleTitlePane.getObstacleRightThreshold(),
+                obstacleTitlePane.getObstacleFromCentrelineThreshold(),
+                obstacleTitlePane.getBlastProtection());
+
+            // Show error if validation error
+            if (validateObstacleInputs.size() > 0) {
+                showErrorList(validateObstacleInputs.toArray(String[]::new));
+                return;
+            }
+
             // Check if the user has already selected the runway and obstacle to recalculate
             if (runwayTitlePane.checkInputsValid() && obstacleTitlePane.checkInputsValid()) {
                 // Create the obstacle-runway pairing
