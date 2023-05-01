@@ -20,7 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -43,6 +43,15 @@ public class AddRunwayWindow {
      * The selected runway (if any) to modify
      */
     private final Runway selectedRunway;
+
+    /**
+     * Column constraints for the logical runway inputs grid
+     */
+    private final ColumnConstraints[] logicalRunwayConstraints = new ColumnConstraints[]{
+        new ColumnConstraints(20), new ColumnConstraints(100), new ColumnConstraints(55),
+        new ColumnConstraints(60), new ColumnConstraints(60), new ColumnConstraints(60),
+        new ColumnConstraints(60), new ColumnConstraints()
+    };
 
     /**
      * Create the add/modify runway window
@@ -73,45 +82,67 @@ public class AddRunwayWindow {
             runwayForm.setRunway(runway);
         }
 
-        // Components for physical inputs
-        Label phyParameter = new Label("Physical parameters:");
-        Label runwayL = new Label("Runway Length (m)");
-        Label runwayW = new Label("Runway Width (m)");
-        Label stripL = new Label("Distance between runway \n end & strip end (m)");
-        Label stripW = new Label("Distance between runway \n centreline & strip edge (m)");
-        Label clearW = new Label("Clearway Vertical Width (m)");
-        Label resa = new Label("RESA Length (m) ");
+        // Input labels for physical runway info
+        Label phyParameterLbl = new Label("Physical parameters:");
+        Label runwayLLbl = new Label("Runway Length (m)");
+        Label runwayWLbl = new Label("Runway Width (m)");
+        Label stripLLbl = new Label("Strip End (m)");
+        Label clearWLbl = new Label("Clearway Width (m)");
+        Label resaLbl = new Label("RESA Length (m) ");
+
+        // Input labels for logical runways
+        Label degreeLbl = new Label("Degree (01-36)");
+        Label posLbl = new Label("Position");
+        Label toraLbl = new Label("TORA (m)");
+        Label todaLbl = new Label("TODA (m)");
+        Label asdaLbl = new Label("ASDA (m)");
+        Label ldaLbl = new Label("LDA (m)");
+        Label disThreshLbl = new Label("Displaced Threshold (m)");
+
+        // Row of logical runway input labels
+        var logicalRunwaysLabelRow = new GridPane();
+        logicalRunwaysLabelRow.setHgap(5);
+        logicalRunwaysLabelRow.setVgap(5);
+        logicalRunwaysLabelRow.setAlignment(Pos.CENTER_LEFT);
+
+        // Add to row
+        logicalRunwaysLabelRow.addRow(0,
+            new Pane(), degreeLbl, posLbl, toraLbl, asdaLbl, todaLbl, ldaLbl, disThreshLbl);
+        logicalRunwaysLabelRow.getColumnConstraints().setAll(logicalRunwayConstraints);
 
         // Styling
-        phyParameter.setFont(new Font(17));
+        phyParameterLbl.setFont(new Font(17));
         runwayForm.getResaTf().setPrefSize(60, 20);
+
+        // Logical runways title
+        Label lbl = new Label("Logical Runways:");
+        lbl.setFont(new Font(17));
 
         // Layout the physical input components
         GridPane phyPane = new GridPane();
         phyPane.setHgap(5);
         phyPane.setVgap(5);
-        phyPane.getColumnConstraints().addAll(new ColumnConstraints(), new ColumnConstraints(60),
-            new ColumnConstraints(), new ColumnConstraints(60));
+        var col = new ColumnConstraints(110);
+        phyPane.getColumnConstraints().addAll(col, col, col, col, col);
 
         // Add physical parameter inputs
-        phyPane.add(phyParameter, 0, 0, 4, 1);
-        phyPane.addRow(1, runwayL, runwayForm.getRunwayLTf(), runwayW, runwayForm.getRunwayWTf());
-        phyPane.addRow(2, stripL, runwayForm.getStripLTf(), stripW, runwayForm.getStripWTf());
-        phyPane.addRow(3, clearW, runwayForm.getClearWTf(), resa, runwayForm.getResaTf());
+        phyPane.add(phyParameterLbl, 0, 0, 4, 1);
+        phyPane.addRow(1, runwayLLbl, runwayWLbl, stripLLbl, resaLbl, clearWLbl);
+        phyPane.addRow(2,
+            runwayForm.getRunwayLTf(), runwayForm.getRunwayWTf(), runwayForm.getStripLTf(),
+            runwayForm.getResaTf(), runwayForm.getClearWTf());
 
-        // Components for one logical runway inputs
-        String lbl1 = "Logical Runway 1 Parameters:";
-        GridPane runway1 = getLayout(lbl1, runwayForm.getDegreeTf1(),
-            runwayForm.getPosCb1(), runwayForm.getToraTf1(), runwayForm.getTodaTf1(),
-            runwayForm.getAsdaTf1(),
-            runwayForm.getLdaTf1(), runwayForm.getDisThreshTf1());
+        // Components for logical runway 1 runway inputs
+        GridPane runway1 = getLayout("1",
+            runwayForm.getDegreeTf1(), runwayForm.getPosCb1(), runwayForm.getToraTf1(),
+            runwayForm.getTodaTf1(), runwayForm.getAsdaTf1(), runwayForm.getLdaTf1(),
+            runwayForm.getDisThreshTf1());
 
-        //Components for the other logical runway inputs
-        String lbl2 = "Logical Runway 2 Parameters:";
-        GridPane runway2 = getLayout(lbl2, runwayForm.getDegreeTf2(),
-            runwayForm.getPosCb2(), runwayForm.getToraTf2(), runwayForm.getTodaTf2(),
-            runwayForm.getAsdaTf2(),
-            runwayForm.getLdaTf2(), runwayForm.getDisThreshTf2());
+        // Components for logical runway 2 runway inputs
+        GridPane runway2 = getLayout("2",
+            runwayForm.getDegreeTf2(), runwayForm.getPosCb2(), runwayForm.getToraTf2(),
+            runwayForm.getTodaTf2(), runwayForm.getAsdaTf2(), runwayForm.getLdaTf2(),
+            runwayForm.getDisThreshTf2());
 
         // Add/modify runway button
         Button addBtn = new Button(runway == null ? "Add" : "Modify");
@@ -167,14 +198,17 @@ public class AddRunwayWindow {
         GridPane mainPane = new GridPane();
         mainPane.setAlignment(Pos.CENTER);
 
-        mainPane.setPadding(new Insets(5, 5, 5, 5));
+        // Set main pane styling
+        mainPane.setPadding(new Insets(15, 15, 15, 15));
         mainPane.setVgap(10);
 
         // Add all layouts & components to main pane
         mainPane.add(phyPane, 0, 0, 2, 1);
-        mainPane.add(runway1, 0, 1);
-        mainPane.add(runway2, 0, 2);
-        mainPane.add(addBtn, 1, 2);
+        mainPane.add(lbl, 0, 1);
+        mainPane.add(logicalRunwaysLabelRow, 0, 2);
+        mainPane.add(runway1, 0, 3);
+        mainPane.add(runway2, 0, 4);
+        mainPane.add(addBtn, 0, 5);
         GridPane.setHalignment(addBtn, HPos.RIGHT);
         GridPane.setValignment(addBtn, VPos.BOTTOM);
 
@@ -210,43 +244,20 @@ public class AddRunwayWindow {
      */
     private GridPane getLayout(String lblContent, TextField degree, ComboBox<Character> pos,
         TextField tora, TextField toda, TextField asda, TextField lda, TextField disThresh) {
-
         // Create title label
         Label lbl = new Label(lblContent);
         lbl.setFont(new Font(17));
 
-        // Create input labels
-        Label degreeLbl = new Label("Degree (01-36)");
-        Label toraLbl = new Label("TORA (m)");
-        Label todaLbl = new Label("TODA (m)");
-        Label asdaLbl = new Label("ASDA (m)");
-        Label ldaLbl = new Label("LDA (m)");
-        Label disThreshLbl = new Label("Displaced Threshold (m)");
-
-        // Create layout for position input
-        HBox posBox = new HBox();
-        Label posLbl = new Label("Position (L/C/R)");
-        posBox.getChildren().add(posLbl);
-
-        // Column constraints for grid
-        ColumnConstraints col1 = new ColumnConstraints();
-        ColumnConstraints col2 = new ColumnConstraints(60);
-
-        // Adding all components to the GridPane
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(5);
-        gridPane.setVgap(5);
-        gridPane.setAlignment(Pos.CENTER_LEFT);
-        gridPane.getColumnConstraints().addAll(col1, col2, col1, col2);
+        GridPane mainGrid = new GridPane();
+        mainGrid.setHgap(5);
+        mainGrid.setVgap(5);
+        mainGrid.setAlignment(Pos.CENTER_LEFT);
+        mainGrid.getColumnConstraints().setAll(logicalRunwayConstraints);
 
         // Add grid columns
-        gridPane.add(lbl, 0, 0, 4, 1);
-        gridPane.addRow(1, degreeLbl, degree, posBox, pos);
-        gridPane.addRow(2, toraLbl, tora, asdaLbl, asda);
-        gridPane.addRow(3, todaLbl, toda, ldaLbl, lda);
-        gridPane.addRow(4, disThreshLbl, disThresh);
+        mainGrid.addRow(0, lbl, degree, pos, tora, asda, toda, lda, disThresh);
 
-        return gridPane;
+        return mainGrid;
     }
 
     /**

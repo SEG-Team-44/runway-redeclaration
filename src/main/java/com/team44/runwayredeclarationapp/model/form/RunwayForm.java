@@ -96,6 +96,7 @@ public class RunwayForm extends BaseForm {
 
         degreeTf1.setDigits(2);
         degreeTf2.setDigits(2);
+        stripWTf.setValue(100);
     }
 
     /**
