@@ -7,9 +7,11 @@ import com.team44.runwayredeclarationapp.view.component.inputs.IntegerField;
 import com.team44.runwayredeclarationapp.view.component.inputs.RegexField;
 import java.util.Arrays;
 import java.util.stream.Stream;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
+import javafx.util.StringConverter;
 
 /**
  * Form for adding a new runway
@@ -63,6 +65,37 @@ public class RunwayForm extends BaseForm {
         // Bind disable property
         posCb1.disableProperty().bindBidirectional(posCb2.disableProperty());
 
+        // Degree binding
+        var converter = new StringConverter<String>() {
+            /**
+             * Logical runway 1
+             */
+            @Override
+            public String toString(String value) {
+                if (value.isEmpty() || value.equals("-")) {
+                    return "";
+                } else {
+                    var intValue = Integer.parseInt(value);
+                    var newValue = intValue + (intValue > 18 ? -18 : 18);
+                    return Integer.toString(newValue);
+                }
+            }
+
+            /**
+             * Input right
+             */
+            @Override
+            public String fromString(String value) {
+                return toString(value);
+            }
+        };
+
+        // Set the bindings for the degrees
+        Bindings.bindBidirectional(degreeTf1.textProperty(),
+            degreeTf2.textProperty(), converter);
+
+        degreeTf1.setDigits(2);
+        degreeTf2.setDigits(2);
     }
 
     /**
