@@ -1,5 +1,8 @@
 package com.team44.runwayredeclarationapp.view.component.visualisation;
 
+import static java.lang.Math.round;
+import static java.lang.String.valueOf;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -122,22 +125,22 @@ public class SideOnView extends VisualisationBase {
         gc.setFill(colourTheme.getTocsALSLine());
         //get the angle between TOCS/ALS and the horizon in degree
         var angle = Math.toDegrees(Math.atan(obstacleHeight / slope));
-
+        String text = "TOCS/ALS ";
+        var roundedAngle = Math.round(angle * 100) / 100.00;
+        var text2 = "(angle: " + valueOf(roundedAngle) + "\u00B0)";
         //print the label above the line pivoted at centre & rotated at the same angle with the line
         if (isObstacleOnLeftSide) {
             gc.translate((tocsEndX + slope / 1.5), (tocsStartY + tocsEndY) / 2 - 3);
             gc.rotate(angle);
-            String text = "TOCS/ALS";
             double textWidth = gc.getFont().getSize() * text.length() / 2.0;
-            gc.fillText(text, -textWidth, 0);
+            gc.fillText(text + text2, -textWidth - 1, 0);
             gc.rotate(-angle);
             gc.translate(-(tocsEndX + slope / 1.5), -(tocsStartY + tocsEndY) / 2 + 3);
         } else {
             gc.translate((tocsEndX - slope / 2.5), (tocsStartY + tocsEndY) / 2 - 4);
             gc.rotate(-angle);
-            String text = "TOCS/ALS";
             double textWidth = gc.getFont().getSize() * text.length() / 2.0;
-            gc.fillText(text, -textWidth, 0);
+            gc.fillText(text + text2, -textWidth - 1, 0);
             gc.rotate(angle);
             gc.translate(-(tocsEndX - slope / 2.5), -(tocsStartY + tocsEndY) / 2 + 4);
         }
