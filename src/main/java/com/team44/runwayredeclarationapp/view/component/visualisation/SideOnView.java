@@ -133,14 +133,22 @@ public class SideOnView extends VisualisationBase {
             gc.translate((tocsEndX + slope / 1.5), (tocsStartY + tocsEndY) / 2 - 3);
             gc.rotate(angle);
             double textWidth = gc.getFont().getSize() * text.length() / 2.0;
-            gc.fillText(text + text2, -textWidth - 1, 0);
+            if (isShowValues) {
+                gc.fillText(text + text2, -textWidth - 1, 0);
+            } else {
+                gc.fillText(text, -textWidth, 0);
+            }
             gc.rotate(-angle);
             gc.translate(-(tocsEndX + slope / 1.5), -(tocsStartY + tocsEndY) / 2 + 3);
         } else {
             gc.translate((tocsEndX - slope / 2.5), (tocsStartY + tocsEndY) / 2 - 4);
             gc.rotate(-angle);
             double textWidth = gc.getFont().getSize() * text.length() / 2.0;
-            gc.fillText(text + text2, -textWidth - 1, 0);
+            if (isShowValues) {
+                gc.fillText(text + text2, -textWidth - 1, 0);
+            } else {
+                gc.fillText(text, -textWidth, 0);
+            }
             gc.rotate(angle);
             gc.translate(-(tocsEndX - slope / 2.5), -(tocsStartY + tocsEndY) / 2 + 4);
         }
