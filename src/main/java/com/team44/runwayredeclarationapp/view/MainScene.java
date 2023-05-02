@@ -10,6 +10,7 @@ import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.model.theme.ColourTheme;
+import com.team44.runwayredeclarationapp.ui.Instruction;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.ui.userlog.ViewLogWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ExportXMLWindow;
@@ -384,6 +385,7 @@ public class MainScene extends BaseScene {
         var menuItemExportTopDown = new MenuItem("Export Top-Down View");
         var menuItemExportSideOn = new MenuItem("Export Side-On View");
         var menuItemExportMap = new MenuItem("Export Map View");
+
         exportMenu.getItems()
             .addAll(menuItemExportTopDown, menuItemExportSideOn, menuItemExportMap);
 
@@ -391,6 +393,14 @@ public class MainScene extends BaseScene {
         menuItemExportTopDown.setOnAction(event -> exportCanvas(topDownCanvas));
         menuItemExportSideOn.setOnAction(event -> exportCanvas(sideOnCanvas));
         menuItemExportMap.setOnAction(event -> exportCanvas(mapCanvas));
+
+        //Create a menu for reading instructions
+        var helpMenu = new Menu("Help");
+        var instructionMenuItem = new MenuItem("Instruction");
+        instructionMenuItem.setOnAction(event -> {
+            Instruction instruction = new Instruction();
+        });
+        helpMenu.getItems().add(instructionMenuItem);
 
         // Create a menu for selecting scenarios to test the program with
         var testDevMenu = new Menu("Test (for devs)");
@@ -408,7 +418,7 @@ public class MainScene extends BaseScene {
         // Add all the scenario buttons to the menu
         testDevMenu.getItems()
             .addAll(scenario1MenuItem, scenario2MenuItem, scenario3MenuItem, scenario4MenuItem);
-        menuBar.getMenus().addAll(fileMenu, viewMenu, xmlMenu, exportMenu, testDevMenu);
+        menuBar.getMenus().addAll(fileMenu, viewMenu, xmlMenu, exportMenu, helpMenu, testDevMenu);
 
         // Set up the main pane
         root = new StackPane();
