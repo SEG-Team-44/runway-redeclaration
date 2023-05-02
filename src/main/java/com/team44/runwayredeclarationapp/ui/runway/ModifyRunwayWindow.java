@@ -5,6 +5,7 @@ import com.team44.runwayredeclarationapp.event.EditRunwayListener;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.ui.SelectWindow;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
@@ -16,6 +17,7 @@ public class ModifyRunwayWindow {
      * The parent window
      */
     private final Window parent;
+    private Stage stage;
 
     /**
      * The listener that is called when the runway has been successfully modified
@@ -62,6 +64,8 @@ public class ModifyRunwayWindow {
         selectRunwayWindow.setOnDelete((selectedRunway) -> {
             deleteIsPressed(airport, (Runway) selectedRunway);
         });
+
+        this.stage = selectRunwayWindow;
     }
 
     /**
@@ -72,7 +76,7 @@ public class ModifyRunwayWindow {
      */
     private void showModifyScene(Airport airport, Runway runway) {
         // Show the add runway window with the selected runway
-        var addRunwayWindow = new AddRunwayWindow(parent, dataController, airport, runway);
+        var addRunwayWindow = new AddRunwayWindow(stage, dataController, airport, runway);
 
         // Set the successfully modified listener
         addRunwayWindow.setNewRunwayListener(newRunway -> {

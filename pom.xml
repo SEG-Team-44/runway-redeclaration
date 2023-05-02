@@ -52,6 +52,13 @@
       <version>1.4.20</version>
     </dependency>
 
+    <!-- Swing for exporting canvas:   -->
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-swing</artifactId>
+      <version>16</version>
+    </dependency>
+
     <!-- Dependencies for testing:   -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
