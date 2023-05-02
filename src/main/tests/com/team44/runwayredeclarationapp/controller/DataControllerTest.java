@@ -70,6 +70,7 @@ class DataControllerTest {
     @Test
     void editAirport() {
         //    todo
+        // assertEquals(true, false);
     }
 
     @Test

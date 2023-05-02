@@ -28,13 +28,18 @@ import com.team44.runwayredeclarationapp.view.component.visualisation.SideOnView
 import com.team44.runwayredeclarationapp.view.component.visualisation.TopDownView;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationBase;
 import com.team44.runwayredeclarationapp.view.component.visualisation.VisualisationPane;
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
 import java.util.function.Function;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
@@ -48,6 +53,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TabPane.TabDragPolicy;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -56,6 +62,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javax.imageio.ImageIO;
 
 /**
  * The main scene that will be shown when the user opens the program
@@ -371,6 +379,19 @@ public class MainScene extends BaseScene {
                 dataController.getObstacleObservableList());
         });
 
+        // Menu for exporting canvas images
+        var exportMenu = new Menu("Export");
+        var menuItemExportTopDown = new MenuItem("Export Top-Down View");
+        var menuItemExportSideOn = new MenuItem("Export Side-On View");
+        var menuItemExportMap = new MenuItem("Export Map View");
+        exportMenu.getItems()
+            .addAll(menuItemExportTopDown, menuItemExportSideOn, menuItemExportMap);
+
+        // Canvas image exporting events
+        menuItemExportTopDown.setOnAction(event -> exportCanvas(topDownCanvas));
+        menuItemExportSideOn.setOnAction(event -> exportCanvas(sideOnCanvas));
+        menuItemExportMap.setOnAction(event -> exportCanvas(mapCanvas));
+
         // Create a menu for selecting scenarios to test the program with
         var testDevMenu = new Menu("Test (for devs)");
         var scenario1MenuItem = new MenuItem("Select Scenario 1");
@@ -387,7 +408,7 @@ public class MainScene extends BaseScene {
         // Add all the scenario buttons to the menu
         testDevMenu.getItems()
             .addAll(scenario1MenuItem, scenario2MenuItem, scenario3MenuItem, scenario4MenuItem);
-        menuBar.getMenus().addAll(fileMenu, viewMenu, xmlMenu, testDevMenu);
+        menuBar.getMenus().addAll(fileMenu, viewMenu, xmlMenu, exportMenu, testDevMenu);
 
         // Set up the main pane
         root = new StackPane();
@@ -828,6 +849,59 @@ public class MainScene extends BaseScene {
      */
     public ObjectProperty<Runway> getSelectedRunwayProperty() {
         return runwayTitlePane.getRunwaySelectComboBox().valueProperty();
+    }
+
+    /**
+     * Open file chooser to save a canvas as an image
+     *
+     * @param canvas the canvas to save
+     */
+    public void exportCanvas(Canvas canvas) {
+        var canvasHeight = (int) Math.round(canvas.getHeight());
+        var canvasWidth = (int) Math.round(canvas.getWidth());
+
+        // Valid file extensions
+        var jpgExtension = new FileChooser.ExtensionFilter("JPEG files", "*.jpg", "*.jpeg");
+        var pngExtension = new FileChooser.ExtensionFilter("PNG files", "*.png");
+        var gifExtension = new FileChooser.ExtensionFilter("GIF files", "*.gif");
+
+        // File choosing with export button
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(jpgExtension, pngExtension, gifExtension);
+        var saveTo = fileChooser.showSaveDialog(this.getMainWindow().getStage());
+
+        // Don't do anything if the file is null
+        if (saveTo == null) {
+            return;
+        }
+
+        // Get the file name and extension
+        var fileName = saveTo.getName();
+        var lastIndex = fileName.lastIndexOf(".");
+        var fileExtension = lastIndex > 0 ? fileName.substring(lastIndex + 1) : "";
+
+        // Write the canvas snapshot to the image
+        WritableImage image = new WritableImage(canvasHeight, canvasWidth);
+        canvas.snapshot(null, image);
+
+        // Get the rendered image and save it to the location
+        BufferedImage bufferedImage = new BufferedImage((int) image.getWidth(),
+            (int) image.getHeight(), BufferedImage.TYPE_INT_RGB);
+        RenderedImage renderedImage = SwingFXUtils.fromFXImage(image, bufferedImage);
+
+        try {
+            // Save image
+            var writerFound = ImageIO.write(renderedImage, fileExtension, saveTo);
+
+            // Write could not be found error
+            if (!writerFound) {
+                showError("File Save Error", "Could not save the image to the desired location.",
+                    "File format (" + fileExtension + ") appropriate writer could not be found");
+            }
+        } catch (IOException e) {
+            showError("File Save Error", "Could not save the image to the desired location.",
+                "An IO error occurred :" + e.getMessage());
+        }
     }
 
     /**

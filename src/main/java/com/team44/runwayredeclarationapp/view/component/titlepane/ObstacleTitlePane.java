@@ -136,12 +136,11 @@ public class ObstacleTitlePane extends TitledPane {
                         if (value.isEmpty() || value.equals("-")) {
                             return "";
                         } else {
-                            // todo not int
-                            var intValue = Double.parseDouble(value);
+                            var doubleValue = Double.parseDouble(value);
                             var newValue =
                                 newRunway.getRunwayL() - newRunway.getDisThresh(runway1)
                                     - newRunway.getDisThresh(runway2)
-                                    - intValue;
+                                    - doubleValue;
                             return Double.toString(newValue);
                         }
                     }
@@ -154,11 +153,11 @@ public class ObstacleTitlePane extends TitledPane {
                         if (value.isEmpty() || value.equals("-")) {
                             return "";
                         } else {
-                            double intValue = Double.parseDouble(value);
+                            double doubleValue = Double.parseDouble(value);
                             var newValue =
                                 newRunway.getRunwayL() - newRunway.getDisThresh(runway1)
                                     - newRunway.getDisThresh(runway2)
-                                    - intValue;
+                                    - doubleValue;
                             return Double.toString(newValue);
                         }
                     }
