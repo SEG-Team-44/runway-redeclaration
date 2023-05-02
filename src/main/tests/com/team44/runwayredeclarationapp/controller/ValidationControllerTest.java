@@ -1,6 +1,7 @@
 package com.team44.runwayredeclarationapp.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.team44.runwayredeclarationapp.model.Airport;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -124,6 +126,29 @@ class ValidationControllerTest {
             "Obstacle (" + obstacleName + ", " + obstacleHeight
                 + ") should not be valid as its name is > 60 characters or empty, "
                 + "OR height<=0 or height>=500 or greater than 2 decimal places.");
+    }
+
+    @DisplayName("Validate obstacle height - boundary test")
+    @Test
+    void validateObstacle_BoundaryTest() {
+        List<String> obstacleErrors;
+        // Boundaries
+        var bottomLowerBoundary = 0;
+        var bottomHigherBoundary = 0.01;
+        var topLowerBoundary = 499.99;
+        var topHigherBoundary = 500;
+
+        // Invalid
+        obstacleErrors = ValidationController.validateObstacle("Obstacle 1", bottomLowerBoundary);
+        assertFalse(obstacleErrors.isEmpty(), "0 should not be a valid obstacle height");
+        obstacleErrors = ValidationController.validateObstacle("Obstacle 1", topHigherBoundary);
+        assertFalse(obstacleErrors.isEmpty(), "500 should not be a valid obstacle height");
+
+        // Invalid
+        obstacleErrors = ValidationController.validateObstacle("Obstacle 1", bottomHigherBoundary);
+        assertTrue(obstacleErrors.isEmpty(), "0.01 should be a valid obstacle height");
+        obstacleErrors = ValidationController.validateObstacle("Obstacle 1", topLowerBoundary);
+        assertTrue(obstacleErrors.isEmpty(), "499.99 should be a valid obstacle height");
     }
 
     @DisplayName("Valid runway inputs")

@@ -50,7 +50,7 @@ public class ValidationController {
         // Create list of errors
         List<String> errors = new ArrayList<>();
 
-        if (!airportName.matches(sixtyCharsRegex)) {
+        if (airportName == null || !airportName.matches(sixtyCharsRegex)) {
             errors.add("Airport name provided (\"" + airportName
                 + "\") must not be empty and under 60 characters.");
         }
@@ -69,7 +69,7 @@ public class ValidationController {
         // Create list of errors
         List<String> errors = new ArrayList<>();
 
-        if (!obstacleName.matches(sixtyCharsRegex)) {
+        if (obstacleName == null || !obstacleName.matches(sixtyCharsRegex)) {
             errors.add("Obstacle name provided (\"" + obstacleName
                 + "\") must not be empty and under 60 characters.");
         }

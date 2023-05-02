@@ -92,7 +92,7 @@ public class ModifyObstacleWindow {
      * @param obstacle obstacle to be deleted
      */
     private void deleteIsPressed(Obstacle obstacle) {
-        dataController.deleteObstacle(obstacle, dataController.getObstacleObservableList());
+        dataController.deleteObstacle(obstacle);
 
     }
 }

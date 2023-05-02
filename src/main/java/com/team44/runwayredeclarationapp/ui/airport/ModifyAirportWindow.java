@@ -93,6 +93,6 @@ public class ModifyAirportWindow {
      * @param airport airport to be deleted
      */
     private void deleteIsPressed(Airport airport) {
-        dataController.deleteAirport(airport, dataController.getAirportObservableList());
+        dataController.deleteAirport(airport);
     }
 }
