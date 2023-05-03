@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.team44.runwayredeclarationapp.TestConstants;
 import com.team44.runwayredeclarationapp.model.Airport;
 import java.util.List;
 import java.util.stream.Stream;
@@ -180,6 +181,141 @@ class ValidationControllerTest {
                 + ") should not be valid.");
     }
 
+    @DisplayName("Boundary test on runway inputs")
+    @Test
+    void validateRunway_Boundary() {
+        List<String> errorList;
+
+        // Create airport to test with
+        var airport = new Airport("Test Airport");
+
+        // Invalid
+        errorList = ValidationController.validateRunway('L', 'R', 9, 27,
+            validRunwayParameter1BoundaryFail, airport);
+        assertFalse(errorList.isEmpty(), "There should be errors");
+        errorList = ValidationController.validateRunway('L', 'R', 9, 27,
+            validRunwayParameter2BoundaryFail, airport);
+        assertFalse(errorList.isEmpty(), "There should be errors");
+        errorList = ValidationController.validateRunway('L', 'R', 9, 27,
+            validRunwayParameter3BoundaryFail, airport);
+        assertFalse(errorList.isEmpty(), "There should be errors");
+
+        // Valid
+        errorList = ValidationController.validateRunway('L', 'R', 9, 27,
+            validRunwayParameter4BoundaryPass, airport);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+    }
+
+    @DisplayName("Valid obstacle information inputs")
+    @Test
+    void validateObstacleInputs_Valid() {
+        List<String> errorList;
+
+        // Create a runway
+        var runway1 = TestConstants.RUNWAY_09L_27R;
+        var runway2 = TestConstants.RUNWAY_09R_27L;
+
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            0,
+            300);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+        errorList = ValidationController.validateObstacleInformationInputs(runway2, 2853, 500,
+            -20,
+            300);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+        errorList = ValidationController.validateObstacleInformationInputs(runway2, 150, 3203,
+            60,
+            300);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, 3546, 50,
+            20,
+            300);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+    }
+
+    @DisplayName("Invalid obstacle information inputs")
+    @Test
+    void validateObstacleInputs_Invalid() {
+        List<String> errorList;
+
+        // Create a runway
+        var runway1 = TestConstants.RUNWAY_09L_27R;
+        var runway2 = TestConstants.RUNWAY_09R_27L;
+
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3800,
+            0,
+            300);
+        assertFalse(errorList.isEmpty(), "There should be errors");
+        errorList = ValidationController.validateObstacleInformationInputs(runway2, 2753, 500,
+            -20,
+            300);
+        assertFalse(errorList.isEmpty(), "There should be errors");
+        errorList = ValidationController.validateObstacleInformationInputs(runway2, 12, 3203,
+            60,
+            300);
+        assertFalse(errorList.isEmpty(), "There should be errors");
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, 3546, -50,
+            20,
+            300);
+        assertFalse(errorList.isEmpty(), "There should be errors");
+    }
+
+    @DisplayName("Boundary test on obstacle information inputs")
+    @Test
+    void validateObstacleInputs_Boundary() {
+        List<String> errorList;
+
+        // Boundaries
+        // Blast
+        var bottomLowerBoundaryBlast = -0.01;
+        var bottomHigherBoundaryBlast = 0;
+        var topLowerBoundaryBlast = 4999.99;
+        var topHigherBoundaryBlast = 5000;
+        //Distance from centreline
+        var bottomLowerBoundaryFromCentreline = -500;
+        var bottomHigherBoundaryFromCentreline = -499.99;
+        var topLowerBoundaryFromCentreline = 499.99;
+        var topHigherBoundaryFromCentreline = 500;
+
+        // Create a runway
+        var runway1 = TestConstants.RUNWAY_09L_27R;
+
+        // Blast protection valid
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            0,
+            bottomHigherBoundaryBlast);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            0,
+            topLowerBoundaryBlast);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+
+        // Blast protection invalid
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            0,
+            bottomLowerBoundaryBlast);
+        assertFalse(errorList.isEmpty(), "There should be errors.");
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            0,
+            topHigherBoundaryBlast);
+        assertFalse(errorList.isEmpty(), "There should be errors.");
+
+        // Distance from centreline valid
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            bottomHigherBoundaryFromCentreline, 300);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            topLowerBoundaryFromCentreline, 300);
+        assertTrue(errorList.isEmpty(), "There should be no errors. Errors: " + errorList);
+
+        // Distance from centreline invalid
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            bottomLowerBoundaryFromCentreline, 300);
+        assertFalse(errorList.isEmpty(), "There should be errors.");
+        errorList = ValidationController.validateObstacleInformationInputs(runway1, -50, 3646,
+            topHigherBoundaryFromCentreline, 300);
+        assertFalse(errorList.isEmpty(), "There should be errors.");
+    }
 
     /**
      * Runway parameters that are valid (boundary and decimal places)
@@ -206,6 +342,25 @@ class ValidationControllerTest {
         3660.12,
         0.99, 307.999};
 
+    /**
+     * Runway parameters that are valid for boundary testing
+     */
+    // Test case 1 : runway length = 0
+    private static final double[] validRunwayParameter1BoundaryFail = new double[]{0, 100,
+        60, 100, 100, 240, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884, 0, 306
+    };
+    // Test case 2: TODA < TORA
+    private static final double[] validRunwayParameter2BoundaryFail = new double[]{3902, 100,
+        60, 100, 100, 240, 3902, 3900, 3902, 3595, 3884, 3962, 3884, 3884, 0, 306
+    };
+    // Test case 3: LDA > TORA
+    private static final double[] validRunwayParameter3BoundaryFail = new double[]{3902, 100,
+        60, 100, 100, 240, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3900, 0, 306
+    };
+    // Test case 4: All inputs meet constraints
+    private static final double[] validRunwayParameter4BoundaryPass = new double[]{3902, 100,
+        60, 100, 100, 24, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884, 0, 306
+    };
 
     /**
      * Stream of inputs for valid runway data

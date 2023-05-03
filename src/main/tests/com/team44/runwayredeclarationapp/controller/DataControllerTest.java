@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.team44.runwayredeclarationapp.TestConstants;
 import com.team44.runwayredeclarationapp.model.Airport;
 import com.team44.runwayredeclarationapp.model.ErrorObjectPair;
 import com.team44.runwayredeclarationapp.model.Obstacle;
@@ -40,7 +41,7 @@ class DataControllerTest {
     }
 
     @Nested
-    @DisplayName("Adding/editing/removing airport")
+    @DisplayName("Adding/editing airport")
     class AirportTests {
 
         @DisplayName("Add airport with valid names")
@@ -56,10 +57,16 @@ class DataControllerTest {
             ErrorObjectPair<Airport> airportErrorObjectPair = dataController.addAirport(
                 airportName);
 
+            var expectedAirport = new Airport(airportName);
+
             assertEquals(0, airportErrorObjectPair.getErrorsArray().length,
                 "There should be no errors");
             assertEquals(airportName, airportErrorObjectPair.getObject().getName(),
                 "Name of airport created is different");
+
+            // Whitebox
+            assertTrue(dataController.getAirportObservableList().contains(expectedAirport),
+                "Expected airport not found in the observable list");
         }
 
         @DisplayName("Add airport with invalid names")
@@ -75,8 +82,14 @@ class DataControllerTest {
             ErrorObjectPair<Airport> airportErrorObjectPair = dataController.addAirport(
                 airportName);
 
+            var expectedAirport = new Airport(airportName);
+
             assertTrue(airportErrorObjectPair.getErrorsArray().length > 0,
                 "There should be errors");
+
+            // Whitebox
+            assertFalse(dataController.getAirportObservableList().contains(expectedAirport),
+                "Airport should not have been added to observable list");
         }
 
         @DisplayName("Edit airport with valid names")
@@ -93,6 +106,8 @@ class DataControllerTest {
                 "Airport test");
             var airportObject = airportErrorObjectPair.getObject();
 
+            var expectedAirport = new Airport(newAirportName);
+
             ErrorObjectPair<Airport> editErrorObjectPair = dataController.editAirport(airportObject,
                 newAirportName);
 
@@ -100,6 +115,11 @@ class DataControllerTest {
                 "There should be no errors");
             assertEquals(newAirportName, editErrorObjectPair.getObject().getName(),
                 "Airport names do not match");
+
+            // Whitebox
+            assertTrue(dataController.getAirportObservableList().contains(expectedAirport),
+                "Airport should be in observable list");
+
         }
 
         @DisplayName("Edit airport with invalid names")
@@ -116,29 +136,76 @@ class DataControllerTest {
                 "Airport test");
             var airportObject = airportErrorObjectPair.getObject();
 
+            var expectedAirport = new Airport(newAirportName);
+
             ErrorObjectPair<Airport> editErrorObjectPair = dataController.editAirport(airportObject,
                 newAirportName);
 
             assertTrue(editErrorObjectPair.getErrorsArray().length > 0,
                 "There should be errors");
+
+            // Whitebox
+            assertFalse(dataController.getAirportObservableList().contains(expectedAirport),
+                "Airport should not have been added to observable list");
         }
     }
 
     @Nested
-    @DisplayName("Adding/editing/removing runway")
+    @DisplayName("Adding/editing runway")
     class RunwayTests {
 
+        @DisplayName("Add runway - blackbox test")
         @Test
         void addRunway() {
+            // Create new airport
+            var airport = new Airport("Test airport");
+
+            var expectedRunway = TestConstants.RUNWAY_09L_27R;
+            var runwayErrorObjectPair = dataController.addRunway(airport, 'L', 'R', 9, 27,
+                runwayParameters1);
+
+            assertTrue(
+                airport.getRunwayObservableList().contains(runwayErrorObjectPair.getObject()),
+                "Observable list should contain the runway"); // White box
+            assertFalse(runwayErrorObjectPair.hasErrors(),
+                "There should be no errors. Error: " + runwayErrorObjectPair.getErrors());
+            assertEquals(expectedRunway, runwayErrorObjectPair.getObject(), "Runways do not match");
         }
 
+        @DisplayName("Edit runway - blackbox test")
         @Test
         void editRunway() {
+            // Create new airport
+            var airport = new Airport("Test airport");
+
+            // Edit the runway
+            var expectedRunway = TestConstants.RUNWAY_09R_27L;
+            var addedRunway = dataController.addRunway(airport, 'L', 'R', 9, 27,
+                runwayParameters1).getObject();
+            var runwayErrorObjectPair = dataController.editRunway(addedRunway, airport, 'R', 'L',
+                9, 27, runwayParameters2);
+
+            assertTrue(
+                airport.getRunwayObservableList().contains(runwayErrorObjectPair.getObject()),
+                "Observable list should contain the edited runway"); // White box
+            assertFalse(runwayErrorObjectPair.hasErrors(),
+                "There should be no errors. Error: " + runwayErrorObjectPair.getErrors());
+            assertEquals(expectedRunway, runwayErrorObjectPair.getObject(), "Runways do not match");
         }
+
+        /**
+         * Runway parameters for testing with
+         */
+        private static final double[] runwayParameters1 = new double[]{3902, 100, 60,
+            100, 100, 240, 3902, 3902, 3902, 3595, 3884, 3962, 3884, 3884, 0, 306
+        };
+        private static final double[] runwayParameters2 = new double[]{3660, 100, 60,
+            100, 100, 240, 3660, 3660, 3660, 3353, 3660, 3660, 3660, 3660, 0, 307
+        };
     }
 
     @Nested
-    @DisplayName("Adding/editing/removing obstacle")
+    @DisplayName("Adding/editing obstacle")
     class ObstacleTests {
 
         @DisplayName("Add obstacle with valid inputs")
@@ -172,6 +239,10 @@ class DataControllerTest {
                 "There should be no errors");
             assertEquals(expectedObstacle, obstacleErrorObjectPair.getObject(),
                 "Obstacle created is different to expected");
+
+            // Whitebox
+            assertTrue(dataController.getObstacleObservableList().contains(expectedObstacle),
+                "Obstacle should have been added to observable list");
         }
 
         @DisplayName("Add obstacle with invalid inputs")
@@ -194,9 +265,13 @@ class DataControllerTest {
         void addObstacle_Invalid(String obstacleName, double obstacleHeight) {
             ErrorObjectPair<Obstacle> obstacleErrorObjectPair = dataController.addObstacle(
                 obstacleName, obstacleHeight);
+            var expectedObstacle = new Obstacle(obstacleName, obstacleHeight);
 
             assertTrue(obstacleErrorObjectPair.getErrorsArray().length > 0,
                 "There should be errors");
+            // Whitebox
+            assertFalse(dataController.getObstacleObservableList().contains(expectedObstacle),
+                "Obstacle should not have been added to observable list");
         }
 
         @DisplayName("Add obstacle - boundary testing for height")
@@ -266,6 +341,10 @@ class DataControllerTest {
                 "There should be no errors");
             assertEquals(expectedObstacle, editErrorObjectPair.getObject(),
                 "Obstacle does not match");
+
+            // Whitebox
+            assertTrue(dataController.getObstacleObservableList().contains(expectedObstacle),
+                "Obstacle should have been edited to observable list");
         }
 
         @DisplayName("Edit obstacle with invalid inputs")
@@ -289,12 +368,16 @@ class DataControllerTest {
             ErrorObjectPair<Obstacle> obstacleErrorObjectPair = dataController.addObstacle(
                 "Valid name", 12);
             var obstacleObject = obstacleErrorObjectPair.getObject();
+            var expectedObstacle = new Obstacle(obstacleName, obstacleHeight);
 
             ErrorObjectPair<Obstacle> editErrorObjectPair = dataController.editObstacle(
                 obstacleObject, obstacleName, obstacleHeight);
 
             assertTrue(editErrorObjectPair.getErrorsArray().length > 0,
                 "There should be errors");
+            // Whitebox
+            assertFalse(dataController.getObstacleObservableList().contains(expectedObstacle),
+                "Obstacle should not have been edited to observable list");
         }
 
         @DisplayName("Edit obstacle - boundary testing for height")

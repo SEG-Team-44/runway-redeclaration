@@ -168,6 +168,9 @@ public class DataController {
 
         // Check there are no errors
         if (validationErrors.size() == 0) {
+            if (runway instanceof PRunway) {
+                ((PRunway) runway).setPosition(pos1, pos2);
+            }
             runway.setDegree(degree1, degree2);
             runway.updateParameters(parameters);
 
