@@ -6,16 +6,19 @@ import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 /**
  * Class that create and display Instructions
  */
-public class Instruction {
+public class InstructionWindow extends Stage{
     /**
      * Build and display instruction window
+     * @param parent parent window
      */
-    public Instruction() {
+    public InstructionWindow(Window parent) {
         TabPane tabPane = new TabPane();
         Tab page1 = new Tab("Airport & Runway");
         Tab page2 = new Tab("Obstacle & Calculation");
@@ -30,12 +33,14 @@ public class Instruction {
         page3.setContent(setUpLayout("/images/others.png"));
         tabPane.getTabs().addAll(page1, page2, page3);
 
-        Scene root = new Scene(tabPane);
+        Scene mainScene = new Scene(tabPane);
 
-        Stage stage = new Stage();
-        stage.setResizable(false);
-        stage.setScene(root);
-        stage.show();
+        this.setTitle("Instruction");
+        this.setResizable(false);
+        this.initOwner(parent);
+        this.initModality(Modality.WINDOW_MODAL);
+        this.setScene(mainScene);
+        this.show();
     }
 
     /**
@@ -46,8 +51,8 @@ public class Instruction {
     private Pane setUpLayout(String imagePath) {
         Image image = new Image(getClass().getResource(imagePath).toExternalForm());
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(700);
-        imageView.setFitWidth(950);
+        imageView.setFitHeight(600);
+        imageView.setFitWidth(800);
 
         Pane pane = new Pane();
         pane.getChildren().add(imageView);

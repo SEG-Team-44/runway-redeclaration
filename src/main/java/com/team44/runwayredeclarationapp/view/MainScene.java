@@ -10,7 +10,7 @@ import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.model.RunwayObstacle;
 import com.team44.runwayredeclarationapp.model.theme.ColourTheme;
-import com.team44.runwayredeclarationapp.ui.Instruction;
+import com.team44.runwayredeclarationapp.ui.InstructionWindow;
 import com.team44.runwayredeclarationapp.ui.MainWindow;
 import com.team44.runwayredeclarationapp.ui.userlog.ViewLogWindow;
 import com.team44.runwayredeclarationapp.ui.xml.ExportXMLWindow;
@@ -398,7 +398,7 @@ public class MainScene extends BaseScene {
         var helpMenu = new Menu("Help");
         var instructionMenuItem = new MenuItem("Instruction");
         instructionMenuItem.setOnAction(event -> {
-            Instruction instruction = new Instruction();
+            InstructionWindow instructionWindow = new InstructionWindow(getMainWindow().getStage());
         });
         helpMenu.getItems().add(instructionMenuItem);
 
