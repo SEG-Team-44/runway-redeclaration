@@ -203,7 +203,7 @@ public class ObstacleTitlePane extends TitledPane {
             obstacleRightThresholdInput);
         buttonSelectGridPane.addRow(4, new Text("Distance from Centreline:"),
             obstacleFromCentrelineThresholdInput);
-        buttonSelectGridPane.addRow(5, new Text("Blast Protection"), blastProtection);
+        buttonSelectGridPane.addRow(5, new Text("Blast Protection:"), blastProtection);
     }
 
     /**
