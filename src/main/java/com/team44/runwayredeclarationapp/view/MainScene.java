@@ -403,7 +403,6 @@ public class MainScene extends BaseScene {
         helpMenu.getItems().add(instructionMenuItem);
 
         // Create a menu for selecting scenarios to test the program with
-        var testDevMenu = new Menu("Test (for devs)");
         var scenario1MenuItem = new MenuItem("Select Scenario 1");
         var scenario2MenuItem = new MenuItem("Select Scenario 2");
         var scenario3MenuItem = new MenuItem("Select Scenario 3");
@@ -415,10 +414,13 @@ public class MainScene extends BaseScene {
         scenario3MenuItem.setOnAction(event -> setTestScenario(3));
         scenario4MenuItem.setOnAction(event -> setTestScenario(4));
 
-        // Add all the scenario buttons to the menu
+        menuBar.getMenus().addAll(fileMenu, viewMenu, xmlMenu, exportMenu, helpMenu);
+
+        // Scenarios to test with (FOR DEVS)
+        var testDevMenu = new Menu("Test (for devs)"); // For testing
         testDevMenu.getItems()
             .addAll(scenario1MenuItem, scenario2MenuItem, scenario3MenuItem, scenario4MenuItem);
-        menuBar.getMenus().addAll(fileMenu, viewMenu, xmlMenu, exportMenu, helpMenu, testDevMenu);
+        // menuBar.getMenus().add(testDevMenu);
 
         // Set up the main pane
         root = new StackPane();
