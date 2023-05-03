@@ -396,7 +396,7 @@ public class MainScene extends BaseScene {
 
         //Create a menu for reading instructions
         var helpMenu = new Menu("Help");
-        var instructionMenuItem = new MenuItem("Instruction");
+        var instructionMenuItem = new MenuItem("Instructions");
         instructionMenuItem.setOnAction(event -> {
             InstructionWindow instructionWindow = new InstructionWindow(getMainWindow().getStage());
         });
