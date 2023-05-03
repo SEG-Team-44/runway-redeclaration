@@ -168,6 +168,9 @@ public class DataController {
 
         // Check there are no errors
         if (validationErrors.size() == 0) {
+            if (runway instanceof PRunway) {
+                ((PRunway) runway).setPosition(pos1, pos2);
+            }
             runway.setDegree(degree1, degree2);
             runway.updateParameters(parameters);
 
@@ -242,10 +245,9 @@ public class DataController {
     /**
      * Handle when an airport is to be deleted
      *
-     * @param airport               airport to be deleted
-     * @param airportObservableList list of airports
+     * @param airport airport to be deleted
      */
-    public void deleteAirport(Airport airport, ObservableList<Airport> airportObservableList) {
+    public void deleteAirport(Airport airport) {
         Alert confirmAlert = createConfirmAlert(airport.getName() + "Airport");
 
         //delete the airport if OK btn pressed
@@ -286,16 +288,15 @@ public class DataController {
     /**
      * Handle when an obstacle is to be deleted
      *
-     * @param obstacle  obstacle to be deleted
-     * @param obstacles list of obstacles
+     * @param obstacle obstacle to be deleted
      */
-    public void deleteObstacle(Obstacle obstacle, ObservableList<Obstacle> obstacles) {
+    public void deleteObstacle(Obstacle obstacle) {
         Alert confirmAlert = createConfirmAlert(obstacle.getObstName());
 
         //delete the obstacle if OK btn pressed
         Optional<ButtonType> btnType = confirmAlert.showAndWait();
         if (btnType.get() == ButtonType.OK) {
-            obstacles.remove(obstacle);
+            obstacleObservableList.remove(obstacle);
 
             // Log
             logAction("Obstacle Deleted",

@@ -483,11 +483,27 @@ public abstract class VisualisationBase extends Canvas {
         tocsEndY = runwayY1 - obstacleHeight;
 
         // Landing/takeoff to the right (logical runway 1)
-        var blastEndCoord = obstacleCoord + blastProtection;
-        addTextArrow(createValueText("Blast", blastProtectionActual),
-            obstacleCoord,
-            runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
-            blastEndCoord, colourTheme.getBlastarrow());
+        // Show blast if it's greater than RESA + SE
+        double blastEndCoord;
+        if (blastProtectionActual < (resaActual + stripEndActual)) {
+            blastEndCoord = obstacleCoord + resa + stripEnd;
+
+            addTextArrow(createValueText("SE", stripEndActual),
+                obstacleCoord + resa,
+                runwayY1 - arrowsFromRunwayOffset,
+                obstacleCoord + resa + stripEnd, colourTheme.getSEarrow());
+            addTextArrow(createValueText("RESA", resaActual),
+                obstacleCoord,
+                runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
+                obstacleCoord + resa, colourTheme.getRESAarrow());
+        } else {
+            blastEndCoord = obstacleCoord + blastProtection;
+
+            addTextArrow(createValueText("Blast", blastProtectionActual),
+                obstacleCoord,
+                runwayY1 - arrowsFromRunwayOffset - (arrowsGapBetween * 2),
+                blastEndCoord, colourTheme.getBlastarrow());
+        }
 
         var slopeEndCoord = obstacleCoord + slope;
 
@@ -640,15 +656,27 @@ public abstract class VisualisationBase extends Canvas {
             runwayY2 + arrowsFromRunwayOffset,
             stripEndStartCoord1, colourTheme.getSEarrow());
 
-        var stripEndStartCoord2 = obstacleCoord - resa - stripEnd;
-        addTextArrow(createValueText("RESA", resaActual),
-            obstacleCoord,
-            runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
-            obstacleCoord - resa, colourTheme.getRESAarrow());
-        addTextArrow(createValueText("SE", stripEndActual),
-            obstacleCoord - resa,
-            runwayY2 + arrowsFromRunwayOffset,
-            stripEndStartCoord2, colourTheme.getSEarrow());
+        double stripEndStartCoord2;
+        // Show blast if it's greater than RESA + SE
+        if (blastProtectionActual < (resaActual + stripEndActual)) {
+            stripEndStartCoord2 = obstacleCoord - resa - stripEnd;
+
+            addTextArrow(createValueText("RESA", resaActual),
+                obstacleCoord,
+                runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
+                obstacleCoord - resa, colourTheme.getRESAarrow());
+            addTextArrow(createValueText("SE", stripEndActual),
+                obstacleCoord - resa,
+                runwayY2 + arrowsFromRunwayOffset,
+                stripEndStartCoord2, colourTheme.getSEarrow());
+        } else {
+            stripEndStartCoord2 = obstacleCoord - blastProtection;
+
+            addTextArrow(createValueText("Blast", blastProtectionActual),
+                obstacleCoord,
+                runwayY2 + arrowsFromRunwayOffset + (arrowsGapBetween * 2),
+                obstacleCoord - blastProtection, colourTheme.getBlastarrow());
+        }
 
         addTextArrow(createValueText("TODA", todaDistanceActual1),
             stripEndStartCoord2,
@@ -1203,8 +1231,6 @@ public abstract class VisualisationBase extends Canvas {
      * @return the new value respective to the canvas runway width
      */
     protected double calculateRatioValueWidth(double value) {
-        // todo:: blast protect > resa + se
-
         // The ratio is  actual runway width:canvas runway width
         return (value / actualRunwayWidth) * runwayWidth;
     }

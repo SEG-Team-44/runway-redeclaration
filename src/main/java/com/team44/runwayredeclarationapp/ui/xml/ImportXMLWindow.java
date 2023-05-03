@@ -11,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -22,6 +23,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Duration;
 
 /**
  * The window for importing xml file
@@ -67,6 +69,15 @@ public class ImportXMLWindow extends Stage {
         importBtn.setDisable(true);
         var importResetBtn = new Button("Reset and Import");
         importResetBtn.disableProperty().bindBidirectional(importBtn.disableProperty());
+
+        // Tooltips
+        var importTooltip = new Tooltip("Import the data from the XML file.");
+        importTooltip.setShowDelay(Duration.millis(50));
+        importBtn.setTooltip(importTooltip);
+        var importResetTooltip = new Tooltip(
+            "Overwrite all existing program data with data in XML file.");
+        importResetTooltip.setShowDelay(Duration.millis(50));
+        importResetBtn.setTooltip(importResetTooltip);
 
         importBtnsPane.getChildren().addAll(importResetBtn, importBtn);
 
