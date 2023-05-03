@@ -282,42 +282,42 @@ public class FileController {
      * @return the list of predefined airports
      */
     public static Airport[] getPredefinedAirports() {
-        var airports = new Airport[]{new Airport("Scenarios")};
+        var airports = new Airport[]{new Airport("Heathrow (LHR)")};
         airports[0].addRunway(new PRunway(9, 27, 'L', 'R', new double[]{
-            3902,//runwayL
+            3901,//runwayL
             100,//runwayW
             60,//stripL
             100,//stripW
             100,//clearwayW
             240, //resaL
-            3902,//tora1
-            3902,//toda1
-            3902,//asda1
-            3595,//lda1
-            3884,//tora2
-            3962,//toda2
-            3884,//asda2
-            3884,//lda2
+            3901,//tora1
+            3901,//toda1
+            3901,//asda1
+            3592,//lda1
+            3882,//tora2
+            3960,//toda2
+            3882,//asda2
+            3882,//lda2
             0,//disThresh1
-            306//disThresh2
+            309//disThresh2
         }));
         airports[0].addRunway(new PRunway(9, 27, 'R', 'L', new double[]{
-            3660,//runwayL
+            3658,//runwayL
             100,//runwayW
             60,//stripL
             100,//stripW
             100,//clearwayW
             240, //resaL
-            3660,//tora1
-            3660,//toda1
-            3660,//asda1
-            3353,//lda1
-            3660,//tora2
-            3660,//toda2
-            3660,//asda2
-            3660,//lda2
+            3658,//tora1
+            3658,//toda1
+            3658,//asda1
+            3350,//lda1
+            3658,//tora2
+            3658,//toda2
+            3658,//asda2
+            3658,//lda2
             0,//disThresh1
-            307//disThresh2
+            308//disThresh2
         }));
 
         return airports;
