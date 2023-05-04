@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
@@ -60,7 +61,7 @@ public class XMLHandler {
     /**
      * The XSD validation file
      */
-    private File validationFile;
+    private URL validationFile;
 
     /**
      * Create an XML handler
@@ -70,8 +71,7 @@ public class XMLHandler {
 
         // Set the validation schema
         try {
-            this.validationFile = new File(
-                XMLValidator.class.getResource("/xml/validate.xsd").toURI());
+            this.validationFile = XMLValidator.class.getResource("/xml/validate.xsd");
         } catch (Exception e) {
             logger.error("Validation file could not be found: " + e.getMessage());
         }

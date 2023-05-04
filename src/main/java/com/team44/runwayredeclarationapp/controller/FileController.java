@@ -10,6 +10,7 @@ import com.team44.runwayredeclarationapp.model.PRunway;
 import com.team44.runwayredeclarationapp.model.Runway;
 import com.team44.runwayredeclarationapp.utility.xml.XMLHandler;
 import com.team44.runwayredeclarationapp.utility.xml.XMLWrapper;
+import com.team44.runwayredeclarationapp.view.component.alert.ErrorAlert;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,6 +69,16 @@ public class FileController {
         try {
             // Parse the XML file
             uploadedData = xmlHandler.readXML(file);
+
+            // Check for error
+            if (uploadedData == null) {
+                ErrorAlert errorAlert = new ErrorAlert("File could not be found!",
+                    "There seems to be an unexpected error.", "Error: " + file.getName() +
+                    " could not be found/read.");
+                errorAlert.show();
+                return;
+            }
+
             var airports = uploadedData.getAirports();
             var obstacles = uploadedData.getObstacles();
 
@@ -89,9 +100,9 @@ public class FileController {
             // Call the listener to update the GUI
             if (reset) {
                 callSetListener(airports, obstacles);
-                return;
+            } else {
+                callAddListener(airports, obstacles);
             }
-            callAddListener(airports, obstacles);
 
             // Call the listener for upload success
             if (fileUploadSuccessfulListener != null) {
@@ -105,6 +116,10 @@ public class FileController {
                     "Please ensure that the uploaded XML file matches the schema specified.\n\nError:\n"
                         + e.getMessage().replace("cvc-complex-type.2.4.a: ", ""));
             }
+        } catch (Exception e) {
+            ErrorAlert errorAlert = new ErrorAlert("Unexpected Error",
+                "There seems to be an unexpected error.", "Error: " + e.getMessage());
+            errorAlert.show();
         }
 
     }

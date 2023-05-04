@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.team44.runwayredeclarationapp.TestConstants;
@@ -95,7 +96,7 @@ class FileControllerTest {
         // Verify the listeners that should be called
         verify(dataAddListener).load(any(Airport[].class), any(Obstacle[].class));
         verify(dataSetListener).load(any(Airport[].class), any(Obstacle[].class));
-        verify(fileUploadSuccessfulListener).uploadSuccessful();
+        verify(fileUploadSuccessfulListener, times(2)).uploadSuccessful();
 
         // Verify the error listeners that should NOT be called
         verify(errorListener, never()).alert(anyString(), anyString(), anyString());

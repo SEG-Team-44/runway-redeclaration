@@ -2,6 +2,7 @@ package com.team44.runwayredeclarationapp.utility.xml;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
@@ -32,7 +33,7 @@ public class XMLValidator {
      * @throws SAXException when there is a parsing error
      * @throws IOException  when there are other input/output errors from reading the file
      */
-    public void validateWithSchema(File xsdFile, File xmlFile) throws SAXException, IOException {
+    public void validateWithSchema(URL xsdFile, File xmlFile) throws SAXException, IOException {
         // Try validate
         try {
             // Create the validator with the schema
